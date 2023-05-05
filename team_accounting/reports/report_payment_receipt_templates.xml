@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_payment_receipt_document">
+        <t t-call="web.html_container">
+            <t t-set="o" t-value="o.with_context(lang=lang)"/>
+          <xpath expr="//style" position="after">
+            <style type="text/css">
+                   .main {
+    background-image: url('')
+    background-repeat: no-repeat;
+    font-size: 14px;
+    font-weight: bold;
+    height: 1122.24px;
+    width: 793.92;
+    page-break-after: always;
+    page-break-inside: avoid;\
+    margin: none;
+    text-align: center;
+}
+.container {
+    display: -webkit-box; /* wkhtmltopdf uses this one */
+    display: -webkit-flex;
+    font-size: 15px;
+    display: flex;
+    font-family: Verdana, sans-serif;
+    -webkit-box-pack: center; /* wkhtmltopdf uses this one */
+    -webkit-justify-content: center;
+            justify-content: center;
+            justify-content:normal;
+}
+                .container1 {
+    display: -webkit-box; /* wkhtmltopdf uses this one */
+    display: -webkit-flex;
+    display: flex;
+                    font-family: Verdana, sans-serif;
+    -webkit-box-pack: center; /* wkhtmltopdf uses this one */
+    -webkit-justify-content: center;
+            justify-content: center;
+            justify-content:normal;
+}
+/*Head*/
+.head{
+
+    width: 85px;
+    height: 25px;
+    border: none;
+}
+.head1{
+
+    width: 115px;
+    width: 86px;
+    height: 25px;
+    border: none;
+}
+.head2{
+  /*margin-top: 118px;*/
+    width: 114px;
+    height: 25px;
+    border: none;
+}
+.head3{
+  /*margin-top: 118px;*/
+    width: 128px;
+    height: 25px;
+    border: none;
+}
+.head4{
+  /*margin-top: 118px;*/
+   width: 157px;
+    height: 25px;
+    border: none;
+}
+.head5{
+  /*margin-top: 118px;*/
+    width: 87px;
+    height: 25px;
+    border: none;
+}
+.head6{
+  /*margin-top: 118px;*/
+    width: 85px;
+     height: 25px;
+    border: none;
+}
+.head7{
+  /*margin-top: 118px;*/
+    width: 115px;
+     height: 25px;
+    border: none;
+}
+.head8{
+  /*margin-top: 118px;*/
+    width: 130px;
+     height: 25px;
+    border: none;
+}
+.head9{
+  /*margin-top: 118px;*/
+    width: 160px;
+     height: 25px;
+    border: none;
+}
+/* End Head*/
+.row{
+    font-size:15px;
+    width: 85px;
+    height: 240px;
+    border: none;
+}
+.row1{
+
+    width: 115px;
+    width: 86px;
+    height: 240px;
+    border: none;
+}
+.row2{
+    width: 114px;
+    height: 240px;
+    border: none;
+    font-size:13px;
+}
+.row3{
+    width: 128px;
+    height: 240px;
+    border: none;
+    font-size:13px;
+}
+.row4{
+    width: 157px;
+    height: 240px;
+    border: none;
+    font-size:13px;
+}
+.row5{
+    font-size:15px;
+    width: 87px;
+    height: 240px;
+    border: none;
+                 font-size:13px;
+}
+.row6{
+    width: 85px;
+    border: none;
+}
+.row7{
+    width: 115px;
+    border: none;
+}
+.row8{
+    width: 130px;
+    border: none;
+}
+.row9{
+    width: 160px;
+    border: none;
+}
+.row10{
+    width: 345px;
+    height: 25px;
+    border: none;
+}
+.row11{
+    width: 463px;
+    border: none;
+}
+.row13{
+    width: 352px;
+    border: none;
+}
+.row14{
+    width: 172px;
+    height: 25px;
+    border: none;
+}
+.row15{
+    width: 172px;
+    border: none;
+}
+.row16{
+    width: 462px;
+    border: none;
+}
+.row16_1{
+    width: 172px;
+    border: none;
+}
+.row16_2{
+    width: 178px;
+    border: none;
+}
+.row17{
+    width: 173px;
+    height: 505px;
+    border: none;
+}
+.row18{
+    width: 171px;
+    height: 505px;
+    border: none;
+}
+.row19{
+    width: 463px;
+    height: 505px;
+
+    border: none;
+}
+.row20{
+    width: 172px;
+    height: 505px;
+
+    border: none;
+}
+.row21{
+    width: 178px;
+    height: 505px;
+
+    border: none;
+}
+.row22{
+    width: 1165px;
+    height: 130px;
+    border: none;
+                font-size:23px;
+}
+.row23{
+    width: 225px;
+    height: 73px;
+    border: none;
+}
+.row24{
+    width: 229px;
+    height: 73px;
+    border: none;
+}
+.row25{
+    width: 464px;
+    height: 73px;
+    border: none;
+}
+.row26{
+    width: 241px;
+    height: 73px;
+    border: none;
+    text-align: left;
+    text-transform: uppercase;
+}
+.title{
+  margin-left: 10px;
+}
+ /*@media print {
+}
+body {
+   content:url('.jpg');
+  }
+}*/
+
+.title1{
+    margin-top: 90px;
+    width: 85px;
+    height: 25px;
+}
+.title2{
+     margin-top: 86px;
+    margin-left: 10px;
+    width: 260px;
+    height: 25px;
+}
+.title3{
+   margin-top: 90px;
+   margin-left: 590px;
+    width: 80px;
+    height: 25px;
+    text-align: right;
+    border: none;
+}
+.title4{
+  margin-left: 8px;
+   margin-top: 90px;
+    width: 428px;
+    height: 25px;
+    border: none;
+    letter-spacing: 6px;
+    text-align: left;
+}
+            </style>
+          </xpath>
+            <div class="page" >
+    <div class="main">
+            <img class="img img-responsive" src="/team_accounting/static/src/img/sample_img.jpg"/>
+<!--        <strong class="txt">Payment Receipt: <span t-field="o.name"/></strong>-->
+        <div class="container">
+          <div class="title1"/>
+          <div class="title2">
+              <span style="font-size:22px" t-esc="o.payment_date.strftime('%B %d,%Y')"/>
+          </div>
+          <div class="title3"/>
+<!--          <div class="title4" t-if="o.communication">-->
+<!--              <span t-field="o.communication"/>-->
+<!--          </div>-->
+        </div>
+            <div class="container">
+              <div class="head">
+                  <span/>
+              </div>
+              <div class="head1">
+                  <span/>
+              </div>
+              <div class="head2">
+                  <span/>
+              </div>
+              <div class="head3">
+                  <span/>
+              </div>
+              <div class="head4">
+                  <span/>
+              </div>
+              <div class="head5">
+                  <span/>
+              </div>
+              <div class="head6">
+                  <span/>
+              </div>
+              <div class="head7">
+                  <span/>
+              </div>
+              <div class="head8">
+                  <span/>
+              </div>
+              <div class="head9">
+                  <span/>
+              </div>
+          </div>
+        <div class="container1" >
+              <div class="row"/>
+             <div class="row1">
+<!--                 <div style="width:50px">-->
+<!--                      <br/>-->
+<!--                  <br/>-->
+<!--                  <br/>-->
+<!--                  <br/>-->
+<!--                  <br/>-->
+
+<!--                  <h3 t-esc="o.communication"></h3>-->
+<!--                 </div>-->
+                  </div>
+<!--              <div class="row1" t-foreach="o.invoice_ids" t-as="val" style="width:80px" >-->
+<!--                  <br/>-->
+<!--                  <br/>-->
+<!--                  <br/>-->
+<!--                  <br/>-->
+<!--                  <br/>-->
+<!--                  <h3  t-esc="val.ref"></h3>-->
+<!--              </div>-->
+              <div class="row2">
+                   <t t-if="o.invoice_ids">
+                   <div t-foreach="o.invoice_ids" t-as="val" style="width:40px">
+                            <h3  t-esc="val.name"/>
+                  </div>
+                  </t>
+                  <t t-elif="o.name">
+                      <div style="width:40px">
+                             <h3  t-esc="o.name"/>
+                    </div>
+                  </t>
+              </div>
+              <div class="row3">
+                  <div style="width:50px">
+                     <br/><br/>
+<!--                  <br/>-->
+<!--                  <br/>-->
+<!--                  <br/>-->
+<!--                  <br/>-->
+
+                  <h3 t-esc="o.communication"/>
+                  </div>
+
+              </div>
+              <div class="row4">
+
+                  <t t-if="o.invoice_ids">
+                      <div t-foreach="o.invoice_ids" t-as="val">
+                            <span t-esc="val.amount_total" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                      </div>
+<!--                         <div t-foreach=" t-as="val">-->
+<!--                            <span t-esc="val.amount_total" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>-->
+<!--                        </div>-->
+                  </t>
+                   <t t-elif="o.amount">
+                        <span t-esc="o.amount"/>
+                  </t>
+                  <t t-else="not o.amount">
+                      <span>No Data</span>
+                  </t>
+                      <!-- Font size 22 -->
+<!--                   <span t-esc="o.amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>-->
+<!--                  </div>-->
+              </div>
+              <div class="row5"/>
+              <div class="row6"/>
+              <div class="row7"/>
+              <div class="row8"/>
+              <div class="row9"/>
+        </div>
+        <div class="container">
+            <div class="row10"/>
+            <div class="row11"/>
+            <div class="row13"/>
+        </div>
+      <div class="container">
+            <div class="row14"/>
+            <div class="row15"/>
+            <div class="row16"/>
+            <div class="row16_1"/>
+            <div class="row16_2"/>
+      </div>
+      <div class="container">
+
+               <div class="row17">
+               </div>
+               <div class="row18">
+               </div>
+
+          <!-- This is for Viewing Data from account.move.line module , this is connected via jounal_id in move_line_id -->
+            <div class="row19">
+                    <t t-foreach="o.move_line_ids.account_id" t-as="val">
+                      <h3 style="font-size:22px" t-esc="val.name"/>
+                    </t>
+            </div>
+               <div class="row20">
+                       <t t-foreach="o.move_line_ids" t-as="val" >
+                           <t t-if="val.debit == 0">
+                               <span>&#160;</span>
+                           </t>
+                            <t t-else="val.debit">
+
+                                <h3 style="font-size:22px" t-esc="val.debit" t-options='{"widget": "float", "precision": 2}'/>
+                            </t>
+                       </t>
+               </div>
+               <div class="row21">
+                        <t t-foreach="o.move_line_ids" t-as="val" >
+                           <t t-if="val.credit == 0">
+                               <span>&#160;</span>
+                           </t>
+                            <t t-else="val.credit">
+
+                                <h3 style="font-size:22px" t-esc="val.credit" t-options='{"widget": "float", "precision": 2}'/>
+                            </t>
+                        </t>
+               </div>
+           <!-- END HERE -->
+      </div>
+        <div class="container">
+            <div class="row22">
+                <br/>
+                <t t-foreach="o.invoice_ids.invoice_line_ids" t-as="val">
+                    <span t-esc="val.name">
+                    </span>
+                    </t>
+            </div>
+        </div>
+
+      <div class="container">
+           <div class="row23"/>
+           <div class="row24"/>
+           <div class="row25"/>
+           <div class="row26"/>
+      </div>
+</div>
+
+                <div class="container">
+    <div class="">
+        <div style="float: left;
+       position: absolute;
+       height: 32px;
+       width: 400px;
+       left: 0px;
+       top: 0px;
+       margin-left: 155px;
+       margin-top: 1250px;
+       text-transform: uppercase;
+       /*background-color: white;*/
+       padding: 5px;
+       letter-spacing:2px;
+       color: black;
+       font-weight: bold;">
+             <div t-if="o.partner_id">
+                  <span style="font-size:22px , width: 400px;" t-field="o.partner_id.name"/>
+              </div>
+        </div>
+
+
+   <div style="float: left;
+       position: absolute;
+       height: 32px;
+       width: 900px;
+       left: 0px;
+       top: 0px;
+       margin-left: 182px;
+       margin-top: 1310px;
+       text-transform: uppercase;
+       /*background-color: white;*/
+       padding: 5px;
+       color: black;
+       font-size:20px;
+       font-weight: bold;">
+<!--       <t t-esc="o.amount_total" t-esc-options=/>-->
+
+       <div t-if="o.word_move">
+           <span t-field="o.word_move"/>
+       </div>
+   </div>
+
+
+
+
+      <div style="float: left;
+       position: absolute;
+       height: 32px;
+       width: 292px;
+       left: 0px;
+       top: 0px;
+       margin-left: 826px;
+       margin-top: 1250px;
+       /*background-color: white;*/
+       padding: 5px;
+       color: black;
+       font-weight: bold;">
+          <div t-if="o.amount">
+                   <span style="font-size:22px" t-field="o.amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+              </div>
+      </div>
+
+       <div style="float: left;
+       position: absolute;
+       height: 32px;
+       width: 282px;
+       left: 0px;
+       top: 0px;
+       margin-left: 850px;
+       font-size: 21px;
+       letter-spacing:5px;
+       text-transform:uppercase;
+       margin-top: 1180px;
+       /*background-color: white;*/
+       padding: 5px;
+       color: black;
+       font-weight: bold;">
+<!--            <div t-if="o.payment_date">-->
+<!--&lt;!&ndash;                t-options="{&quot;widget&quot;: &quot;date&quot;}"&ndash;&gt;-->
+<!--              <span t-field="o.payment_date" t-options="{&quot;widget&quot;: &quot;datetime&quot; , &quot;format&quot;: &quot;%B-%d-%y&quot;}"/>-->
+<!--          </div>-->
+            <span t-esc="o.payment_date.strftime('%m     %d           %Y')"/>
+
+
+       </div>
+
+            <div style="float: left;
+       position: absolute;
+       height: 32px;
+       width: 282px;
+       left: 0px;
+       top: 0px;
+       margin-left: 800px;
+       letter-spacing: 2px;
+       margin-top: 1235px;
+       /*background-color: white;*/
+       padding: 5px;
+       color: black;
+       text-transform: uppercase;
+       font-weight: bold;">
+                <div t-if="o.communication">,
+<!--                  <span t-field="o.communication"/>-->
+              </div>
+            </div>
+    </div>
+  </div>
+            </div>
+        </t>
+    </template>
+
+
+
+    <template id="report_payment_receipt">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="lang" t-value="o.partner_id.lang or o.company_id.partner_id.lang"/>
+                <t t-call="team_accounting.report_payment_receipt_document" t-lang="lang"/>
+<!--                <t t-call="account.report_payment_receipt_sub" t-lang="lang"></t>-->
+            </t>
+        </t>
+    </template>
+</odoo>

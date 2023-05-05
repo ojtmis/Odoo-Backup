@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="profit_and_loss_qry_view_form" model="ir.ui.view">
+            <field name="name">profit_and_loss_qry_view_form</field>
+            <field name="model">profit.and.loss.qry</field>
+            <field name="arch" type="xml">
+                <form string="profit_and_loss_qty_form">
+                    <sheet>
+                        <group>
+                            <field name="sub_category"/>
+                            <field name="category"/>
+                            <field name="pnl_connection"/>
+                            <field name="account_id"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="profit_and_loss_qry_view_tree" model="ir.ui.view">
+            <field name="name">profit_and_loss_qry_view_tree</field>
+            <field name="model">profit.and.loss.qry</field>
+            <field name="arch" type="xml">
+                <tree string="profit_and_loss_qry_tree">
+                    <field name="sub_category"/>
+                    <field name="category"/>
+                    <field name="pnl_connection"/>
+                    <field name="account_id"/>
+                </tree>
+            </field>
+        </record>
+
+<!--        <record id="pnl_qry_view_pivot" model="ir.ui.view">-->
+<!--            <field name="name">Query View Pivot</field>-->
+<!--            <field name="model">profit.and.loss.qry</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <pivot string="Query View Pivot">-->
+<!--                    <field name="category" type="row"/>-->
+<!--                    <field name="sub_category" type="row"/>-->
+<!--                    <field name="pnl_connection" type="row"/>-->
+<!--                    <field name="account_id" type="row"/>-->
+<!--                    &lt;!&ndash;                    <field name="analytic_account_id" type="row"/>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                    <field name="date" type="col" interval="day"/>&ndash;&gt;-->
+<!--                </pivot>-->
+<!--            </field>-->
+<!--        </record>-->
+
+        <record id="pnl_qry_view_id_action" model="ir.actions.act_window">
+            <field name="name">Profit and Loss Query</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">profit.and.loss.qry</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="menu_pnl_id" action="pnl_qry_view_id_action"
+                  name="Profit and Loss" sequence="3" parent="team_accounting_profit_and_loss.team_profit_loss_menu_id"/>
+
+
+    </data>
+</odoo>

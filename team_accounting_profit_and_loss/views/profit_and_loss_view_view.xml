@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="profit_and_loss_view_form" model="ir.ui.view">
+            <field name="name">profit_and_loss_view_form</field>
+            <field name="model">profit.and.loss</field>
+            <field name="arch" type="xml">
+                <form string="Profit and Loss">
+                    <header>
+                        <button name="print_function_here" string="DOWNLOAD REPORT (PROFIT AND LOSS)" class="btn-danger"
+                                type="object"
+                                attrs="{'invisible': ['|',('is_pnl_or_bs', '=', 'bs'),('is_pnl_or_bs', 'not in', ('bs','pnl'))]}"/>
+
+                        <button name="print_function_here" string="DOWNLOAD REPORT (BALANCE SHEET)" class="btn-success"
+                                type="object"
+                                attrs="{'invisible': ['|',('is_pnl_or_bs', '=', 'pnl'),('is_pnl_or_bs', 'not in', ('bs','pnl'))]}"/>
+
+                        <button name="print_xlsx_here" string="DOWNLOAD REPORT XLSX (PROFIT AND LOSS)"
+                                class="btn-danger"
+                                type="object"
+                                attrs="{'invisible': ['|',('is_pnl_or_bs', '=', 'bs'),('is_pnl_or_bs', 'not in', ('bs','pnl'))]}"/>
+
+                        <button name="print_xlsx_here" string="DOWNLOAD REPORT XLSX (BALANCE SHEET)" class="btn-success"
+                                type="object"
+                                attrs="{'invisible': ['|',('is_pnl_or_bs', '=', 'pnl'),('is_pnl_or_bs', 'not in', ('bs','pnl'))]}"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <div class="oe_title" style="width: 30%">
+                                <label for="pnl_id"/>
+                                <h1>
+                                    <field name="pnl_id" placeholder="PNL ID"/>
+                                </h1>
+                            </div>
+                            <div class="oe_title">
+                                <label for="name"/>
+                                <h1>
+                                    <field name="name" placeholder="Title"/>
+                                </h1>
+                            </div>
+                        </group>
+
+                        <group>
+                            <group>
+                                <field name="connection_categ"/>
+                                <!--                                <field name="code" readonly="1" invisible="1"/>-->
+                                <field name="sub_category"/>
+                            </group>
+                            <group>
+                                <field name="is_pnl_or_bs"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Chart of Account">
+                                <field name="pnl_line_connection">
+                                    <tree editable="bottom">
+                                        <field name="account_id"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field name="account_id"/>
+                                            </group>
+                                            <group>
+                                                <!--                                                    <field name="debit_line_team"/>-->
+                                                <!--                                                    <field name="credit_line_team"/>-->
+                                                <!--                                                    <field name="balance_line_team"/>-->
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                            <page string="Notes">
+                                <!--                                    <field name="notes"/>-->
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+
+        <record id="profit_and_loss_view_tree" model="ir.ui.view">
+            <field name="name">profit_and_loss_view_tree</field>
+            <field name="model">profit.and.loss</field>
+            <field name="arch" type="xml">
+                <tree default_order='pnl_id' string="Profit and Loss">
+                    <field name="pnl_id"/>
+                    <field name="name"/>
+                    <field name="connection_categ"/>
+                    <field name="sub_category"/>
+                    <field name="is_pnl_or_bs"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</odoo>

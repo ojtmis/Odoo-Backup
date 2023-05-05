@@ -1,0 +1,139 @@
+<templates>
+   <t t-name="SaleCust">
+       <div>
+           <div>
+               <h3>
+                   P and L
+               </h3>
+           </div>
+           <div>
+               <div class="filter_view_tb"></div>
+           </div>
+           <br></br>
+           <div>
+               <div class="table_view"></div>
+           </div>
+       </div>
+   </t>
+   <t t-name="SaleTable">
+       <div>
+           <div class="table_main_view">
+               <div style="float-left">
+                   <td><button type="button" class="btn btn-primary" id="pdf"
+                            style="position: relative;height:30px;color:white;background-color: #00A0AD;border-color: #00A0AD; padding:3px;">
+                        Print (PDF)
+                    </button></td>
+                   <td><button type="button" class="btn btn-danger" id="test1"
+                            style="position: relative;height:30px;color:white;background-color: #00A0AD;border-color: #00A0AD; padding:3px;">
+                        Print (XLSX)
+                    </button></td>
+               </div>
+               <table cellspacing="0" width="100%">
+                   <thead>
+                       <tr>
+                           <th>Name</th>
+                           <th>Debit</th>
+                           <th>Credit</th>
+                           <th>Balance</th>
+                       </tr>
+                   </thead>
+                   <tbody>
+                       <t t-foreach="report_lines" t-as="data">
+                           <tr style="border: 1.5px solid black;" class="gl-line"
+                                data-toggle="collapse"
+                                t-att-data-account-id="data['id']"
+                                t-attf-data-target=".a{{data['id']}}">
+                               <td style="border: 0px solid black;">
+
+                                       <t t-esc="data['name']"/>
+                                    <i class="fa fa-caret-down" role="img" aria-label="Unfolded" title="Unfolded"/>
+                               </td>
+                               <td>
+                                   <t t-esc="data['ann_account_debit']"/>
+                               </td>
+<!--                               <td>-->
+<!--                                   <t t-esc="data['account_id']"/>-->
+<!--                               </td>-->
+                               <td>
+                                   <t t-esc="data['ann_account_credit']"/>
+                               </td>
+                               <td>
+                                   <t t-esc="data['ann_account_balance']"/>
+                               </td>
+
+
+<!--                               <td>-->
+<!--                                   <t t-esc="data['state']"/>-->
+<!--                               </td>-->
+                           </tr>
+                       </t>
+                   </tbody>
+               </table>
+           </div>
+       </div>
+   </t>
+       <div>
+           <div>
+               <h3>
+                   P and L
+               </h3>
+           </div>
+           <div>
+               <div class="filter_view_tb_new"/>
+           </div>
+           <br/>
+           <div>
+               <div class="table_view_new"/>
+           </div>
+       </div>
+   <t t-name="SaleTableNew">
+       <div>
+           <div class="table_main_view">
+               <div style="float-left">
+                   <td><button type="button" class="btn btn-primary" id="pdf"
+                            style="position: relative;height:30px;color:white;background-color: #00A0AD;border-color: #00A0AD; padding:3px;">
+                        Print (PDF)
+                    </button></td>
+                   <td><button type="button" class="btn btn-danger" id="test1"
+                            style="position: relative;height:30px;color:white;background-color: #00A0AD;border-color: #00A0AD; padding:3px;">
+                        Print (XLSX)
+                    </button></td>
+               </div>
+               <table cellspacing="0" width="100%">
+                   <thead>
+                       <tr>
+                           <th>Id</th>
+                           <th>Name</th>
+                           <th>Date</th>
+                           <th>Amount</th>
+                           <th>Unit Amount</th>
+                           <th>Product ID</th>
+                       </tr>
+                   </thead>
+                   <tbody>
+                       <t t-foreach="report_lines_data" t-as="data">
+                           <tr>
+                               <td style="border: 0px solid black;">
+                                   <t t-esc="data['id']"/>
+                                    <i class="fa fa-caret-down" role="img" aria-label="Unfolded" title="Unfolded"/>
+                               </td>
+                               <td>
+                                   <t t-esc="data['name_b']"/>
+                               </td>
+                               <td>
+                                   <t t-esc="data['date']"/>
+                               </td>
+                               <td>
+                                   <t t-esc="data['unit_amount']"/>
+                               </td>
+                               <td>
+                                   <t t-esc="data['product_id']"/>
+                               </td>
+                           </tr>
+                       </t>
+                   </tbody>
+               </table>
+           </div>
+       </div>
+   </t>
+</templates>

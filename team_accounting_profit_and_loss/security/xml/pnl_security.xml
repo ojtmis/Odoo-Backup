@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <!--        <record model="ir.module.category" id="ProjectName_category">-->
+        <!--            <field name="name">ProjectTitle</field>-->
+        <!--            <field name="sequence">1</field>-->
+        <!--        </record>-->
+
+        <record model="ir.module.category" id="profit_and_loss_module">
+            <field name="name">Profit and Loss Permissions</field>
+            <field name="description">User access level for Overtime module</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="profit_and_loss_user" model="res.groups">
+            <field name="name">User</field>
+            <field name="category_id" ref="profit_and_loss_module"/>
+        </record>
+        <record id="profit_and_loss_manager" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="category_id" ref="profit_and_loss_module"/>
+            <field name="implied_ids" eval="[(4, ref('profit_and_loss_user'))]"/>
+        </record>
+
+    </data>
+</odoo>

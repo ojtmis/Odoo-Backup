@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--    QWeb Reports    -->
+
+        <!--            <report-->
+        <!--                 id="account_vendor_bills_report"-->
+        <!--                 model="account.move"-->
+        <!--                 report_type="qweb-pdf"-->
+        <!--                 string="Vendor Bills Report"-->
+        <!--                 name="team_accounting.bill_report"-->
+        <!--                 file="team_accounting.bill_report"-->
+        <!--                 attachment="(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')"-->
+        <!--                 print_report_name="(object._get_report_base_filename())"-->
+        <!--                 menu="False"-->
+        <!--            />-->
+        <!--            <report-->
+        <!--                id="account_bill_report"-->
+        <!--                model="account.move"-->
+        <!--                string="Payable Voucher"-->
+        <!--                report_type="qweb-pdf"-->
+        <!--                name="team_accounting.bill_report_container"-->
+        <!--                file="team_accounting.bill_report_container"-->
+        <!--                attachment="(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')"-->
+        <!--                print_report_name="(object._get_report_base_filename())"-->
+        <!--                menu="False"-->
+        <!--            />-->
+
+<!-- Purchase -->
+        <report
+                string="Purchase Request"
+                id="inherit_pr_id"
+                model="purchase.requisition"
+                report_type="qweb-pdf"
+                name="team_accounting.pr_id"
+                file="team_accounting.pr_id"
+                print_report_name="'Purchase - %s' % (object.name)"
+        />
+
+        <report
+                id="debit_credit_report_id_here"
+                model="account.move"
+                report_type="qweb-pdf"
+                string="Debit Credit Memo"
+                name="team_accounting.debit_credit_report_id"
+                file="team_accounting.debit_credit_report_id"
+                attachment="(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')"
+                print_report_name="(object._get_report_base_filename())"
+                menu="False"
+        />
+        <report
+                id="debit_credit_report_id_wo_fee_here"
+                model="account.move"
+                report_type="qweb-pdf"
+                string="Debit Credit Memo (W/O)"
+                name="team_accounting.debit_credit_report_id_v2"
+                file="team_accounting.debit_credit_report_id_v2"
+                attachment="(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')"
+                print_report_name="(object._get_report_base_filename())"
+                menu="False"
+        />
+        <report
+                id="account_vendor_bills_report"
+                model="account.move"
+                report_type="qweb-pdf"
+                string="Invoice"
+                name="team_accounting.bill_report"
+                file="team_accounting.bill_report"
+                attachment="(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')"
+                print_report_name="(object._get_report_base_filename())"
+                menu="False"
+        />
+        <report
+                id="ap_voucher_print_id"
+                model="account.move"
+                report_type="qweb-pdf"
+                string="Payable Voucher"
+                name="team_accounting.ap_voucher_id"
+                file="team_accounting.ap_voucher_id"
+                attachment="(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')"
+                print_report_name="(object._get_report_base_filename())"
+                menu="True"
+        />
+
+        <!--           <report-->
+        <!--              id="action_report_payment_receipt"-->
+        <!--              model="account.payment"-->
+        <!--              string="Check Voucher"-->
+        <!--              report_type="qweb-pdf"-->
+        <!--              name="team_accounting.report_payment_receipt"-->
+        <!--              file="team_accounting.report_payment_receipt"-->
+        <!--              menu="True"-->
+        <!--           />-->
+
+        <report
+                id="action_report_check_voucher"
+                model="account.payment"
+                string="Check Voucher"
+                report_type="qweb-pdf"
+                name="team_accounting.check_voucher_id"
+                file="team_accounting.check_voucher_id"
+                menu="False"
+        />
+        <report
+                id="action_report_payment_voucher_acc_move"
+                model="account.move"
+                string="Payment Voucher"
+                report_type="qweb-pdf"
+                name="team_accounting.payment_voucher_signed_container_journal_entries_id"
+                file="team_accounting.payment_voucher_signed_container_journal_entries_id"
+                menu="False"
+        />
+
+        <report
+                id="action_report_payment_voucher_partial"
+                model="account.payment"
+                string="Payment Voucher (Partial)"
+                report_type="qweb-pdf"
+                name="team_accounting.payment_voucher_signed_container_partial_acc_move"
+                file="team_accounting.payment_voucher_signed_container_partial_acc_move"
+                menu="False"
+        />
+
+        <report
+                id="action_report_payment_voucher"
+                model="account.payment"
+                string="Payment Voucher (Whole)"
+                report_type="qweb-pdf"
+                name="team_accounting.payment_voucher_signed_container"
+                file="team_accounting.payment_voucher_signed_container"
+                menu="False"
+        />
+
+        <!--    END HERE    -->
+
+        <!--        Excel Report Here       -->
+
+        <report
+                id="payable_voucher_xlsx"
+                model="account.move"
+                string="Payable Voucher XLSX"
+                report_type="xlsx"
+                name="team_accounting.payable_voucher_xlsx"
+                file="team_accounting.payable_voucher_xlsx"
+                attachment_use="False"
+                menu="True"
+        />
+
+        <report
+                id="debit_credit_xlsx"
+                model="account.move"
+                string="Debit Credit Memo XLSX"
+                report_type="xlsx"
+                name="team_accounting.debit_credit_memo_xlsx"
+                file="team_accounting.debit_credit_memo_xlsx"
+                attachment_use="False"
+                menu="True"
+        />
+
+        <report
+                id="payment_voucher_id_xlsx"
+                model="account.payment"
+                string="Payment Voucher XLSX"
+                report_type="xlsx"
+                name="team_accounting.payment_voucher_xlsx"
+                file="team_accounting.payment_voucher_xlsx"
+                attachment_use="False"
+                menu="True"
+        />
+
+        <report
+                id="partner_xlsx"
+                model="account.payment"
+                string="Check Voucher XLSX"
+                report_type="xlsx"
+                name="team_accounting.voucher_report_xlsx"
+                file="team_accounting.voucher_report_xlsx"
+                attachment_use="False"
+                menu="True"
+        />
+        <!--            <report-->
+        <!--            id="sample"-->
+        <!--            model="account.payment"-->
+        <!--            string="Sample Voucher XLSX"-->
+        <!--            report_type="xlsx"-->
+        <!--            name="team_accounting.sample_print_xlsx"-->
+        <!--            file="team_accounting.sample_print_xlsx"-->
+        <!--            attachment_use="False"-->
+        <!--          />-->
+
+
+        <!--        End     -->
+
+    </data>
+</odoo>

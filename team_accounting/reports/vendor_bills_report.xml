@@ -1,0 +1,702 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="vendor_bills_report_template">
+             <t t-call="web.internal_layout">
+                <t t-set="o" t-value="o.with_context(lang=lang)" />
+                <xpath expr="//style" position="after">
+                    <style type="text/css">
+				.container{
+						 margin-top:10px;
+                font-size:13px;
+                display: -webkit-box;
+                display: -webkit-flex;
+                font-size: 15px;
+                display: flex;
+                font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+                justify-content:normal;
+                text-align: left;
+                padding: 0px;
+<!--                text-transform: uppercase;-->
+                         .container1{
+				font-family: Courier;
+                font-size:13px;
+                display: -webkit-box; /* wkhtmltopdf uses this one */
+                display: -webkit-flex;
+                font-size: 15px;
+                display: flex;
+                -webkit-box-pack: center;
+                -webkit-justify-content: center;
+                justify-content: center;
+                justify-content:normal;
+                text-align: left;
+                padding: 0px;
+                text-transform: uppercase;
+						}
+				img{
+					margin-top: 15px;
+					height: 20px;
+					width: 20px;
+					margin-right: 5px;
+					filter: grayscale(100%);
+						}
+				.title{
+					font-family: Courier;
+					font-size: 12px;
+					text-align: left;
+					margin-left: 10px;
+						}
+				.head{
+								margin-left:0px;
+					width: 200px;
+					height: 15px;
+					font-family: Courier;
+					border: 1px solid black;
+						}
+				.head_data{
+					margin-top: 20px;
+					margin-left: 120px;
+					font-family: Courier;
+
+				}
+				span{
+					font-family: Courier;
+						}
+				h6{
+					font-size:15px;
+						 text-align: right;
+						}
+	</style>
+                </xpath>
+				  <div class="container" style="margin-top:100px">
+            <div style="margin-left: 20px">
+                <img style="height: 130px;
+			                width: 390px;" src="/team_accounting/static/src/img/remove.png"/>
+            </div>
+        </div>
+
+                   <div class="container" style="font-size:13px; margin-top:40px;">
+
+		<div class="head_data" style="margin-left:362px">
+			<div class="head">
+				<span>
+					Permit No.
+				</span>
+			</div>
+			<div class="head">
+				<span>
+					Contact Person
+				</span>
+			</div>
+		</div>
+
+		<div class="head_data" style="margin-left: 460px;">
+			<div class="head" style="width: 330px; letter-spacing:5px; ">
+				<div t-if="o.name" style="text-transform:uppercase;">
+					<span>Invoice No.</span><span t-field="o.name"/>
+				</div>
+			</div>
+			<div class="head"  style="width: 120px;">
+				<span>
+			Page 1
+				</span>
+			</div>
+			<div class="head"  style="width: 120px;">
+				<span>
+
+				</span>
+			</div>
+		</div>
+	</div>
+                 <div class="container" style="font-size:13px; margin-top:40px;">
+		<div style="margin-left:0px;">
+				<div class="head">
+				<span>
+					SOLD TO
+				</span>
+			</div>
+			<div class="head">
+				<div t-foreach="o.partner_id" t-as="val">
+					<span t-esc="val.name"/>
+				</div>
+
+			</div>
+			<div class="head">
+				<div t-foreach="o.partner_id" t-as="val">
+					<span t-esc="val.street"/>
+				</div>
+			</div>
+			<div class="head">
+				<div t-foreach="o.partner_id.state_id" t-as="val">
+					<span t-esc="val.name"/>
+				</div>
+			</div>
+			<div class="head">
+				<div t-foreach="o.partner_id.country_id" t-as="val">
+					<span t-esc="val.name"/>
+				</div>
+			</div>
+		</div>
+
+		<div class="head_data" style="margin-left:235px">
+		<div class="head">
+				<span>
+					SHIP TO
+				</span>
+			</div>
+			<div class="head">
+				<span>
+					IXYS, LLC
+				</span>
+			</div>
+			<div class="head">
+				<span>
+					1590 Buckeye Dr.,
+				</span>
+			</div>
+			<div class="head">
+				<span>
+					Milpitas, California95035
+				</span>
+			</div>
+			<div class="head">
+				<span>
+					United States
+				</span>
+			</div>
+		</div>
+
+		<div class="head_data" style="margin-left: 370px;">
+			<div class="head" style="width: 120px;">
+				<span>
+					Invoice Date:
+				</span>
+			</div>
+			<div class="head"  style="width: 120px;">
+				<span>
+					Terms:
+				</span>
+			</div>
+			<div class="head"  style="width: 120px;">
+				<span>
+					Carrier Name:
+				</span>
+			</div>
+			<div class="head" style="width: 120px;">
+				<span>
+					Forwarder
+				</span>
+			</div>
+			<div class="head" style="width: 120px;">
+				<span>
+					Fit/Vessel
+				</span>
+			</div>
+			<div class="head" style="width: 120px;">
+				<span>
+					MAWB no.
+				</span>
+			</div>
+			<div class="head" style="width: 120px;">
+				<span>
+					HAWB no.
+				</span>
+			</div>
+			<div class="head" style="width: 120px;">
+				<span>
+					PO no.
+				</span>
+			</div>
+		</div>
+
+		<div class="head_data" style="margin-left: 5px;">
+			<div class="head" style="width: 150px;">
+				<t t-if="o.invoice_date">
+<!--					<span t-field="o.invoice_date.strftime('%m %d %Y')"/>-->
+					<span t-field="o.invoice_date" t-options='{"format": "MM DD YYYY"}'/>
+				</t>
+			</div>
+			<div class="head"  style="width: 190px;">
+<!--				<div t-if="o.invoice_payment_term_id is False">-->
+<!--&lt;!&ndash;					<span>No Data Available</span> &ndash;&gt;-->
+<!--					 No Data supplied: <t t-esc="time.strftime('%Y-%m-%d')"/>-->
+<!--				</div>-->
+<!--				<div t-if="o.invoice_payment_term_id is not False">-->
+<!--					<div t-field="o.invoice_payment_term_id.name"/>-->
+<!--&lt;!&ndash;						<span t-esc="val.name"/>&ndash;&gt;-->
+<!--&lt;!&ndash;					</div>&ndash;&gt;-->
+<!--				</div>-->
+				<t t-if="not o.invoice_payment_term_id">
+					<span>NO DATA</span>
+				</t>
+				<t t-elif="o.invoice_payment_term_id">
+					<div t-field="o.invoice_payment_term_id.name"/>
+				</t>
+				<t t-else="o.invoice_payment_term_id">
+					<span>NO DATA</span>
+				</t>
+			</div>
+			<div class="head"  style="width: 120px;">
+				<span>
+					&#160;
+				</span>
+			</div>
+			<div class="head" style="width: 120px;">
+				<span>
+					&#160;
+				</span>
+			</div>
+			<div class="head" style="width: 120px;">
+				<span>
+					&#160;
+				</span>
+			</div>
+			<div class="head" style="width: 120px;">
+				<span>
+					&#160;
+				</span>
+			</div>
+			<div class="head" style="width: 120px;">
+				<span>
+					&#160;
+				</span>
+			</div>
+			<div class="head" style="width: 120px;">
+				<span>
+					&#160;
+				</span>
+			</div>
+		</div>
+	</div>
+         			<span style="margin-left:0px; text-transform:uppercase;">Country of Origin : Philippines</span>
+                        <div class="container1" style="width: 1330px; border: none;">
+                            =================================================================================================================================================
+                        </div>
+                        <div class="container1" style="width: 1330px; border: none;">
+							<span>
+							<span style="margin-left:20px;">Item</span>
+							<span style="margin-left:30px;">J.O./R.O. No.</span>
+							<span style="margin-left:130px;">Device</span>
+							<span style="margin-left:120px;">Description</span>
+							<span style="margin-left:268px;">Quantity</span>
+							<span style="margin-left:30px;">U/M</span>
+							<span style="margin-left:30px;">Unit Price</span>
+							<span style="margin-left:30px;">Amount</span>
+							</span>
+                        </div>
+                        <div class="container1" style="width: 1330px; border: none;">
+                            =================================================================================================================================================
+                        </div>
+				  		<div class="container1" style="width: 930px; border: none;  text-transform:uppercase;">
+							<span>
+								<div class="container">
+									<div style="height:170px; width:65px; border:1px solid white;">
+										<div t-foreach="o.line_ids.account_id" t-as="val">
+											<span t-esc="val.id"/>
+										</div>
+									</div>
+									<div style="height:170px; width:240px; margin-left:3px; border:1px solid white;">
+										<div t-foreach="o.line_ids.account_id" t-as="val">
+											<span t-esc="val.name"/>
+										</div>
+									</div>
+									<div style="height:170px; width:190px; margin-left:10px; border:1px solid white;">
+										<div t-foreach="o.line_ids.product_id" t-as="val">
+											<span t-esc="val.name"/>
+										</div>
+									</div>
+									<div style="height:170px; width:368px; margin-left:10px; border:1px solid white;">
+										<div t-foreach="o.line_ids.product_id" t-as="val">
+											<span t-esc="val.name"/>
+										</div>
+									</div>
+									<div style="height:170px; width:92px; margin-left:5px; border:1px solid white;">
+										<div t-foreach="o.line_ids" t-as="val">
+											<span t-esc="val.quantity"/>
+										</div>
+									</div>
+									<div style="height:170px; width:52px; margin-left:35px; border:1px solid white;">
+										<div t-foreach="o.line_ids.product_uom_id" t-as="val">
+											<t t-if="val.name in val.name" >
+												<span t-field="val.name"/>
+											</t>
+										</div>
+									</div>
+									<div style="height:170px; width:88px; margin-left:97px; border:1px solid white;">
+<!--										<div t-foreach="o.line_ids" t-as="val">-->
+											<span t-esc="o.amount_untaxed" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+<!--										</div>-->
+									</div>
+									<div style="height:170px; width:88px; margin-left:35px; border:1px solid white;">
+<!--										<div t-foreach="o.line_ids.price_total" t-as="val">-->
+											<span t-esc="o.amount_total_signed" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+<!--										</div>-->
+									</div>
+								</div>
+							</span>
+                        </div>
+				 		<div class="container1" style="border: none; margin-left:1093px;">
+                            =======================
+                        </div>
+				 		<div class="container1" style="width: 930px; border: none;">
+							<span>
+								<div class="container">
+									<div style="width:65px; border:1px solid white;">
+									</div>
+									<div style="width:240px; margin-left:3px; border:1px solid white;  text-transform:uppercase;">
+
+										<span>Invoice Total</span>
+									</div>
+									<div style="width:190px; margin-left:10px; border:1px solid white;">
+
+									</div>
+									<div style="width:368px; margin-left:10px; border:1px solid white;">
+									</div>
+									<div style="width:92px; margin-left:5px; border:1px solid white;">
+										<t t-set="sum_of_row" t-value="0"/>
+											<t t-foreach="o.line_ids" t-as="val">
+												<t t-set="sum_of_row" t-value="sum_of_row+val.quantity"/>
+											</t>
+										<span t-esc="sum_of_row"/>
+									</div>
+									<div style="width:52px; margin-left:15px; border:1px solid white;">
+									</div>
+									<div style="width:88px; margin-left:37px; border:1px solid white;">
+										<span t-esc="o.currency_id.name"/><span t-esc="o.currency_id.symbol"/>
+									</div>
+									<div style="width:88px; margin-left:25px; border:1px solid white;">
+											<span t-esc="o.amount_total_signed" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+									</div>
+								</div>
+							</span>
+                        </div>
+				 		<div class="container1" style="border: none; margin-left:1093px;">
+                            =======================
+                        </div>
+				 <div style="text-align: center; width: 300px; height: 90px; border: 1px dashed; black; margin-top:30px; margin-left:500px;">
+					PLEASE NOTITY US IMMEDIATELY OF
+					DISCREPANCIES OR NON RECIEPT OF PRODUCTS
+					NO ADJUSTMENTS WILL BE MADE
+					BEYOND 30 DAYS OF SHIPMENTS.
+				 </div>
+				 <br/>
+				 <br/>
+				 <br/>
+        <div class="container">
+            <div style="margin-left: 20px">
+                <img style="height: 130px;
+			                width: 390px;" src="/team_accounting/static/src/img/remove.png"/>
+            </div>
+        </div>
+
+                   <div class="container" style="font-size:13px; margin-top:40px;">
+
+		<div class="head_data" style="margin-left:362px">
+			<div class="head">
+				<span>
+
+				</span>
+			</div>
+			<div class="head">
+				<span>
+
+				</span>
+			</div>
+		</div>
+
+		<div class="head_data" style="margin-left: 460px;">
+			<div class="head" style="width: 200px; letter-spacing:5px; ">
+
+
+			</div>
+			<div class="head"  style="width: 120px;">
+				<span>
+
+				</span>
+			</div>
+			<div class="head"  style="width: 170px;">
+				<span>
+					PACKING LIST/GATEPASS
+				</span>
+			</div>
+		</div>
+	</div>
+                 <div class="container" style="font-size:13px; margin-top:40px;">
+		<div style="margin-left:0px;">
+				<div class="head">
+				<span>
+
+				</span>
+			</div>
+			<div class="head">
+				<div t-foreach="o.partner_id" t-as="val">
+					SHIP TO: <span t-esc="val.name"/>
+				</div>
+
+			</div>
+			<div class="head">
+				<div t-foreach="o.partner_id" t-as="val" style="margin-left:70px">
+					<span t-esc="val.street"/>
+				</div>
+			</div>
+			<div class="head">
+				<div t-foreach="o.partner_id.state_id" t-as="val" style="margin-left:70px">
+					<span t-esc="val.name"/>
+				</div>
+			</div>
+			<div class="head">
+				<div t-foreach="o.partner_id.country_id" t-as="val" style="margin-left:70px">
+					<span t-esc="val.name"/>
+				</div>
+			</div>
+		</div>
+
+		<div class="head_data" style="margin-left:235px">
+		<div class="head">
+				<span>
+
+				</span>
+			</div>
+			<div class="head">
+				<span>
+
+				</span>
+			</div>
+			<div class="head">
+				<span>
+
+				</span>
+			</div>
+			<div class="head">
+				<span>
+
+				</span>
+			</div>
+			<div class="head">
+				<span>
+
+				</span>
+			</div>
+		</div>
+
+		<div class="head_data" style="margin-left: 370px;">
+			<div class="head" style="width: 160px;">
+				<span>
+					Invoice Reference:
+				</span>
+			</div>
+			<div class="head"  style="width: 160px;">
+				<span>
+					&#160;&#160;&#160;&#160;
+				</span>
+			</div>
+			<div class="head"  style="width: 160px;">
+				<span>
+					&#160;&#160;&#160;&#160;
+				</span>
+			</div>
+			<div class="head" style="width: 160px;">
+				<span>
+				</span>
+			</div>
+			<div class="head" style="width: 160px;">
+				<span>
+					Ship Date:
+				</span>
+			</div>
+			<div class="head" style="width: 160px;">
+				<span>
+					PO No.:
+				</span>
+			</div>
+			<div class="head" style="width: 160px;">
+				<span>
+
+				</span>
+			</div>
+			<div class="head" style="width: 160px;">
+				<span>
+				</span>
+			</div>
+		</div>
+
+		<div class="head_data" style="margin-left: 5px;">
+			<div class="head" style="width: 150px;">
+				<div t-if="o.name">
+					<span t-field="o.name"/>
+				</div>
+			<div class="head"  style="width: 190px;">
+				<span>Page 2</span>
+				</div>
+			</div>
+			<div class="head"  style="width: 150px;">
+				<span>
+				&#160;&#160;&#160;&#160;
+				</span>
+			</div>
+			<div class="head" style="width: 190px;">
+				<span>
+					<t t-if="o.invoice_date">
+						<span t-field="o.invoice_date" t-options='{"format": "MM DD,YYYY"}'/>
+					</t>
+				</span>
+			</div>
+			<div class="head" style="width: 120px;">
+				<span>
+
+				</span>
+			</div>
+			<div class="head" style="width: 120px;">
+				<span>
+
+				</span>
+			</div>
+			<div class="head" style="width: 120px;">
+				<span>
+
+				</span>
+			</div>
+			<div class="head" style="width: 120px;">
+				<span>
+
+				</span>
+			</div>
+		</div>
+	</div>
+<!--         			<span style="margin-left:0px;">In payment of the following:</span>-->
+                        <div class="container1" style="width: 1330px; border: none;">
+                            =================================================================================================================================================
+                        </div>
+                        <div class="container1" style="width: 1330px; border: none;">
+							<span>
+							<span style="margin-left:20px;">Item No.</span>
+							<span style="margin-left:30px;">J.O./R.O. No.</span>
+							<span style="margin-left:130px;">Device</span>
+							<span style="margin-left:120px;">Lot No.</span>
+							<span style="margin-left:268px;">Quantity</span>
+							<span style="margin-left:30px;"/>
+							<span style="margin-left:30px;"/>
+							<span style="margin-left:30px;">Case No.</span>
+							</span>
+                        </div>
+                        <div class="container1" style="width: 1330px; border: none;">
+                            =================================================================================================================================================
+                        </div>
+				  		<div class="container1" style="width: 930px; border: none;  text-transform:uppercase;">
+							<span>
+								<div class="container">
+									<div style="height:170px; width:65px; border:1px solid white;">
+										<div t-foreach="o.line_ids.product_id" t-as="val">
+											<span t-esc="val.id"/>
+										</div>
+									</div>
+									<div style="height:170px; width:240px; margin-left:3px; border:1px solid white;">
+										<div t-foreach="o.line_ids.product_id" t-as="val">
+<!--											<span t-esc="val.name"/>-->
+										</div>
+									</div>
+									<div style="height:170px; width:190px; margin-left:10px; border:1px solid white;">
+										<div t-foreach="o.line_ids.product_id" t-as="val">
+											<span t-esc="val.name"/>
+										</div>
+									</div>
+									<div style="height:170px; width:368px; margin-left:10px; border:1px solid white;">
+										<div t-foreach="o.line_ids.product_id" t-as="val">
+<!--											<span t-esc="val.name"/>-->
+										</div>
+									</div>
+									<div style="height:170px; width:92px; margin-left:5px; border:1px solid white;">
+										<div t-foreach="o.line_ids" t-as="val">
+											<span t-esc="val.quantity"/>
+										</div>
+									</div>
+									<div style="height:170px; width:52px; margin-left:15px; border:1px solid white;">
+										<div t-foreach="o.line_ids.product_uom_id" t-as="val">
+											<t t-if="val.name">
+<!--												<span t-field="val.name"/>-->
+											</t>
+										</div>
+									</div>
+									<div style="height:170px; width:88px; margin-left:37px; border:1px solid white;">
+<!--										<div t-foreach="o.line_ids" t-as="val">-->
+<!--											<span t-esc="o.amount_untaxed" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>-->
+<!--										</div>-->
+									</div>
+									<div style="height:170px; width:88px; margin-left:25px; border:1px solid white;">
+<!--										<div t-foreach="o.line_ids.price_total" t-as="val">-->
+<!--											<span t-esc="o.amount_total_signed" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>-->
+<!--										</div>-->
+									</div>
+								</div>
+							</span>
+                        </div>
+				 		<div class="container1" style="border: none; margin-left:1093px;">
+                        </div>
+				 		<div class="container1" style="width: 930px; border: none;">
+							<span>
+								<div class="container">
+									<div style="width:65px; border:1px solid white;">
+									</div>
+									<div style="width:350px; margin-left:3px; border:1px solid white;">
+										<t t-set="sum_of_row" t-value="0"/>
+											<t t-foreach="o.line_ids" t-as="val">
+												<t t-set="sum_of_row" t-value="sum_of_row+val.quantity"/>
+											</t>
+										<span>TOTAL QUANTITY = </span><span t-esc="sum_of_row"/>
+									</div>
+									<div style="width:360px; margin-left:50px; border:1px solid white;">
+										<span>TOTAL CARTONS =</span>
+									</div>
+									<div style="width:350px; margin-left:50x; border:1px solid white;">
+										<span>TOTAL WEIGHT (GROSS)</span>
+									</div>
+								</div>
+								<div class="container">
+									<div style="width:65px; border:1px solid white;">
+									</div>
+									<div style="width:350px; margin-left:3px; border:1px solid white;">
+										<span>Prepared by:   ________________________</span>
+										<h6 style="margin-left:150px">Shipping</h6>
+									</div>
+									<div style="width:360px; margin-left:50px; border:1px solid white;">
+										<span>Approved by:      ________________________</span>
+										<h6 style="margin-left:150px">Traffic Mgr.</h6>
+									</div>
+									<div style="width:380px; margin-left:50x; border:1px solid white;">
+										<span>Approved by:&#160;&#160;  ________________________</span>
+										<h6 style="margin-left:110px">Production/Marketing Mgr.</h6>
+									</div>
+								</div>
+								<div class="container">
+									<div style="width:65px; border:1px solid white;">
+									</div>
+									<div style="width:350px; margin-left:3px; border:1px solid white;">
+										<span>Checked by:     ________________________</span>
+										<h6 style="margin-left:150px">Security</h6>
+									</div>
+									<div style="width:360px; margin-left:50px; border:1px solid white;">
+										<span>Dispatched by: ________________________</span>
+										<h6 style="margin-left:150px">Security</h6>
+									</div>
+									<div style="width:350px; margin-left:50x; border:1px solid white;">
+										<span>Received by:   ________________________</span>
+										<h6 style="margin-left:110px">Sign Over Printed Name</h6>
+									</div>
+								</div>
+							</span>
+                        </div>
+             </t>
+        </template>
+
+         <template id="bill_report">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="lang" t-value="o.partner_id.lang"/>
+                    <t t-call="team_accounting.vendor_bills_report_template" t-lang="lang"/>
+                </t>
+            </t>
+        </template>
+
+
+    </data>
+</odoo>

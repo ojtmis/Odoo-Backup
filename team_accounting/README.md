@@ -1,0 +1,7 @@
+# team_accounting
+
+TEAM PACIFIC CORPORATION ACCOUNTING MODULE EXTENSION.
+
+DEVELOPED BY JOHN RAYMARK LLAVANES - 10450
+
+Team Pacific Accounting Module Extension (Odoo Accounting)

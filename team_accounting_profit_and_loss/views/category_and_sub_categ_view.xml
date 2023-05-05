@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="categ_view_form" model="ir.ui.view">
+            <field name="name">categ_view_form_name</field>
+            <field name="model">category</field>
+            <field name="arch" type="xml">
+                <form string="Category">
+                    <sheet>
+                        <group>
+                            <group>
+                                <!--                                <field name="code"/>-->
+                                <field name="is_category"/>
+                                <field name="is_pnl_or_bs" widget="radio" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Sub Category">
+                                <field name="connecton_sub_categ">
+                                    <tree editable="bottom">
+                                        <field name="sub_category" string="Sub Category"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field name="sub_category"/>
+                                            </group>
+                                            <group>
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                            <page string="Notes">
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="categ_view_tree" model="ir.ui.view">
+            <field name="name">categ_view_tree_name</field>
+            <field name="model">category</field>
+            <field name="arch" type="xml">
+                <tree string="Category Maintenance">
+                    <field name="is_category"/>
+                    <field name="is_pnl_or_bs" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

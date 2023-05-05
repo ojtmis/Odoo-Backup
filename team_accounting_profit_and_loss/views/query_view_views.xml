@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="qry_view_tree" model="ir.ui.view">
+            <field name="name">qry view tree</field>
+            <field name="model">query.view</field>
+            <field name="arch" type="xml">
+                <tree string="Team Profit and Loss" edit="false">
+                    <field name="code"/>
+                    <field name="debit"/>
+                    <field name="credit"/>
+                    <field name="internal_group"/>
+                    <field name="analytic_account"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="ModelName_form_inherit" model="ir.ui.view">
+            <field name="name">analytic.account.form</field>
+            <field name="model">account.analytic.account</field>
+            <field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='code']" position="after">
+<!--                    <button type="object" string="sample" name="fetch_data_from_function"/>-->
+                    <group invisible="1">
+                        <field name="compute_here"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

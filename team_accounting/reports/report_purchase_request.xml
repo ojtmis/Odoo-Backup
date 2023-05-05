@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_purchase_request_container">
+            <t t-call="web.internal_layout">
+                <t t-set="o" t-value="o.with_context(lang=lang)"/>
+                <xpath expr="//style" position="after">
+                    <style type="text/css">
+                        html * {
+                        font-family: Verdana,Geneva,sans-serif;
+                        font-size: 15px;
+                        }
+                        h5 {
+                        font-weight: normal;
+                        }
+                        h2 {
+                        font-size: 20px;
+                        font-weight: bold;
+                        }
+                        hr.solid {
+                        border-top: 2px solid black;
+                        }
+
+                        .table1 {
+                        border: 1px solid white;
+                        }
+
+                        .table2 td {
+                        border: 1px solid white;
+                        }
+
+                        .table3 th{
+                        border: 1px solid black ;
+                        }
+
+                        .table3 td{
+                        border: 1px solid black;
+                        padding-left: 3px;
+                        }
+
+                        .table3 tr{
+                        border: 1px solid black;
+                        }
+
+                        .table4, .table4 tr, .table4 th, .table4 td {
+                        border: 1px solid white;
+                        }
+
+                    </style>
+                </xpath>
+
+                <table class="table1" width="100%">
+                    <tr style="text-align: left;">
+                        <td colspan="7">
+                            <span>
+                                <img
+                                        style="height: 75px; float: left;"
+                                        src="/team_accounting/static/src/img/tpc_icon.png"
+                                />
+                            </span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="7">
+                            <hr style="width:100%; border-top: 2px solid #000000; padding: 0;"/>
+                        </td>
+                    </tr>
+
+                    <tr style="text-align:center; height: 35px;">
+                        <td colspan="7">&#160;</td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="7">
+                            <!-- Header -->
+                            <h2 style=" text-align: center">
+                                PURCHASE REQUISITION FORM
+                            </h2>
+                        </td>
+                    </tr>
+
+                    <tr style="text-align:center; height: 30px;">
+                        <td colspan="7">&#160;</td>
+                    </tr>
+
+                </table>
+
+                <table class="table2" width="100%">
+                    <tr style="text-align:left; ">
+                        <td style="font-weight: normal;">Date created:</td>
+                        <td style="font-weight: normal;">
+                            <u>
+                                <span t-field="o.ordering_date" t-options='{"widget": "date","format": "MM/dd/yyyy"}'/>
+                            </u>
+                        </td>
+                        <td></td>
+                        <td style="font-weight: normal;">PR #:</td>
+                        <td style="font-weight: normal; ">
+                            <u>
+                                <span t-esc="o.name"/>
+                            </u>
+                        </td>
+                    </tr>
+
+                    <tr style="text-align:left;">
+                        <td style="font-weight: normal;">Date needed:&#xD;Delivery date:</td>
+                        <td style="font-weight: normal;">
+                            <u>
+                                <h5 style="margin: 0; padding: 0;" t-field="o.date_end"
+                                    t-options='{"widget": "date","format": "MM/dd/yyyy"}'/>
+                                <h5 style="margin-top: 5px; padding: 0;" t-field="o.schedule_date"
+                                    t-options='{"widget": "date","format": "MM/dd/yyyy"}'/>
+                            </u>
+                        </td>
+                        <td></td>
+                        <td style="font-weight: normal; ">Vendor:</td>
+                        <td style="font-weight: normal;">
+                            <u>
+                                <span t-esc="o.vendor_id.name"/>
+                            </u>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="font-weight: normal; width: 140px;">&#160;</td>
+                        <td style="font-weight: normal; width: 350px;">
+                            &#160;
+                        </td>
+                        <td></td>
+                        <td style="font-weight: normal; width: 110px;">&#160;</td>
+                        <td style="font-weight: normal; width: 350px;">&#160;</td>
+                    </tr>
+
+                    <tr style="text-align:center; height: 50px;">
+                        <td colspan="5">&#160;</td>
+                    </tr>
+
+                </table>
+
+                <table class="table3" width="100%">
+                    <tr style="text-align:center; margin-left: 10px;">
+                        <th style="width:50px; font-weight:bold;">Line item</th>
+                        <th style="width:70px; font-weight:bold;">Product</th>
+                        <th style="width:200px; font-weight:bold;">Description</th>
+                        <th style="width:60px; font-weight:bold;">Qty</th>
+                        <th style="width:60px; font-weight:bold;">UOM</th>
+                        <th style="width:80px; font-weight:bold;">Unit Price</th>
+                        <th style="width:80px; font-weight:bold;">Amount</th>
+                    </tr>
+
+                    <t t-foreach="o.line_ids" t-as="val">
+                        <tr>
+                            <td>
+                                <span t-esc="val_index + 1"/>
+                            </td>
+
+                            <td>
+                                <span t-esc="val.product_id.default_code"/>
+                            </td>
+
+                            <td>
+                                <span t-esc="val.product_id.product_tmpl_id.description_purchase"/>
+                            </td>
+
+                            <td>
+                                <span t-esc="val.product_qty" t-options='{"widget": "integer"}'/>
+                            </td>
+
+                            <td>
+                                <span t-esc="val.product_uom_id.name"/>
+                            </td>
+
+                            <td>
+                                <t t-if="val.price_unit == 0">
+                                    <span>&#160;</span>
+                                </t>
+                                <t t-else="val.price_unit">
+                                    <span t-field="val.price_unit"
+                                          t-options='{"widget": "float", "precision": 2}'/>
+                                    <span t-field="o.currency_id.name"/>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="val.subtotal == 0">
+                                    <span>&#160;</span>
+                                </t>
+                                <t t-else="val.subtotal">
+                                    <span t-esc="val.subtotal" t-options='{"widget": "float", "precision": 2}'/>
+                                </t>
+                            </td>
+                        </tr>
+
+                    </t>
+
+                </table>
+
+                <table class="table4">
+                    <tr style="height: 50px;">
+                        <td>&#160;</td>
+                    </tr>
+                    <tr style="text-align: left; width: 120px;">
+                        <td>Justification/</td>
+                    </tr>
+                    <tr>
+                        <td>Remarks:</td>
+                        <td style="text-center: left; width: 300px;">
+                            <u>
+                                <span t-esc="o.justification"/>
+                            </u>
+                        </td>
+                    </tr>
+                    <tr style="height: 50px;">
+                        <td>&#160;</td>
+                    </tr>
+
+                    <tr>
+                        <td>Prepared by:</td>
+                        <td style="text-align: center; width: 220px;">
+                            <u>
+                                <span t-esc="o.user_id.name"/>
+                            </u>
+                        </td>
+                    </tr>
+
+                    <tr style="height: 50px;">
+                        <td>&#160;</td>
+                    </tr>
+
+                    <tr>
+                        <td>Approved by:</td>
+                        <t t-foreach="o.first_approver_id" t-as="val">
+                            <td style="text-align: center; width: 220px;">
+                                <u>
+                                    <span t-esc="val.name"/>
+                                </u>
+                                <h5 t-esc="o.job_title_1"/>
+                            </td>
+                        </t>
+
+
+                        <td width="200px;">
+                            &#160;
+                        </td>
+                        <t t-foreach="o.approver_id" t-as="val">
+                            <td style="text-align: center; width: 220px;">
+                                <u>
+                                    <span t-esc="val.name"/>
+                                </u>
+                                <h5 t-field="o.job_title_4"/>
+                            </td>
+                        </t>
+
+
+                        <td width="150px;">
+                            &#160;
+                        </td>
+                    </tr>
+
+                    <tr style="height: 50px;">
+                        <td>&#160;</td>
+                    </tr>
+
+                    <tr>
+                        <td>&#160;</td>
+                        <t t-foreach="o.second_approver_id" t-as="val">
+                            <td style="text-align: center; width: 220px;">
+                                <u>
+                                    <span t-esc="val.name"/>
+                                </u>
+                                <h5 t-esc="o.job_title_2"/>
+                            </td>
+                        </t>
+
+                        <td width="200px;">
+                            &#160;
+                        </td>
+
+                        <t t-foreach="o.third_approver_id" t-as="val">
+                            <td style="text-align: center; width: 220px;">
+                                <u>
+                                    <span t-esc="val.name"/>
+                                </u>
+                                <h5 t-esc="o.job_title_3"/>
+                            </td>
+                        </t>
+
+                    </tr>
+                </table>
+            </t>
+        </template>
+
+        <template id="pr_id">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="team_accounting.report_purchase_request_container"/>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>

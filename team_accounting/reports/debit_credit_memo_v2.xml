@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="debit_credit_report_container_v2">
+             <t t-call="web.internal_layout">
+                <t t-set="o" t-value="o.with_context(lang=lang)" />
+                <xpath expr="//style" position="after">
+                    <style type="text/css">
+				.container{
+						 margin-top:10px;
+                font-size:19px;
+                display: -webkit-box;
+                display: -webkit-flex;
+                font-size: 15px;
+                display: flex;
+                font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+                justify-content:normal;
+                text-align: left;
+                padding: 0px;
+<!--                text-transform: uppercase;-->
+                         .container1{
+				font-family: Courier;
+                font-size:19px;
+                display: -webkit-box; /* wkhtmltopdf uses this one */
+                display: -webkit-flex;
+                font-size: 19px;
+                display: flex;
+                -webkit-box-pack: center;
+                -webkit-justify-content: center;
+                justify-content: center;
+                justify-content:normal;
+                text-align: left;
+                padding: 0px;
+                text-transform: uppercase;
+						}
+                .dc{
+                    width: 165px;
+                    height: 25px;
+                    font-size:19px;
+                    display: block;
+                         border: 1px solid black;
+                }
+                .dc_report_dc{
+                    width: 200px;
+                    height: 25px;
+                    font-size:19px;
+                    border: 1px solid black;
+                    display: block;
+                }
+                img{
+                    width: 315px;
+                    height: 80px;
+                }
+
+                .wrapper {
+                    display: -webkit-box;
+                    display: -webkit-flex;
+                    font-size: 19px;
+                    display: flex;
+                    font-size:19px;
+                    justify-content:normal;
+                }
+                #first {
+                    width: 455px;
+                    height: 25px;
+                    font-size:19px;
+                    border: 1px solid black;
+                }
+                #second {
+                    width: 119px;
+                    height: 25px;
+                    font-size:19px;
+                    border: 1px solid black;
+                }
+                .header{
+                    text-align: center;
+                    margin-left: 2px;
+                    margin-right: 2px;
+                    margin-top: 5px;
+                    margin-bottom: 2px;
+                    height: 110px;
+                    width: 138px;
+                    font-size:19px;
+                    border: 1px solid black;
+                }
+                .items{
+                    width:170px;
+                    font-size:19px;
+                    height:25px;
+                    border: 1px solid black;
+                }
+	</style>
+                </xpath>
+<div class="container">
+	<img style="margin-left:350px; height:250; width: 500px;" src="/team_accounting/static/src/img/no_bg.png"/>
+</div>
+<div class="container" style="margin-bottom:50px; font-size:28px;">
+    <span style="margin-left:510px; font-size:28px;">DEBIT / CREDIT MEMO</span>
+</div>
+<div class="container">
+	<div style="display: block;">
+		<div class="dc" style=" border: 1px solid white;">
+			<span style='font-size:19px;'>Customer Code:</span>
+<!--                <span t-foreach="o.line_ids.partner_id" t-as="val">-->
+<!--                    <span t-esc="val.name"/>-->
+<!--                </span>-->
+		</div>
+	<div class="dc" style=" border: 1px solid white;">
+		<span style='font-size:19px;'>For:</span>
+		</div>
+    <div class="dc" style=" border: 1px solid white;">
+		&#160;
+		</div>
+	<div class="dc" style=" border: 1px solid white; font-size:19px;">
+		In the Amount of:
+		</div>
+	<div class="dc" style="border: 1px solid white;">
+		<div style="width:300px;"><span>&#160;</span></div>
+		</div>
+	</div>
+
+<!-- 2nd header -->
+	<div style="display: block; margin-left:30px;">
+	<div class="dc_report_dc" style="width:260px; border: 1px solid white;">
+		<t t-if="o.partner_id">
+					<div style='font-size:19px;' t-field="o.partner_id"/>
+				</t>
+		</div>
+	<div class="dc_report_dc" style="width:260px; border: 1px solid white;">
+		<t t-foreach="o.partner_id" t-as="val">
+                <span style='font-size:19px;'>
+                    <span t-esc="val.street"/>
+                    <span t-esc="val.city"/>
+                    <span t-esc="val.country_id.name"/>
+                </span>
+				</t>
+		</div>
+	<div class="dc_report_dc" style="width:260px; border: 1px solid white;">
+		 <span>&#160;</span>
+		</div>
+	<div class="dc_report_dc" style="width:260px; border: 1px solid white;">
+		 <span>&#160;</span>
+		</div>
+    </div>
+		<div style="display: block; margin-left:100px;">
+		<div class="dc" style='font-size:19px;'>
+		DM/CM no:
+		</div>
+	<div class="dc" style='font-size:19px;'>
+		Date:
+		</div>
+	<div class="dc" style='font-size:19px;'>
+		Terms:
+		</div>
+	<div class="dc" style='font-size:19px;'>
+		Due Date:
+		</div>
+
+	</div>
+
+<!-- 2nd header -->
+	<div style="display: block; margin-left:50px;">
+	<div class="dc_report_dc" style="width:200px; border: 1px solid white; font-size:19px;">
+        <span style='font-size:19px;' t-esc="o.name"/>
+		</div>
+	<div class="dc_report_dc" style="width:200px; border: 1px solid white; font-size:19px;">
+        <span t-esc="o.date.strftime('%m/%d/%Y')"/>
+		</div>
+	<div class="dc_report_dc" style="width:220px; border: 1px solid white; font-size:19px;">
+                <t style='font-size:19px;' t-if="not o.invoice_payment_term_id">
+					<span style='font-size:19px;' t-esc="o.invoice_date_due.strftime('%m/%d/%Y')"/>
+				</t>
+				<t t-elif="o.invoice_payment_term_id">
+					<div style='font-size:19px;' t-field="o.invoice_payment_term_id.name"/>
+				</t>
+		</div>
+	<div class="dc_report_dc" style="width:200px; border: 1px solid white; font-size:19px;">
+            <span style='font-size:19px;' t-esc="o.invoice_date_due.strftime('%m/%d/%Y')"/>
+		</div>
+    </div>
+    </div>
+            <div class="title" style="width:1260px;  border: 1px solid white;">
+               <span style='font-size:19px;'>To apply to the following: </span><span style='font-size:19px;' t-esc="o.word_move" />
+            </div>
+    <div class="container">
+        <div style="display: block;">
+            <div class="title" style="width:1260px;  border: 1px solid black;">
+                &#160;
+            </div>
+            <div class="title" style="width:1260px;  border: 1px solid black;">
+                &#160;
+            </div>
+        </div>
+    </div>
+    <div class="container">
+            <div class="title" style="width:808px;  border: 1px solid black; text-align:center; font-size:19px;">
+                PARTICULARS
+            </div>
+            <div class="title" style="width:450px;  border: 1px solid black; text-align:center; font-size:19px;">
+                AMOUNT
+            </div>
+	</div>
+    <div class="container">
+            <div class="title" style="width:808px; height:650px;  border: 1px solid black;">
+                <h6 style="text-transform:uppercase; margin-left:20px; font-size:19px;">To Debit your Account For:</h6>
+                <div>
+                    <span style="margin-left:20px; font-size:19px;">
+<!--                        <span></span>-->
+                        <t style='font-size:19px;' t-foreach="o.line_ids" t-as="val">
+                             <span style='font-size:19px;' t-esc="val.name" />,
+                        </t>
+                    </span>
+                    <span style="margin-left:20px">
+                        <br/>
+                        <br/>
+                        <span style='font-size:19px;'>AS PER ATTACHED DETAILS</span>
+                    </span>
+
+                     <span style="margin-left:20px; margin-top:60px;">
+                         <br/>
+                         <br/>
+                        <span style='font-size:19px;'>TOTAL AMOUNT = US$: </span><span style='font-size:19px;' t-esc="o.adding_usd_with_percent_value" t-options='{"widget": "float", "precision": 2}'/>
+                    </span>
+
+
+                </div>
+
+            </div>
+            <div class="title" style="width:450px; height:650px;  border: 1px solid black;">
+                <div style="margin-top:120px; margin-left:10px;">
+                        <h6>
+                        <span style='font-size:19px;'>USD: </span>
+                             <span style='font-size:19px;' t-esc="o.adding_usd_with_percent_value" t-options='{"widget": "float", "precision": 2}'/>
+                        </h6>
+                </div>
+            </div>
+	</div>
+<!--    <div class="container">-->
+<!--        <div style="display: block;">-->
+<!--            <div class="title" style="width:1028px; height:160px;  border: 1px solid white;">-->
+<!--                &#160;-->
+<!--            </div>-->
+<!--            <div class="title" style="width:1028px; height:160px;  border: 1px solid white;">-->
+<!--                &#160;-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+	<div class="container">
+		<div style="display: block;">
+            <div class="dc" style="width:1260px; height: 220px; border: 1px solid black;">
+                    <h6 style="margin-left:20px; font-size:19px;">GL ENTRY</h6>
+                <div class="container">
+                    <div  style="border: 1px solid white;
+                    text-align: center;
+                    margin-left: 10px;
+                    margin-right: 2px;
+                    margin-top: 5px;
+                    margin-bottom: 2px;
+                    height: 145px;
+                    width: 251px;
+                    border: 1px solid white;">
+                        <h6 style='font-size:19px;'>GL CODE</h6>
+                        <h6 style='font-size:19px;' t-foreach="o.line_ids" t-as="val">
+                            <h6 style='font-size:19px;' t-foreach="val.account_id" t-as="val2">
+                                <h6 style='font-size:19px;' t-esc="val2.code"/>
+                            </h6>
+                        </h6>
+                    </div>
+                    <div style="border: 1px solid white;
+                    text-align: center;
+                    margin-left: 10px;
+                    margin-right: 2px;
+                    margin-top: 5px;
+                    margin-bottom: 2px;
+                    height: 145px;
+                    width: 380px;
+                    border: 1px solid white;">
+                        <h6 style='font-size:19px;'>DESCRIPTION</h6>
+                        <h6 style='font-size:19px;' t-foreach="o.line_ids" t-as="val">
+                            <h6 style='font-size:19px;' t-foreach="val.account_id" t-as="val2">
+                                <h6 style='font-size:19px;' t-esc="val2.name"/>
+                            </h6>
+                        </h6>
+                    </div>
+                    <div  style="border: 1px solid white;
+                    text-align: center;
+                    margin-left: 10px;
+                    margin-right: 2px;
+                    margin-top: 5px;
+                    margin-bottom: 2px;
+                    height: 145px;
+                    width: 251px;
+                    border: 1px solid white;">
+                        <h6 style='font-size:19px;'>DEBIT</h6>
+                         <h6 style='font-size:19px;' t-foreach="o.line_ids" t-as="val">
+                             <t t-if="val.debit_data == 0">
+                                <span>&#160;</span>
+                            </t>
+                            <t style='font-size:19px;' t-else="val.debit_data">
+                                <h6 style='font-size:19px;' t-esc="val.debit_data" t-options='{"widget": "float", "precision": 2}'/>
+                            </t>
+<!--                            <t t-else="o.invoice_payment_term_id">-->
+<!--                                <span>NO DATA</span>-->
+<!--                            </t>-->
+<!--                                <h6 t-esc="val.debit"/>-->
+                        </h6>
+                        <span style='font-size:19px;' t-esc="o.adding_usd_with_percent_value" t-options='{"widget": "float", "precision": 2}'/>
+                    </div>
+                    <div style="border: 1px solid white;
+                    text-align: center;
+                    margin-left: 10px;
+                    margin-right: 2px;
+                    margin-top: 5px;
+                    margin-bottom: 2px;
+                    height: 145px;
+                    width: 251px;
+                    border: 1px solid white;">
+                        <h6 style='font-size:19px;'>CREDIT</h6>
+                          <h6 style='font-size:19px;' t-foreach="o.line_ids" t-as="val">
+                             <t style='font-size:19px;' t-if="val.credit_data == 0">
+                                <span>&#160;</span>
+                            </t>
+                            <t style='font-size:19px;' t-else="val.credit_data">
+                                <h6 style='font-size:19px;' t-esc="val.credit_data" t-options='{"widget": "float", "precision": 2}'/>
+                            </t>
+<!--                            <t t-else="o.invoice_payment_term_id">-->
+<!--                                <span>NO DATA</span>-->
+<!--                            </t>-->
+<!--                                <h6 t-esc="val.debit"/>-->
+                        </h6>
+                        <span style='font-size:19px;' t-esc="o.adding_usd_with_percent_value" t-options='{"widget": "float", "precision": 2}'/>
+                    </div>
+                </div>
+            </div>
+            <div style="display: block;">
+                <div class="dc" style="width:1260px; height: 150px; border: 1px solid black;">
+                    <div class="container">
+                    <div  style="border: 1px solid white;
+                    text-align: center;
+                    margin-left: 2px;
+                    margin-right: 2px;
+                    margin-top: 70px;
+                    margin-bottom: 2px;
+                    height: 145px;
+                    width: 251px;
+                    border: 1px solid white;">
+                    </div>
+                    <div style="border: 1px solid white;
+                    text-align: center;
+                    margin-left: 2px;
+                    margin-right: 2px;
+                    margin-top: 70px;
+                    margin-bottom: 2px;
+                    height: 145px;
+                    width: 251px;
+                    border: 1px solid white;">
+                        <h6 style='font-size:19px;'>PREPARED BY:</h6>
+                    </div>
+                    <div  style="border: 1px solid white;
+                    text-align: center;
+                    margin-left: 10px;
+                    margin-right: 2px;
+                    margin-top: 70px;
+                    margin-bottom: 2px;
+                    height: 145px;
+                    width: 251px;
+                    border: 1px solid white;">
+                        <h6 style='font-size:19px;'>CHECKED BY:</h6>
+                    </div>
+                    <div style="border: 1px solid white;
+                    text-align: center;
+                    margin-left: 10px;
+                    margin-right: 2px;
+                    margin-top: 70px;
+                    margin-bottom: 2px;
+                    height: 145px;
+                    width: 256px;
+                    border: 1px solid white;">
+                        <h6 style='font-size:19px;'>APPROVED BY:</h6>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+	</div>
+             </t>
+        </template>
+
+
+         <template id="debit_credit_report_id_v2">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="lang" t-value="o.partner_id.lang"/>
+                    <t t-call="team_accounting.debit_credit_report_container_v2" t-lang="lang"/>
+                </t>
+            </t>
+        </template>
+
+
+    </data>
+</odoo>

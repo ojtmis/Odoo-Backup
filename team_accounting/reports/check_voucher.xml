@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="check_voucher_container">
+             <t t-call="web.internal_layout">
+                <t t-set="o" t-value="o.with_context(lang=lang)" />
+                <xpath expr="//style" position="after">
+                <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                <link rel="preconnect" href="https://fonts.gstatic.com"/>
+                <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&amp;display=swap" rel="stylesheet"/>
+                    <style type="text/css">
+                    tr,th,td,table{
+                        border:solid white 1px;
+                        text-align: center;
+                        font-family: 'Courier Prime', monospace;
+                        font-weight:normal;
+                        font-size:14px;
+                    }
+                    .add_height{
+                        height: 230px;
+
+                    }
+                    .add_height2{
+                        height: 200px;
+
+                    }
+                    .add_height3{
+                        height: 250px;
+                    }
+                    .add_height4{
+                        height: 80px;
+                    }
+                    .add_height5{
+                        height: 10px;
+                    }
+                    img{
+                        height: 50px;
+                        width: 50px;
+                    }
+                    .logo{
+                        display: -webkit-box; /* wkhtmltopdf uses this one */
+                        display: -webkit-flex;
+                        align-items:center;
+                    }
+                    h6{
+                        font-weight:normal;
+                    }
+	                </style>
+                </xpath>
+                 <div class="logo">
+<!--                    <img src="/team_accounting/static/src/img/logo1.png"/>-->
+<!--                    <span style="font-style:italic; font-weight:bold;">&#160;Team Pacific Corporation</span>-->
+                     &#160;
+                </div>
+                	<table>
+                <tr>
+                    <td>&#160;</td>
+                    <td colspan="2">
+                        <t t-if="o.payment_date">
+                            <span t-esc="o.payment_date.strftime('%B %d,%Y')"/>
+                        </t>
+                    </td>
+                    <td colspan="4"/>
+                    <td>&#160;</td>
+                    <td colspan="2">&#160;</td>
+                </tr>
+                <tr>
+                    <th style="width: 80px;">&#160;</th>
+                    <th style="width: 80px;">&#160;</th>
+                    <th style="width: 80px;">&#160;</th>
+                    <th style="width: 80px;">&#160;</th>
+                    <th style="width: 90px;">&#160;</th>
+                    <th style="width: 80px;">&#160;</th>
+                    <th style="width: 80px;">&#160;</th>
+                    <th style="width: 80px;">&#160;</th>
+                    <th style="width: 80px;">&#160;</th>
+                    <th style="width: 90px;">&#160;</th>
+                </tr>
+                <tr>
+                    <td class="add_height">&#160;</td>
+                    <td class="add_height" >
+                        <t t-foreach="o.reconciled_invoice_ids" t-as="val" style="margin-top:50px;">
+                            <span t-esc="val.name" style="margin-top:50px;"/>
+                       </t>
+                    </td>
+                    <td class="add_height">
+                       <t t-foreach="o.reconciled_invoice_ids" t-as="val" style="margin-top:50px;">
+                            <span t-esc="val.ref" style="margin-top:50px;"/>
+                       </t>
+                    </td>
+                    <td class="add_height" style="vertical-align:center;">
+                        &#160;
+                    </td>
+                    <td class="add_height" style="margin-right: 5px;">
+                        <t t-if="o.to_php" style="margin-top:50px;">
+                            <span t-esc="o.to_php" t-options='{"widget": "float", "precision": 2}' style="margin-top:50px;"/>
+                        </t>
+                    </td>
+                    <td class="add_height">&#160;</td>
+                    <td class="add_height">&#160;</td>
+                    <td class="add_height">
+                        <t t-foreach="o.invoice_ids" t-as="val">
+<!--                            <span t-esc="val.name" />-->
+                       </t>
+                    </td>
+                    <td class="add_height">
+                        <t t-if="o.communication">
+<!--                            <span t-esc="o.communication"/>-->
+                        </t>
+                    </td>
+                    <td class="add_height">
+                        <t t-if="o.invoice_ids">
+<!--                            <span t-field="o.amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>&#160;-->
+                        </t>
+                        <t t-elif="o.invoice_ids">
+<!--                            <span t-field="o.amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>&#160;-->
+                        </t>
+                        <t t-else="not o.amount">&#160;
+<!--                            <span>&#160;</span>-->
+                        </t>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">&#160; &#160;</td>
+                    <td colspan="4" rowspan="2">&#160; &#160;</td>
+                    <td colspan="3">&#160;</td>
+                </tr>
+                <tr>
+                    <td colspan="2">&#160;</td>
+                    <td colspan="1">&#160;</td>
+                    <td colspan="2">&#160;</td>
+                    <td colspan="1">&#160;</td>
+                </tr>
+                <tr>
+                    <td class="add_height2" colspan="2">&#160;</td>
+                    <td class="add_height2" colspan="1">&#160;</td>
+                    <td colspan="4" rowspan="1" style="text-align:left;">
+                        <t t-foreach="o.move_line_ids.account_id" t-as="val" style="margin-top:25px;">
+                            <h6 t-esc="val.name"/>
+                        </t>
+                    </td>
+                    <td class="add_height2" colspan="2">
+                        <t t-foreach="o.move_line_ids" t-as="val" style="margin-top:25px;">
+                           <t t-if="val.debit == 0">
+                               <span>&#160;</span>
+                           </t>
+                            <t t-else="val.debit" style="margin-top:25px;">
+                                <h6 t-esc="val.debit" t-options='{"widget": "float", "precision": 2}'/>
+                            </t>
+                       </t>
+                    </td>
+                    <td class="add_height2" colspan="1">
+                        <t t-foreach="o.move_line_ids" t-as="val" style="margin-top:25px;">
+                           <t t-if="val.credit == 0">
+                               <span>&#160;</span>
+                           </t>
+                            <t t-else="val.credit" style="margin-top:25px;">
+                                <h6 t-esc="val.credit" t-options='{"widget": "float", "precision": 2}'/>
+                            </t>
+                        </t>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="add_height3" colspan="10" style="vertical-align:top;">
+                        <t t-foreach="o.invoice_ids.invoice_line_ids" t-as="val" style="vertical-align:top;">
+                            <span style="margin-left:50px;" t-esc="val.name"/><br/>
+                        </t>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="add_height4" colspan="2"/>
+                    <td class="add_height4" colspan="2"/>
+                    <td class="add_height4" colspan="4"/>
+                    <td class="add_height4" colspan="2"/>
+                </tr>
+                <tr>
+                    <td colspan="10" style="height:135px;"><span style="float:right; margin-right:125px;">&#160;</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2"/>
+                    <td colspan="2"/>
+                    <td colspan="3"/>
+                    <td colspan="3" style="vertical-align:top;"><span style="letter-spacing: 6px;">
+                        <t t-if="o.payment_date">
+                            <span style="letter-spacing: 6px; text-transform: uppercase;" t-esc="o.payment_date.strftime('%m&#160;&#160;&#160;%d&#160;&#160;&#160; %Y')"/>
+                        </t>
+                    </span></td>
+                </tr>
+                <tr>
+                    <td>&#160;</td>
+                    <td colspan="6" style="height:43px; vertical-align:bottom; font-size: 14px;"><span>
+                        <t t-if="o.partner_id" style="margin-bottom:15px;">
+                            <span t-field="o.partner_id.name" style="margin-bottom:15px;"/>
+                        </t>
+                    </span></td>
+                    <td colspan="3" style="height:43px; vertical-align:bottom;"><span>
+                        <t t-if="o.to_php" style="margin-top:25px;">
+                            <span  t-esc="o.to_php" t-options='{"widget": "float", "precision": 2}' style="margin-top:30px;"/>
+                        </t>
+                    </span></td>
+                </tr>
+                <tr>
+                    <td style="height:70px;">&#160;</td>
+                    <td colspan="9" style="text-align: left; height:70px; vertical-align: bottom; font-size: 14px;">
+                        <span>
+                            <t t-if="o.word_move" style="margin-top:30px; vertical-align: bottom;">
+                               <span style="letter-spacing: 2px; text-transform: uppercase; vertical-align: bottom;" t-field="o.word_move"/>
+                            </t>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+             </t>
+        </template>
+         <template id="check_voucher_id">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="lang" t-value="o.partner_id.lang"/>
+                    <t t-call="team_accounting.check_voucher_container" t-lang="lang"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

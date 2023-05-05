@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_move,account.move,model_account_move,,1,1,1,1
+access_account_payment,account.payment,model_account_payment,,1,1,1,1
+access_account_p_and_l,account.pandl,model_account_pandl,,1,1,1,1
+access_analytic_account,team.analytic.acc,model_team_analytic_acc,1,1,1,1

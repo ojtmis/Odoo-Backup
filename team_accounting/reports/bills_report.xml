@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="bill_report_template">
+            <t t-call="web.internal_layout">
+                <t t-set="o" t-value="o.with_context(lang=lang)" />
+                <xpath expr="//style" position="after">
+                    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                    <link rel="preconnect" href="https://fonts.gstatic.com"/>
+                    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&amp;display=swap" rel="stylesheet"/>
+                    <style type="text/css">
+                @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&amp;display=swap');
+                .container{
+                margin-top:10px;
+                font-size:13px;
+                display: -webkit-box;
+                display: -webkit-flex;
+                font-size: 15px;
+                font-family: 'Courier Prime', monospace;
+                display: flex;
+                -webkit-box-pack: center;
+                -webkit-justify-content: center;
+                justify-content: center;
+                justify-content:normal;
+                text-align: left;
+                padding: 0px;
+                text-transform: uppercase;
+            }
+            .container1{
+                font-size:13px;
+                display: -webkit-box; /* wkhtmltopdf uses this one */
+                display: -webkit-flex;
+                font-size: 15px;
+                display: flex;
+                font-family: 'Courier Prime', monospace;
+                -webkit-box-pack: center;
+                -webkit-justify-content: center;
+                justify-content: center;
+                justify-content:normal;
+                text-align: left;
+                padding: 0px;
+                text-transform: uppercase;
+            }
+            /*.data{
+                margin-left: 80px;
+            }*/
+            /*.titles{
+                height: 30px;
+                width: 110px;
+                border: none;
+            }
+            .titles-1{
+                margin-left: 70px;
+                height: 30px;
+                width: 110px;
+                border: none;
+            }*/
+            .label{
+                height: 30px;
+                width: 100px;
+                border: none;
+            }
+            .title{
+                height: 40px;
+                width: 85px;
+                border: none;
+            }
+            .title_head{
+                font-size:13px;
+                display: inline-block;
+                margin-right: 2px;
+            }
+            .data{
+                font-size:13px;
+                text-align: left;
+                width: 113px;
+                height: 40px;
+                border: none;
+            }
+            .data_output{
+                font-size:13px;
+                text-align: left;
+                width: 280px;
+                height: 40px;
+                border: none;
+            }
+            .title_head-1{
+                font-size:13px;
+                display: inline-block;
+                margin-right: 10px;
+                margin-left: 95px;
+            }
+            .title_head-2{
+                display: inline-block;
+                margin-right: 10px;
+                margin-left: 10px;
+                        font-size:13px;
+            }
+            .data_container{
+                text-align: left;
+                width: 130px;
+                height: 40px;
+                border: none;
+                        font-size:13px;
+
+            }
+            .data_container-1{
+                font-size:13px;
+                text-align: right;
+                width: 160px;
+                height: 40px;
+                border: none;
+            }
+            .title{
+
+            }
+            .line{
+                display: inline-block;
+            }
+            .data_display{
+                margin-left:45px;
+                margin-right:15px;
+                text-align:center;
+            }
+                </style>
+                </xpath>
+        <div class="container1">
+            <div style="border: 1px solid white;
+                font-size:13px;
+                text-align: center;
+                margin-left: 15px;
+                width: 250px;
+                height: 80px;
+                margin-bottom: 20px;
+                padding-left: 10px;
+                padding-right: 10px;
+                display: -webkit-box;
+                display: -webkit-flex;
+
+                -webkit-box-pack: center;
+                -webkit-justify-content: center;
+                justify-content: center;
+                padding: 0px;
+                text-transform: uppercase;">
+                <center>
+                    <span style="font-size:13px;">
+                        TEAM PACIFIC CORPORATION <br/>
+                            AP VOUCHER
+                    </span>
+                </center>
+            </div>
+        </div>
+        <div class="container">
+            <div class="title_head">
+            <div class="title"><span>APV No.:</span></div>
+            <div class="title"><span></span></div>
+            <div class="title"  style="border: 1px solid white;">
+            </div>
+            <div class="title"><span>Currency</span></div>
+        </div>
+        <div class="title_head">
+            <div class="data">
+                <div>
+                    <span t-esc="o.name"/>
+                </div>
+            </div>
+            <div class="data"><span>Payee</span></div>
+            <div class="data"><span>Address</span></div>
+            <div class="data">
+                <span t-esc="o.currency_id.name"/>
+            </div>
+        </div>
+        <div class="title_head">
+            <div class="data_output"  style="border: 1px solid white; ">
+            </div>
+            <div class="data_output">
+                <div style="font-size:13px;" t-if='o.partner_id'>
+                    <span t-field='o.partner_id'/>
+                </div>
+            </div>
+            <div class="data_output"  style="border: 1px solid white; ">
+            </div>
+            <div class="data_output">
+                <span>INV/REF#
+                <span t-esc="o.ref"/></span>
+                <br/>
+            </div>
+        </div>
+        <div class="title_head-1">
+            <div class="data_container"><span style="vertical-align:bottom;">VP DATE</span></div>
+            <div class="data_container"><span>TIN</span></div>
+            <div class="data_container"><span>TRAN/INVOICE DATE</span></div>
+            <div class="data_container"><span>DUE DATE</span></div>
+        </div>
+        <div class="title_head-2">
+            <div class="data_container-1">
+                 <span t-esc="o.date.strftime('%m/%d/%Y')"/>
+            </div>
+            <div class="data_container-1">
+                <span></span>
+            </div>
+            <div class="data_container-1">
+                <span t-esc="o.invoice_date.strftime('%m/%d/%Y')"/>
+            </div>
+            <div class="data_container-1">
+                <span t-esc="o.invoice_date_due.strftime('%m/%d/%Y')"/>
+            </div>
+        </div>
+        </div>
+	        <div style="width: 280px;
+				height: 40px;
+				border: 1px solid white;
+				z-index:1;
+				margin-left: 220px;">
+                  <span>Terms: <span t-esc="o.invoice_payment_term_id.name"/></span>
+	        </div>
+        <span style="margin-left:0px;">In payment of the following:</span>
+                <div class="container1" style="width: 650px; border: none;">
+                    ====================================================================================================================================================
+                </div>
+                <div class="container1" style="width: 650px; border: none;">
+							<span style="margin-left:300px">PARTICULARS / DESCRIPTION</span>
+                </div>
+                <div class="container1" style="width: 750px; border: none;">
+                    ==========================================================================================================================================
+                </div>
+        <div class="container">
+                <div t-foreach="o.invoice_line_ids" t-as="val">
+                    <t t-if="val.name in val.name">
+                        <span style="width:200px; height:30px" t-field="val.name"/>&#160;&#160;
+                    </t>
+                    <t t-else="not in val.name">
+                        <span>No Data</span>
+                    </t>
+<!--                    <t t-if="val.name">-->
+<!--                        <span style="width:200px; height:30px" t-esc="val.quantity"/>&#160;&#160;-->
+<!--                    </t>-->
+<!--                    <t t-else="not in val.name">-->
+<!--                        <span>No Data</span>-->
+<!--                    </t>-->
+<!--                    <t t-if="val.product_uom_id">-->
+<!--                        <span style="width:200px; height:30px" t-esc="val.product_uom_id"/>-->
+<!--                    </t>-->
+<!--                    <t t-else="not in val.product_uom_id">-->
+<!--                        <span>No Data</span>-->
+<!--                    </t>-->
+                    <br/>
+                </div>
+        </div>
+                    <!-- This is for Description -->
+                <div style="margin-top:250px">
+                <div class="container1" style="width: 650px; border: none;">
+                    ====================================================================================================================================================
+                </div>
+            <div class="container1" style="width: 650px; border: none; margin-left:100px ">
+                <span class="data_display">G/L Code&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span>|
+                <span class="data_display">Description</span>|
+                <span class="data_display">Debit</span>|
+                <span class="data_display">Credit</span>
+            </div>
+                <div class="container1" style="width: 750px; border: none;">
+                    ==========================================================================================================================================
+                </div>
+                    <!-- This is for Data in Middle Section -->
+            <div class="container1" style="width: 520px; border:none; margin-left: 20px; margin-right: 20px;">
+                <div style="width:180px; height: 320px; border: 1px solid white; margin-left: 40px;">
+                    <div style="width:180px; height: 320px; border: 1px solid white; margin-left: 100px;">
+                        <div style="margin-left: 110px;" t-foreach="o.line_ids.account_id" t-as="val">
+                            <span t-esc="val.code"/>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:180px; height: 320px; border: 1px solid white; margin-left: 100px;">
+                    <div style="width:190px; height: 320px; border: 1px solid white; margin-left: 100px;">
+                        <div style="margin-left: 30px;" t-foreach="o.line_ids.account_id" t-as="val">
+                            <span t-esc="val.name"/>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:200px; height: 320px; border: 1px solid white; margin-left: 140px;">
+                    <div t-foreach="o.line_ids" t-as="val">
+                        <t t-if="val.debit == 0">
+                            <span>&#160;</span>
+                        </t>
+                        <t t-else="val.debit">
+                            <h6 t-esc="val.debit" t-options='{"widget": "float", "precision": 2}'/>
+                        </t>
+                    </div>
+                    <h6 t-esc="o.get_total_in_deb_cred" t-options='{"widget": "float", "precision": 2}'/>
+                </div>
+                <div style="width:170px; height: 320px; border: 1px solid white; margin-left: 50px;">
+                    <div t-foreach="o.line_ids" t-as="val">
+                        <t t-if="val.credit == 0">
+                            <span>&#160;</span>
+                        </t>
+                        <t t-else="val.credit">
+                            <h6 t-esc="val.credit" t-options='{"widget": "float", "precision": 2}'/>
+                        </t>
+                    </div>
+                    <span>&#160;</span>
+                    <h6 t-esc="o.get_total_in_deb_cred" t-options='{"widget": "float", "precision": 2}'/>
+                </div>
+            </div>
+
+                    <!-- New -->
+
+                    <div class="container1" style="width: 750px; border: none;">
+                    =========================================================================================================================================
+                    </div>
+            <div class="container1" style="width: 750px; border:none; margin-left: 20px; margin-right: 20px;">
+                    <div style="width:150px;border: 1px solid white; margin-left: 40px;">
+                        <div style="width:200px;border: 1px solid white; margin-left: 10px; text-align:left;">
+                            <span style="float-left">ACCTS PAYABLE SECTION</span>
+                        </div>
+                    </div>
+                    <div style="width:150px;border: 1px solid white; margin-left: 85px;">
+                        <span>PREPARED BY:</span>
+                    </div>
+
+                    <div style="width:150px;border: 1px solid white; margin-left: 70px;">
+                        <span>REVIEWED BY:</span>
+                    </div>
+                    <div style="width:150px;border: 1px solid white; margin-left: 60px;">
+                        <span>POSTED BY:</span>
+                    </div>
+            </div>
+            <div class="container1" style="width: 750px; border:none; margin-left: 20px; margin-right: 20px;">
+                <div style="width:150px; border: 1px solid white; margin-left: 40px;">
+                    <div style="width:150px;border: 1px solid white; margin-left: 75px; margin-top:5px;">
+                                       <span>&#160;</span>
+                    </div>
+                </div>
+                <div style="width:150px; border: 1px solid white; margin-left: 80px; margin-top:15px;">
+                                        <span style="margin-left: 20px;
+border-bottom: 1px solid black; padding-bottom: 2px; ">&#160;&#160;&#160;&#160;JNG&#160;&#160;&#160;&#160;</span><br/>
+                </div>
+                <div style="width:150px; border: 1px solid white; margin-left: 80px; margin-top:15px;">
+                                        <span style="border-bottom: 1px black solid; padding-bottom: 2px;">&#160;&#160;&#160;&#160;OVM&#160;&#160;&#160;&#160;&#160;&#160;</span><br/>
+                </div>
+                <div style="width:150px; border: 1px solid white; margin-left: 20px; margin-top:15px;">
+                    <span style="margin-left: 16px;border-bottom: 1px black solid; padding-bottom: 2px;">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</span>
+                </div>
+            </div>
+                    </div>
+                <!-- Div end here -->
+            </t>
+        </template>
+
+
+        <template id="bill_report_container">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="lang" t-value="o.partner_id.lang"/>
+                    <t t-call="team_accounting.bill_report_template" t-lang="lang"/>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>

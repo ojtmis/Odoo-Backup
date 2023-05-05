@@ -1,0 +1,72 @@
+<templates>
+    <t t-name="SaleCust">
+        <div>
+            <div>
+                <br/>
+                <h3>
+                    Profit and Loss
+                </h3>
+            </div>
+            <div>
+                <div class="filter_view_tb"/>
+            </div>
+            <br/>
+            <div>
+                <div class="table_view"/>
+            </div>
+        </div>
+    </t>
+    <t t-name="SaleTable">
+        <div>
+            <div class="table_main_view">
+                <div style="float-left">
+                    <td>
+                        <button type="button" class="btn btn-primary" id="print_report_button"
+                                style="position: relative;height:30px;color:white;background-color: #00A0AD;border-color: #00A0AD; padding:3px;">
+                            Print (PDF)
+                        </button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger" id="test1"
+                                style="position: relative;height:30px;color:white;background-color: #00A0AD;border-color: #00A0AD; padding:3px;">
+                            Print (XLSX)
+                        </button>
+                    </td>
+                </div>
+                <br/>
+                <table cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Debit</th>
+                            <th>Credit</th>
+                            <th>Balance</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="report_lines" t-as="data">
+                            <tr style="border: 1px solid black;">
+                                <td style="border: 0px solid black;">
+                                    <t t-esc="data['code']"/>
+                                </td>
+                                <td>
+                                    <t t-esc="data['debit']"/>
+                                </td>
+                                <td>
+                                    <t t-esc="data['credit']"/>
+                                </td>
+                                <td>
+                                    <t t-esc="data['balance']"/>
+                                </td>
+                                <td>
+                                    <t t-esc="data['internal_group']"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="new_debit_credit_memo_report_container">
+             <t t-call="web.internal_layout">
+                <t t-set="o" t-value="o.with_context(lang=lang)" />
+                <xpath expr="//style" position="after">
+                     <style type="text/css">
+                        tr{
+							border: 1px dashed black;
+							font-weight: normal;
+							font-size:15px;
+                        }
+                        .no_color{
+                            border: 1px dashed white;
+                        }
+						table{
+						    font-size:15px;
+						}
+						 h6{
+						 	font-size:15px;
+						 }
+						 th{
+						 	font-weight:normal;
+						 }
+					</style>
+                </xpath>
+                 	<table>
+		<tr>
+            <td  colspan="5" style="text-align: center;">
+                <img src="/team_accounting/static/src/img/no_bg.png"/>
+            </td>
+		</tr>
+		<tr>
+			<td colspan="5" style="text-align: center; letter-spacing: 2px; font-weight:bold; height: 40px; font-size: 20px; vertical-align:top; text-top;"><span>DEBIT / CREDIT MEMO</span></td>
+		</tr>
+		<tr>
+			<th style="width:200px; text-align: left; font-weight: normal;">
+			Customer Code:
+			</th>
+			<th  style='width: 250px; text-align: left; font-weight: normal;'>
+                <t t-if="o.partner_id">
+					<span t-field="o.partner_id"/>
+				</t>
+            </th>
+			<th  style="width: 130px; text-align: left; font-weight: normal;">
+				DM/CM No.:
+			</th>
+			<th  style='width: 300px; text-align: right; font-weight: normal;'>
+				<span t-esc="o.name"/>
+			</th>
+		</tr>
+		<tr>
+			<td  style="width:130px; text-align: left; ">
+			For:
+			</td>
+			<td  style='width: 300px; text-align: left;'>
+                <t t-foreach="o.partner_id" t-as="val">
+                    <span t-esc="val.street"/>
+				</t>
+            </td>
+			<td  style="width: 130px; text-align: left;">
+				Date:
+			</td>
+			<td  style='width: 300px; text-align: right;'>
+				<span t-esc="o.date.strftime('%m/%d/%Y')"/>
+			</td>
+		</tr>
+		<tr>
+			<td  style="width:130px; text-align: left;">
+			&#160;
+			</td>
+			<td  style='width: 300px;'>
+                <t t-foreach="o.partner_id" t-as="val">
+                    <span t-esc="val.city"/>
+				</t>
+            </td>
+			<td  style="width: 130px; text-align: left;">
+				Terms:
+			</td>
+			<td  style='width: 300px; text-align: right;'>
+				<t t-if="not o.invoice_payment_term_id">
+					<span t-esc="o.invoice_date_due.strftime('%m/%d/%Y')"/>
+				</t>
+				<t t-elif="o.invoice_payment_term_id">
+					<div t-field="o.invoice_payment_term_id.name"/>
+				</t>
+			</td>
+		</tr>
+		<tr>
+			<td  style="width:130px; text-align: left;">
+			&#160;
+			</td>
+			<td  style='width: 300px;'>
+                <t t-foreach="o.partner_id" t-as="val">
+                    <span t-esc="val.country_id.name"/>
+				</t>
+            </td>
+			<td  style="width: 130px; text-align: left;">
+				Due Date:
+			</td>
+			<td  style='width: 300px; text-align: right;'>
+				<span t-esc="o.invoice_date_due.strftime('%m/%d/%Y')"/>
+			</td>
+		</tr>
+		<tr>
+			<td  style="width:130px; text-align: left;">
+			In the Amount of:
+			</td>
+			<td  style='width: 300px;'>&#160;</td>
+			<td  style="width: 130px; text-align: left;">
+				&#160;
+			</td>
+			<td  style='width: 300px;'>
+				&#160;
+			</td>
+		</tr>
+		<tr>
+			<td  style="width:130px; text-align: left;">
+			To apply to the following:
+			</td>
+			<td  style='width: 300px;'>&#160;</td>
+			<td  style="width: 130px; text-align: left;">
+
+			</td>
+			<td  style='width: 300px;  border-left: none;'>
+				&#160;
+			</td>
+		</tr>
+                  </table>
+                  <table style="border: 1px dashed black">
+		<tr style="border-top: 1px dashed black;">
+			<tr>
+                <th style="width:200px; text-align: left;">
+                &#160;
+                </th>
+                <th  style='width: 250px; text-align: left;'>&#160;</th>
+                <th  style="width: 130px; text-align: left;">
+                    &#160;
+                </th>
+                <th  style='width: 400px; text-align: right;'>
+                    &#160;
+                </th>
+		    </tr>
+		</tr>
+		<tr style="border: 1px dashed black">
+			<td  colspan="5" style="height: 30px; border: 1px dashed black"/>
+		</tr>
+		<tr>
+			<td colspan="5" style="height: 30px; border: 1px dashed black"/>
+		</tr>
+
+
+		<tr>
+			<td colspan="3" style="height: 30px; letter-spacing: 2px; text-align:center; border: 1px dashed black">PARTICULARS</td>
+			<td colspan="2" style="height: 30px; letter-spacing: 2px; text-align: center; border: 1px dashed black">AMOUNT</td>
+		</tr>
+		<tr>
+			<td colspan="3" style="height: 430px; vertical-align:top; border: 1px dashed black">
+					<span >TO DEBIT YOUR ACCOUNT FOR:</span><br/>
+					<span>
+						 <t t-foreach="o.line_ids" t-as="val">
+                             <span t-esc="val.name" />,
+                        </t>
+					</span>
+				<div style="width: 95%; height: 80%; border: 1px dashed white; margin: auto;">
+					<div style="margin-left: 90px; margin-top: 20px;">
+						<table >
+							<tr>
+								<th style="width:250px; text-align:center; font-weight: normal;">
+								AMOUNT PHP
+								</th>
+								<th style="width:120px; text-align:left; font-weight: normal;">
+									: <span t-esc="o.forex_and_amm_val" t-options='{"widget": "float", "precision": 2}' />
+								</th>
+							</tr>
+							<tr>
+								<td class="no_color" style="text-align:center;">
+								FOREX RATE
+								</td>
+								<td class="no_color">
+									: <span t-esc="o.saving_forex_php_value" />
+								</td>
+							</tr>
+							<tr>
+								<td class="no_color" colspan="2" style="text-align:right;">-----------------------------</td>
+							</tr>
+							<tr>
+								<td class="no_color" style="text-align:center;">
+								AMOUNT USD
+								</td>
+								<td class="no_color">
+									: <span t-esc="o.deduct_value" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+							<tr>
+								<td class="no_color" style="text-align:center;">
+								ADD : 5% PROCESSING FEE
+								</td>
+								<td class="no_color">
+									: <span t-esc="o.add_percent" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+							<tr>
+								<td class="no_color" colspan="2" style="text-align:right;">-----------------------------</td>
+							</tr>
+                            <tr>
+								<td class="no_color" style="text-align:center;">
+								TOTAL US$
+								</td>
+								<td class="no_color">
+									: <span t-esc="o.adding_usd_with_percent_value" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+
+					</div>
+					<div style="vertical-align: bottom; margin-top:58px;">
+							<span>AMOUNT: </span><span t-esc="o.word_move" />
+					</div>
+				</div>
+			</td>
+			<td colspan="2" style="height: 430px; text-align: center;">
+				<div style="vertical-align: bottom; margin-top:182px;">
+							<span>USD: </span><span t-esc="o.adding_usd_with_percent_value" t-options='{"widget": "float", "precision": 2}'/>
+				</div>
+			</td>
+		</tr>
+	</table>
+	<table style="border: 1px dashed black">
+		<tr style="">
+			<td colspan="4" style="">
+				<span>GL ENTRY</span>
+			</td>
+		</tr>
+		<tr style="">
+			<th  style="width:232px;  text-align: center;">
+				<div style="text-align:center;">
+					<span>GL CODE</span><br/><br/>
+				<span t-foreach="o.line_ids" t-as="val" style="text-align:center; vertical-align:top;">
+                            <span t-foreach="val.account_id" t-as="val2">
+                                <span t-esc="val2.code"/><br/>
+							</span>
+				</span>
+				</div><br/>
+				<span>&#160;</span>
+			</th>
+			<th  style="width:232px;  text-align: center;">
+				<div style="text-align:center;">
+					<span>DESCRIPTION</span><br/><br/>
+					<span t-foreach="o.line_ids" t-as="val" style="text-align:center;">
+                            <span t-foreach="val.account_id" t-as="val2">
+                                <span t-esc="val2.name"/><br/>
+                            </span>
+                	</span>
+				</div><br/>
+				<span>&#160;</span>
+			</th>
+			<th  style="width:232px;  text-align: center;">
+				<div style="text-align:center;">
+					<span>DEBIT</span><br/><br/>
+					<span t-foreach="o.line_ids" t-as="val" style="text-align:center;">
+					<t t-if="val.debit_data == 0">
+						<span>&#160;</span><br/>
+					</t>
+					<t t-else="val.debit_data">
+						<span t-esc="val.debit_data" t-options='{"widget": "float", "precision": 2}'/><br/>
+					</t>
+				</span>
+				</div><br/>
+				<span><span t-esc="o.adding_usd_with_percent_value" t-options='{"widget": "float", "precision": 2}'/></span>
+			</th>
+			<th  style="width:237px;  text-align: center;">
+				<div style="text-align:center;">
+					<span>CREDIT</span><br/><br/>
+					<span t-foreach="o.line_ids" t-as="val" style="text-align:center;">
+					<t t-if="val.credit_data == 0">
+						<span>&#160;</span><br/>
+					</t>
+					<t t-else="val.credit_data">
+						<span t-esc="val.credit_data" t-options='{"widget": "float", "precision": 2}'/><br/>
+					</t>
+				</span>
+				</div><br/>
+				<span><span t-esc="o.adding_usd_with_percent_value" t-options='{"widget": "float", "precision": 2}'/></span>
+			</th>
+		</tr>
+	</table>
+	<table style="border: 1px dashed black">
+		<tr>
+			<th style="width: 311px; height:100px; vertical-align: bottom; text-align:center;">
+				PREPARED BY
+			</th>
+			<th style="width: 312px; height:100px; vertical-align: bottom; text-align:center;">
+				CHECKED BY
+			</th>
+			<th style="width: 312px; height:100px; vertical-align: bottom; text-align:center;">
+				APPROVED BY
+			</th>
+		</tr>
+	</table>
+             </t>
+        </template>
+
+
+         <template id="new_debit_credit_memo_report_id">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="lang" t-value="o.partner_id.lang"/>
+                    <t t-call="team_accounting.new_debit_credit_memo_report_container" t-lang="lang"/>
+                </t>
+            </t>
+        </template>
+
+
+    </data>
+</odoo>

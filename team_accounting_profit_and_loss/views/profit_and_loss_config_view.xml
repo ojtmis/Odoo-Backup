@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="config_category_view_tree" model="ir.ui.view">
+            <field name="name">config_category_view_tree</field>
+            <field name="model">setting.category</field>
+            <field name="arch" type="xml">
+                <tree string="Setting Category">
+                    <field name="is_category"/>
+                    <field name="is_pnl_or_bs" widget="radio"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="config_category_view_form" model="ir.ui.view">
+            <field name="name">config_category_view_form</field>
+            <field name="model">setting.category</field>
+            <field name="arch" type="xml">
+                <form string="Setting Category">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="is_category"/>
+                                <!--                                <field name="code"/>-->
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="is_pnl_or_bs" widget="radio"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="config_subcategory_view_tree" model="ir.ui.view">
+            <field name="name">config_category_view_tree</field>
+            <field name="model">setting.subcategory</field>
+            <field name="arch" type="xml">
+                <tree string="Sub Category">
+                    <field name="is_sub_category"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="config_subcategory_view_form" model="ir.ui.view">
+            <field name="name">config_category_view_form</field>
+            <field name="model">setting.subcategory</field>
+            <field name="arch" type="xml">
+                <form string="Sub Category">
+                    <sheet>
+                        <group>
+                            <field name="is_sub_category"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="main_category_view_tree" model="ir.ui.view">
+            <field name="name">main_category_view_tree</field>
+            <field name="model">main.category</field>
+            <field name="arch" type="xml">
+                <tree string="Main Category">
+                    <field name="is_main"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="main_category_view_form" model="ir.ui.view">
+            <field name="name">main_category_view_form</field>
+            <field name="model">main.category</field>
+            <field name="arch" type="xml">
+                <form string="Main Category">
+                    <sheet>
+                        <group>
+                            <field name="is_main"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

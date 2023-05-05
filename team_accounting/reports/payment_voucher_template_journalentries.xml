@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="payment_voucher_signed_journal_entries">
+            <t t-call="web.internal_layout">
+                <t t-set="o" t-value="o.with_context(lang=lang)"/>
+                <xpath expr="//style" position="after">
+                    <style type="text/css">
+                        body{
+                        font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+                        font-size: 12px;
+                        }
+                        tr,th,td{
+                        text-align: center;
+                        border: 1px solid white;
+                        width: 150px;
+                        font-weight:normal;
+                        text-align:center;
+                        }
+                        .td-first{
+                        height: 170px;
+                        }
+                        .td-second{
+                        height: 130px;
+                        }
+                        .td-third{
+                        height: 150px;
+                        }
+                        .td-fourth{
+                        height: 60px;
+                        }
+                    </style>
+                </xpath>
+                <table>
+                    <tr>
+                        <th>DATE</th>
+                        <th colspan="3">
+                            <span t-esc="o.date.strftime('%B %d,%Y')"/>
+                        </th>
+                        <th colspan="7"/>
+                    </tr>
+                    <tr>
+                        <th>INV DATE</th>
+                        <th>RCP#</th>
+                        <th>PV#</th>
+                        <th>PO#</th>
+                        <th>INVOICE</th>
+                        <th>Amount</th>
+                        <th>INV DATE</th>
+                        <th>RCP#</th>
+                        <th>PV#</th>
+                        <th>PO#</th>
+                        <th>Amount</th>
+                    </tr>
+                    <tr>
+                        <td class="td-first"/>
+                        <td class="td-first"/>
+                        <td class="td-first">
+                            <div t-foreach="o.line_ids" t-as="val">
+                                <!--                                    <h6 style="font-size: 12px;" t-esc="val.name"/>-->
+                            </div>
+                        </td>
+                        <td class="td-first">
+                            <div t-foreach="o.line_ids" t-as="val">
+                                <!--                                    <h6 style="font-size: 12px;" t-esc="val.ref"/>-->
+                            </div>
+                        </td>
+                        <td class="td-first"/>
+                        <td class="td-first">
+                            <t t-if="o.amount_total_signed">
+                                <span t-esc="o.amount_total_signed" t-options='{"widget": "float", "precision": 2}'/>
+                            </t>
+                            <t t-elif="o.amount_total_signed">
+                                <span t-esc="o.amount_total_signed" t-options='{"widget": "float", "precision": 2}'/>
+                            </t>
+                            <t t-else="not o.amount_total_signed">
+                                <span>&#160;</span>
+                            </t>
+                        </td>
+                        <td class="td-first"/>
+                        <td class="td-first"/>
+                        <td class="td-first"/>
+                        <td class="td-first"/>
+                        <td class="td-first"/>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="text-align: right;">TOTAL:</td>
+                        <td colspan="4">
+                            <t t-if="o.amount_total_signed">
+                                <span t-esc="o.amount_total_signed" t-options='{"widget": "float", "precision": 2}'/>
+                            </t>
+                            <t t-elif="o.amount_total_signed">
+                                <span t-esc="o.amount_total_signed" t-options='{"widget": "float", "precision": 2}'/>
+                            </t>
+                            <t t-else="not o.amount_total_signed">
+                                <span>&#160;</span>
+                            </t>
+                        </td>
+                        <td colspan="3"/>
+                    </tr>
+                    <tr>
+                        <th>
+                            ACC. DEBIT
+                        </th>
+                        <th>
+                            ACC. CREDIT
+                        </th>
+                        <th>
+                            &#160;
+                        </th>
+                        <th colspan="6">
+                            ACC. NAME
+                        </th>
+                        <th>DEBIT</th>
+                        <th>CREDIT</th>
+                    </tr>
+                    <tr>
+                        <td class="td-third">&#160;</td>
+                        <td class="td-third">&#160;</td>
+                        <td class="td-third">
+                            <t t-foreach="o.line_ids" t-as="val">
+                                <!-- <h6 style="font-size: 12px; text-align:right;" t-esc="val.account_id.code"/> -->
+                            </t>
+                        </td>
+                        <td class="td-third" colspan="6" style="text-align:left;">
+                            <h6 t-foreach="o.line_ids" t-as="val">
+                                <h6 style="font-size: 12px;" t-esc="val.account_id.name"/>
+                            </h6>
+                        </td>
+                        <td class="td-third">
+                            <h6 t-foreach="o.line_ids" t-as="val">
+                                <h6 style="font-size: 12px;" t-esc="val.debit"/>
+                            </h6>
+                            <!--                            <h6 t-foreach="o.line_ids" t-as="val">-->
+                            <!--                                <t t-if="val.debit == 0">-->
+                            <!--                                    <span>&#160;</span>-->
+                            <!--                                </t>-->
+                            <!--                                <t t-elif="not debit == 0">-->
+                            <!--                                    <h6 style="font-size: 12px;" t-esc="val.debit"/>-->
+                            <!--                                </t>-->
+                            <!--                            </h6>-->
+                        </td>
+                        <td class="td-third">
+                            <h6 t-foreach="o.line_ids" t-as="val">
+                                <h6 style="font-size: 12px;" t-esc="val.credit"/>
+                            </h6>
+
+
+                            <!--                            <h6 t-foreach="o.line_ids" t-as="val">-->
+                            <!--                                <h6 style="font-size: 12px;" t-esc="val.credit"/>-->
+                            <!--                            </h6>-->
+                            <!--                            <h6 t-foreach="o.line_ids" t-as="val">-->
+                            <!--                                <t t-if="val.credit == 0">-->
+                            <!--                                    <span>&#160;</span>-->
+                            <!--                                </t>-->
+                            <!--                                <t t-elif="not credit == 0">-->
+                            <!--                                    <h6 style="font-size: 12px;" t-esc="val.debit"/>-->
+                            <!--                                </t>-->
+                            <!--                            </h6>-->
+                        </td>
+                    </tr>
+                    <br/>
+                    <tr>
+                        <td class="td-fourth" colspan="3">PARTICULARS</td>
+                        <td class="td-fourth" colspan="5">
+                            <t t-foreach="o.line_ids" t-as="val">
+                                <h6 style="font-size: 12px;" t-esc="val.name"/>
+                            </t>
+                        </td>
+                        <td class="td-fourth" colspan="3"/>
+                    </tr>
+                    <tr>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                    </tr>
+                    <tr>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                        <td class="td-second"/>
+                    </tr>
+                    <tr>
+                        <td/>
+                        <td colspan="2"/>
+                        <td colspan="3">__________________________</td>
+                        <td colspan="5">________________________________________________</td>
+                    </tr>
+                    <tr>
+                        <td/>
+                        <td colspan="2"/>
+                        <td colspan="3">PREPARED BY</td>
+                        <td colspan="5">APPROVED BY</td>
+                    </tr>
+                    <tr>
+                        <td style="height:30px; vertical-align:bottom;"/>
+                        <td style="height:30px; vertical-align:bottom;" colspan="2"/>
+                        <td style="height:30px; vertical-align:bottom;" colspan="3">__________________________</td>
+                        <td style="height:30px; vertical-align:bottom;" colspan="3">__________________________</td>
+                        <td style="height:30px; vertical-align:bottom;" colspan="2">__________________________</td>
+                    </tr>
+                    <tr>
+                        <td/>
+                        <td colspan="2"/>
+                        <td colspan="3">CHECKED BY</td>
+                        <td colspan="3">PAYMENT RECEIVED BY</td>
+                        <td colspan="2">DATE RECEIVED</td>
+                    </tr>
+                    <tr style="margin-top:10px">
+                        <td colspan="3">TEAM PACIFIC CORPORATION</td>
+                        <td colspan="3"/>
+                        <td colspan="3" style="text-align:left;">CHECK NO.</td>
+                        <td colspan="2">&#160;
+                            <!--                                <t t-if="o.ref">-->
+                            <!--                                      <div t-esc="o.ref"/>-->
+                            <!--                                </t>-->
+                            <!--                                <t t-else="not o.ref">-->
+                            <!--                                      <span>&#160;</span>-->
+                            <!--                                </t>-->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="8"/>
+                        <td colspan="3" style="text-align:right;">
+                            <span t-esc="o.date.strftime('%B %d,%Y')"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:left;" colspan="7">
+                            <span style="text-align:left;" t-field="o.partner_id.name"/>
+                        </td>
+                        <td colspan="4"/>
+                    </tr>
+                    <tr>
+                        <td style="text-align:left;" class="td-fourth" colspan="8">
+                            <t t-if='o.line_ids.currency_id'>
+                                <span t-esc="o.line_ids.currency_id.currency_unit_label"
+                                      style='text-transform:uppercase;'>
+                                    &#160;&#160;&#160;</span>&#160;&#160;&#160;
+                                <span style="text-align:left; text-transform:uppercase;" t-field="o.word_move2"/>
+                            </t>
+                            <t t-if='not o.line_ids.currency_id'>
+                                <span t-esc="o.currency_id.currency_unit_label" style='text-transform:uppercase;'>&#160;&#160;&#160;</span>&#160;&#160;&#160;
+                                <span style="text-align:left; text-transform:uppercase;" t-field="o.word_move2"/>
+                            </t>
+                        </td>
+                        <td class="td-fourth" colspan="3">
+                            <t t-if="o.amount_total_signed">
+                                <span>
+                                    <t t-if='o.line_ids.currency_id.name'>
+                                        <span>
+                                            <span t-esc="o.line_ids.currency_id.name"/>
+                                        </span>
+                                    </t>
+                                    <t t-if='not o.line_ids.currency_id.name'>
+                                        <span>
+                                            <span t-esc="o.currency_id.name"/>
+                                        </span>
+                                    </t>
+                                </span>
+                                <span t-esc="o.amount_total_signed"
+                                      t-options='{"widget": "float", "precision": 2}'/>
+                            </t>
+                            <t t-if='not o.amount_total_signed'>
+                                <span>
+                                    <span t-esc="o.currency_id.name"/>
+                                </span>
+                                <span t-esc="o.amount_total_signed"
+                                      t-options='{"widget": "float", "precision": 2}'/>
+                            </t>
+                            <!-- <t t-elif="o.amount_total_signed">
+                                    <span><span t-esc="o.currency_id.name"/> </span><span t-esc="o.amount_total_signed" t-options='{"widget": "float", "precision": 2}'/>
+                            </t>
+                            <t t-else="not o.amount_total_signed">
+                                  <span>&#160;</span>
+                            </t> -->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:left;" class="td-fourth" colspan="8">Paying Bank</td>
+                        <td class="td-fourth" colspan="3"/>
+                    </tr>
+                    <tr>
+                        <td class="td-fourth" colspan="8" style="text-align:left;">
+                            <t t-if="o.journal_id">
+                                <div style="text-align:left;" t-foreach="o.journal_id" t-as="val">
+                                    <br/>
+                                    <t t-if="val.name">
+                                        <span t-esc="val.name"/>
+                                        <br/>
+                                        <t t-if="val.bank_account_id">
+                                            <span t-esc="val.bank_account_id.acc_number"/>
+                                        </t>
+                                        <t t-else="not val.bank_account_id">
+                                            <span>&#160;</span>
+                                        </t>
+                                    </t>
+                                    <t t-else="val.name">
+                                        <span>&#160;</span>
+                                    </t>
+                                </div>
+                            </t>
+                        </td>
+                        <td class="td-fourth" colspan="3"/>
+                    </tr>
+                </table>
+            </t>
+        </template>
+        <template id="payment_voucher_signed_container_journal_entries_id">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="lang" t-value="o.partner_id.lang"/>
+                    <t t-call="team_accounting.payment_voucher_signed_journal_entries" t-lang="lang"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

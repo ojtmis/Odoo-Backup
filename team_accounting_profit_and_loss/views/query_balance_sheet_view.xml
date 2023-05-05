@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="query_balance_sheet_view_form" model="ir.ui.view">
+            <field name="name">query_view_view_form</field>
+            <field name="model">balance.sheet</field>
+            <field name="arch" type="xml">
+                <form string="Query View Form">
+                    <sheet>
+                        <group>
+                            <field name="root"/>
+                            <field name="sub_category"/>
+                            <field name="account_id"/>
+                            <field name="analytic_account_id"/>
+                            <field name="grouped_analytic_account"/>
+                            <field name="date"/>
+                            <field name="main_category"/>
+                            <!--                            <field name="credit"/>-->
+                            <field name="balance"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="qry_balance_sheet_view_here" model="ir.ui.view">
+            <field name="name">Query View Tree</field>
+            <field name="model">balance.sheet</field>
+            <field name="arch" type="xml">
+                <tree string="Query View Tree">
+                    <field name="root"/>
+                    <field name="sub_category"/>
+                    <field name="account_id"/>
+                    <field name="analytic_account_id"/>
+                    <field name="grouped_analytic_account"/>
+                    <field name="date"/>
+                    <!--                            <field name="debit"/>-->
+                    <!--                            <field name="credit"/>-->
+                    <field name="balance"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="view_balance_sheet_pivot" model="ir.ui.view">
+            <field name="name">Pivot Balance Sheet</field>
+            <field name="model">balance.sheet</field>
+            <field name="arch" type="xml">
+                <pivot string="Pivot View">
+                    <field name="root" type="row"/>
+                    <field name="main_category" type="row"/>
+                    <field name="sub_category" type="row"/>
+                    <field name="date" type="col" interval="day"/>
+                </pivot>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

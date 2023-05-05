@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="team_profit_loss_act_window" model="ir.actions.act_window">
+            <field name="name">Profit and Loss</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">team.profit.loss</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    There is no examples click here to add new ModelTitle.
+                </p>
+            </field>
+        </record>
+
+        <record id="team_profit_loss_line_act_window" model="ir.actions.act_window">
+            <field name="name">Profit and Loss</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">team.profit.loss.line</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    There is no examples click here to add new ModelTitle.
+                </p>
+            </field>
+        </record>
+
+        <record id="team_analytic_account_act_window" model="ir.actions.act_window">
+            <field name="name">Profit and Loss</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">team.analytic.line</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+            <field name="domain">[]</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    There is no examples click here to add new ModelTitle.
+                </p>
+            </field>
+        </record>
+
+        <record id="team_profit_loss_act_window_qry_view" model="ir.actions.act_window">
+            <field name="name">Profit and Loss</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">get.data.here</field>
+            <field name="view_mode">pivot,tree</field>
+            <field name="context">{'pivot_measures': ['balance']}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    There is no examples click here to add new ModelTitle.
+                </p>
+            </field>
+        </record>
+
+        <record id="team_balance_sheet_act_window_qry_view" model="ir.actions.act_window">
+            <field name="name">Balance Sheet</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">balance.sheet</field>
+            <field name="view_mode">pivot,tree</field>
+            <field name="context">{'pivot_measures': ['balance']}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    There is no examples click here to add new ModelTitle.
+                </p>
+            </field>
+        </record>
+
+        <record id="profit_and_loss_action" model="ir.actions.act_window">
+            <field name="name">Profit and Loss | Balance Sheet Maintenance</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">profit.and.loss</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+            <field name="domain">[]</field>
+        </record>
+
+        <record id="categ_view_record_id" model="ir.actions.act_window">
+            <field name="name">Category Maintenance</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">category</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+            <field name="domain">[]</field>
+        </record>
+
+        <record id="config_subcategory_action" model="ir.actions.act_window">
+            <field name="name">Setting Sub Category</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">setting.subcategory</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="config_category_action" model="ir.actions.act_window">
+            <field name="name">Setting Category</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">setting.category</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="config_maincategory_action" model="ir.actions.act_window">
+            <field name="name">Setting Main Category</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">main.category</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_sale_demo" model="ir.actions.client">
+            <field name="name">Profit and Loss</field>
+            <field name="tag">sale_cust</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="action_dynamic_balance_sheet" model="ir.actions.client">
+            <field name="name">Balance Sheet</field>
+            <field name="tag">dfr_n</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="action_dynamic_profit_and_loss" model="ir.actions.client">
+            <field name="name">Profit and Loss</field>
+            <field name="tag">dfr_n</field>
+            <field name="target">new</field>
+        </record>
+
+        <!-- Root -->
+
+        <menuitem id="team_profit_loss_menu_id"
+                  name="Team Pacific Accounting Report"
+                  sequence="10"
+                  parent="account.menu_finance_reports"/>
+
+        <menuitem id="team_profit_loss_settings_id"
+                  name="Team Pacific Accounting Settings / Config"
+                  sequence="10"
+                  parent="account.menu_finance_configuration"/>
+
+        <menuitem id="maintenance_settings_id"
+                  name="Maintenance Configuration for Balance Sheet and Profit and loss"
+                  sequence="11"
+                  parent="account.menu_finance_configuration"/>
+
+
+        <!-- End -->
+
+
+        <!--        <menuitem id="menu_balance_sheet_report" action="action_dynamic_balance_sheet"-->
+        <!--                  name="Balance Sheet" sequence="6" parent="team_profit_loss_menu_id"/>-->
+
+        <!--        <menuitem id="menu_profit_and_loss_report" action="action_dynamic_profit_and_loss"-->
+        <!--                  name="Profit and Loss" sequence="7" parent="team_profit_loss_menu_id"/>-->
+
+
+        <!--        <menuitem id="team_profit_loss_menu_id" name="Team Accounting Report" parent="account.menu_finance_reports" sequence=""/>-->
+        <!--        <menuitem name="Profit and Loss" id="team_profit_loss_report" parent="team_profit_loss_menu_id"-->
+        <!--                  action="team_profit_loss_act_window" sequence="1"/>-->
+
+        <!--        <menuitem name="Analytic Account Line Data" id="team_profit_loss_report_ann_data"-->
+        <!--                  parent="team_profit_loss_menu_id"-->
+        <!--                  action="team_analytic_account_act_window" sequence="2"/>-->
+
+        <menuitem id="categ_id" name="Category Maintenance"
+                  parent="team_profit_loss_menu_id" action="categ_view_record_id"
+                  sequence="1"/>
+
+        <menuitem id="profit_and_loss_id" name="Profit and Loss | Balance Sheet Maintenance"
+                  parent="team_profit_loss_menu_id" action="profit_and_loss_action"
+                  sequence="2"/>
+
+        <menuitem name="Profit and Loss" id="team_profit_loss_report_v2" parent="team_profit_loss_menu_id"
+                  action="team_profit_loss_act_window_qry_view" sequence="4"/>
+
+        <menuitem name="Balance Sheet" id="team_balance_sheet_report_v2" parent="team_profit_loss_menu_id"
+                  action="team_balance_sheet_act_window_qry_view" sequence="5"/>
+
+        <menuitem id="setting_category_menu_id" name="Category" parent="team_profit_loss_settings_id"
+                  action="config_category_action" sequence="1"/>
+
+        <menuitem id="setting_subcategory_menu_id" name="Sub Category" parent="team_profit_loss_settings_id"
+                  action="config_subcategory_action" sequence="2"/>
+
+        <!--        <menuitem id="setting_maincategory_menu_id" name="Main Category" parent="team_profit_loss_settings_id"-->
+        <!--                  action="config_maincategory_action" sequence="3"/>-->
+
+
+    </data>
+</odoo>

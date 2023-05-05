@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="team_profit_and_loss_form_view" model="ir.ui.view">
+            <field name="name">team_profit_and_loss_form</field>
+            <field name="model">team.profit.loss</field>
+            <field name="arch" type="xml">
+                <form string="Form">
+                    <header>
+                        <button id="button_confirm" name="action_confirm" string="Confirm" class="btn-primary"
+                                states="draft"
+                                confirm="Are you sure that you need to confirm ?"
+                                type="object"/>
+                        <button id="button_done" name="action_done" string="Mark As Done" class="btn-primary"
+                                states="confirm"
+                                type="object"/>
+                        <button id="button_print" name="print_here" class="btn-danger" string="Print PDF" type="object"
+                                states="done" confirm="Do you really want to Print?"/>
+                        <button id="button_draft" name="action_draft" string="Set To Draft" class="btn-primary"
+                                states="cancel" type="object"/>
+                        <button id="button_cancel" name="action_cancel" string="Cancel" states="draft,done,confirm"
+                                confirm="Are you sure that you need to cancel ?"
+                                type="object"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done,confirm"/>
+                    </header>
+                    <!-- Invisible Fields -->
+                    <group>
+                        <field name="view_count" invisible="1"/>
+                    </group>
+                    <!-- END -->
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" name="action_view_lines" icon="fa-bar-chart">
+                                <field string="Analytic Account Line" name="view_count_data" widget="statinfo"/>
+                            </button>
+                        </div>
+                        <widget name="web_ribbon" title="Ready to Print" bg-color="bg-success"
+                                attrs="{'invisible': [('state',  'not in' , 'done')]}"/>
+                        <widget name="web_ribbon" title="Cancelled" bg-color="bg-warning"
+                                attrs="{'invisible': [('state',  'not in' , 'cancel')]}"/>
+                        <group>
+                            <div class="oe_title">
+                                <label for="name"/>
+                                <h1>
+                                    <field name="name" placeholder="Title"/>
+                                </h1>
+                            </div>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="profit_and_loss_date_start" widget="daterange"
+                                       options="{'related_start_date': 'profit_and_loss_date_end'}"/>
+                            </group>
+                            <group>
+                                <field name="profit_and_loss_date_end" widget="daterange"
+                                       options="{'related_end_date': 'profit_and_loss_date_end'}"/>
+                                <field name="fetch_analytic_line_data" invisible="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <notebook>
+                                <page string="Analytic Account">
+                                    <field name="connection">
+                                        <tree editable="bottom">
+                                            <field name="analytic_acc"/>
+                                            <field name="debit_line_team"/>
+                                            <field name="credit_line_team"/>
+                                            <field name="balance_line_team"/>
+                                            <!--                                            <button string="test" type="object" name="_view_data_from_analytic_acc"/>-->
+                                        </tree>
+                                        <form>
+                                            <group>
+                                                <group>
+                                                    <field name="analytic_acc"/>
+                                                </group>
+                                                <group>
+                                                    <field name="debit_line_team"/>
+                                                    <field name="credit_line_team"/>
+                                                    <field name="balance_line_team"/>
+                                                </group>
+                                            </group>
+                                        </form>
+                                    </field>
+                                </page>
+                                <page string="Notes">
+                                    <field name="notes"/>
+                                </page>
+                            </notebook>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="analytic_acc_line_view_form_new" model="ir.ui.view">
+            <field name="name">analytic_acc_line_view_form</field>
+            <field name="model">team.analytic.line</field>
+            <field name="arch" type="xml">
+                <form string="Team Analytic Account Line" create="0" edit="0" delete="0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="product_uom_category_id"/>
+                                <field name="partner_id"/>
+                                <field name="user_id"/>
+                                <field name="company_id"/>
+                                <field name="currency_id"/>
+                            </group>
+                            <field name="name" string="Name"/>
+                            <field name="date" string="Date"/>
+                            <field name="amount" string="Amount"/>
+                            <field name="unit_amount" string="Unit Amount"/>
+                            <field name="product_uom_id" string="Product UOM"/>
+                            <group>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="analytic_acc_line_view_tree_new" model="ir.ui.view">
+            <field name="name">analytic_acc_line_view_tree</field>
+            <field name="model">team.analytic.line</field>
+            <field name="arch" type="xml">
+                <tree string="Team Analytic Account Line" create="0" edit="0" delete="0">
+                    <field name="team_profit_loss_conn" string="Name"/>
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="amount"/>
+                    <field name="unit_amount"/>
+                    <field name="product_uom_id"/>
+                    <field name="product_uom_category_id"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="company_id"/>
+                    <field name="currency_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="team_profit_and_loss_tree_view" model="ir.ui.view">
+            <field name="name">team_profit_and_loss_tree</field>
+            <field name="model">team.profit.loss</field>
+            <field name="arch" type="xml">
+                <tree string="Tree" decoration-success="state == 'done'" decoration-danger="state == 'cancel'"
+                      decoration-primary="state == 'draft'">
+                    <field name="name"/>
+                    <field name="state" widget="badge"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="team_profit_and_loss_line_form_view" model="ir.ui.view">
+            <field name="name">team_profit_and_loss_line_form_view</field>
+            <field name="model">team.profit.loss.line</field>
+            <field name="arch" type="xml">
+                <form string="Team Proft and Loss Line">
+                    <sheet>
+                        <group>
+                            <!--                           <field name="fetch_analytic_line_data" invisible="1"/>-->
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="team_profit_and_loss_line_tree_view" model="ir.ui.view">
+            <field name="name">team_profit_and_loss_line_tree_view</field>
+            <field name="model">team.profit.loss.line</field>
+            <field name="arch" type="xml">
+                <tree string="Team Profit and Loss Line">
+                    <!--                    <field name="fetch_analytic_line_data" invisible="1"/>-->
+                </tree>
+            </field>
+        </record>
+
+        <record id="sequence_profit_loss" model="ir.sequence">
+            <field name="name">Profit and Loss</field>
+            <field name="code">team.profit.loss</field>
+            <field name="active">TRUE</field>
+            <field name="prefix">P&amp;L -</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <!-- This Menu Item Must have a parent -->
+
+    </data>
+</odoo>
