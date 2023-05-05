@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+
+    <record id="action_reverse_journal" model="ir.actions.server">
+        <field name="name">Reverse</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_purchase_order"/>
+        <field name="binding_model_id" ref="model_purchase_order"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = model.action_reverse_journal()
+        </field>
+    </record>
+
+
+    <record id="buy_off_view_tree" model="ir.ui.view">
+        <field name="name">buy_off_view_tree</field>
+        <field name="model">purchase.order</field>
+        <field name="arch" type="xml">
+            <tree decoration-primary="is_reversed==True"
+                  class="o_purchase_order">
+                <field name="message_unread" invisible="1"/>
+                <field name="partner_ref" optional="hide"/>
+                <field name="name" string="Reference" readonly="1"/>
+                <field name="date_order" invisible="not context.get('quotation_only', False)" optional="show"/>
+                <field name="date_approve" invisible="context.get('quotation_only', False)" optional="show"/>
+                <field name="partner_id" readonly="1"/>
+                <field name="company_id" readonly="1" options="{'no_create': True}"
+                       groups="base.group_multi_company" optional="show"/>
+                <field name="date_planned" invisible="context.get('quotation_only', False)" optional="show"/>
+                <field name="user_id" optional="show"/>
+                <field name="origin" optional="show"/>
+                <field name="amount_untaxed" sum="Total Untaxed amount" string="Untaxed" widget="monetary"
+                       optional="hide"/>
+                <field name="amount_total" sum="Total amount" widget="monetary" optional="hide"/>
+                <field name="total_received_amt" sum="Total Received Amount" widget="monetary" optional="show"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="state" optional="show"/>
+                <field name="invoice_status" optional="hide"/>
+                <field name="is_reversed" invisible="1"/>
+                <field name="activity_exception_decoration" widget="activity_exception"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="buyoff_results_views" model="ir.actions.act_window">
+        <field name="name">Buy-off Results</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_id" ref="buy_off_view_tree"/>
+        <field name="domain">[('new_picking_id.state', '=', 'done')]
+        </field>
+        <field name="context">{'new_picking_id.state':'done'}</field>
+    </record>
+
+    <menuitem action="buyoff_results_views" id="menu_buyoff_results_views"
+              parent="purchase.menu_procurement_management"
+              sequence="16"/>
+</odoo>

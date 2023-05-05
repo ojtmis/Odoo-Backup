@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+room_admin,room admin,model_reservation_room,group_room_reservation_admin,1,1,1,1
+room_reserver,room reserver,model_reservation_session,group_room_reservation_admin,1,1,1,1

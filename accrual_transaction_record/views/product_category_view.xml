@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="product_category_form_view_accrual" model="ir.ui.view">
+        <field name="name">product.category.accrual.form</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="account.view_category_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='property_account_expense_categ_id']" position="after">
+                <field name="debit_note_acc"/>
+            </xpath>
+            <group name="account_property" position="after">
+                <group name="accrual_transaction">
+                    <group string="Accrual Properties">
+                        <field name="accrual_transaction"/>
+                    </group>
+                </group>
+            </group>
+        </field>
+    </record>
+
+
+</odoo>

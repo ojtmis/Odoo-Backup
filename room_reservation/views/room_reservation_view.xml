@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--  room form view  -->
+    <record id="room_form_view" model="ir.ui.view">
+        <field name="name">room.form</field>
+        <field name="model">reservation.room</field>
+        <field name="arch" type="xml">
+            <form string="Room Form">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="responsible_id"/>
+                        </group>
+                        <group>
+                            <field name="room_no"/>
+                        </group>
+                        <group>
+                            <field name="location"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                        <page string="Sessions">
+                            <field name="session_ids">
+                                <tree string="Registered sessions">
+                                    <field name="name"/>
+                                    <field name="reserver_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--room tree/list view-->
+    <record id="room_tree_view" model="ir.ui.view">
+        <field name="name">room.tree</field>
+        <field name="model">reservation.room</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="responsible_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--room search view-->
+    <record id="room_search_view" model="ir.ui.view">
+        <field name="name">room.search</field>
+        <field name="model">reservation.room</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="description"/>
+                <filter name="my_rooms" string="My Rooms"
+                        domain="[('responsible_id', '=', uid)]"/>
+                <group string="Group By">
+                    <filter name="by_responsible" string="Responsible"
+                            context="{'group_by': 'responsible_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+        <!--    room list action-->
+    <record id="room_list_action" model="ir.actions.act_window">
+        <field name="name">Rooms</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">reservation.room</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Create the first room!
+            </p>
+        </field>
+    </record>
+
+
+
+    <!--Session Form View-->
+    <record id="session_form_view" model="ir.ui.view">
+        <field name="name">session.form</field>
+        <field name="model">reservation.session</field>
+        <field name="arch" type="xml">
+            <!--            <header>-->
+            <!--                <button name="test" type='object' string="Test" class="oe_highlight"/>-->
+            <!--            </header>-->
+            <form string="Session Form">
+                <sheet>
+                    <group string="General">
+                        <field name="room_id"/>
+                        <field name="name" string="Session Name"/>
+                        <field name="reserver_id"/>
+                        <field name="active"/>
+                    </group>
+                    <group string="Schedule">
+                        <field name="start_date" string="Start Date | Time"/>
+                        <field name="end_date" string="End Date | Time"/>
+                        <!--                        <field name="duration" string="Duration(hrs.min)"/>-->
+                        <field name="seats"/>
+                        <field name="taken_seats" widget="progressbar"/>
+                    </group>
+                    <label for='attendee_ids'/>
+                    <field name='attendee_ids'/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--    Session Tree / List View-->
+    <record id="session_tree_view" model="ir.ui.view">
+        <field name="name">session.tree</field>
+        <field name="model">reservation.session</field>
+        <field name="arch" type="xml">
+            <!--            <tree string="Session Tree" decoration-danger='duration&lt;5' decoration-primary='duration&gt;15'>-->
+            <tree string="Session Tree">
+                <field name="name" string="Session Name"/>
+                <field name="room_id"/>
+                <field name="reserver_id"/>
+                <field name="start_date" string="Start Date | Time"/>
+                <field name="end_date" string="End Date | Time"/>
+                <field name="seats" string="Seats Capacity"/>
+                <field name="taken_seats" widget="progressbar"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Calendar View -->
+    <record id="session_calendar_view" model="ir.ui.view">
+        <field name="name">session.calendar</field>
+        <field name="model">reservation.session</field>
+        <field name="arch" type="xml">
+            <calendar string="Session Calendar" date_start="start_date" date_stop="end_date" color="reserver_id">
+                <field name="name" string="Session Name"/>
+                <field name="room_id"/>
+            </calendar>
+        </field>
+    </record>
+
+
+    <!--  Session Graph View-->
+    <record model="ir.ui.view" id="session_graph_view">
+        <field name="name">session.graph</field>
+        <field name="model">reservation.session</field>
+        <field name="arch" type="xml">
+            <graph string="Participations by Room">
+                <field name="room_id"/>
+                <field name="attendees_count" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!--    Pivot View-->
+    <record id="session_pivot_view" model="ir.ui.view">
+        <field name="name">session.pivot</field>
+        <field name="model">reservation.session</field>
+        <field name="arch" type="xml">
+            <pivot string="Participations by Room">
+                <field name="attendees_count" type="col"/>
+                <field name="room_id" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!--    Kanban View-->
+    <record id="session_kanban" model="ir.ui.view">
+        <field name="name">session.kanban</field>
+        <field name="model">reservation.session</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="room_id">
+                <field name="color"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_color_{{kanban_getcolor(record.color.raw_value)}}
+                            oe_kanban_global_click_edit oe_semantic_html_override
+                            oe_kanban_card {{record.group_fancy==1 ? 'oe_kanban_card_fancy' : ''}}">
+                            <div class="oe_dropdown_kanban">
+                                <!-- dropdown menu -->
+                                <div class="oe_dropdown_toggle">
+                                    <i class="fa fa-bars fa-lg" title="Manage" aria-label="Manage"/>
+                                    <ul class="oe_dropdown_menu">
+                                        <li>
+                                            <a type="delete">Delete</a>
+                                        </li>
+                                        <li>
+                                            <ul class="oe_kanban_colorpicker"
+                                                data-field="color"/>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="oe_clear"></div>
+                            </div>
+                            <div t-attf-class="oe_kanban_content">
+                                <!-- title -->
+                                Session Name:
+                                <strong>
+                                    <field name="name"/>
+                                </strong>
+                                <br/>
+                                Reserved by:
+                                <field name="reserver_id"/>
+                                <br/>
+                                Start date:
+                                <field name="start_date"/>
+                                <br/>
+                                End date:
+                                <field name="end_date"/>
+                                <br/>
+
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+
+    <!--    Session Action View-->
+    <record id="session_list_action" model="ir.actions.act_window">
+        <field name="name">Sessions</field>
+        <field name="res_model">reservation.session</field>
+        <field name="view_mode">tree,form,calendar,graph,kanban,pivot</field>
+    </record>
+
+    <!-- This Menu Item will appear in the Upper bar, That's why It needs NO parent or action -->
+    <menuitem id="main_room_reservation_menu"
+              name="Room Reservation"
+              web_icon='room_reservation,static/description/icon.png'
+              groups="group_room_reservation_admin"/>
+
+    <menuitem id="room_reservation_menu"
+              name="Room Reservation"
+              parent="main_room_reservation_menu"
+    />
+
+    <menuitem id="rooms_menu"
+              name='Rooms'
+              parent="room_reservation_menu"
+              groups="group_room_reservation_admin"
+              action="room_list_action"
+    />
+
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="session_menu" name="Sessions"
+              parent="room_reservation_menu"
+              groups="group_room_reservation_admin"
+              action="session_list_action"/>
+</odoo>

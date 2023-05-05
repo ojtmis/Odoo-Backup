@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    Reserver Form View
+    <record id="partner_reserver_form_view" model="ir.ui.view">
+        <field name="name">partner.reserver</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string='RRS Sessions'>
+                    <group>
+                        <field name='reserver'/>
+                        <field name='session_ids'/>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <record id="contact_list_action" model="ir.actions.act_window">
+        <field name="name">Contacts</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- This Menu Item will appear in the Upper bar, That's why It needs NO parent or action -->
+    <menuitem id="configuration_menu"
+              name="Configuration"
+              parent="main_room_reservation_menu"
+    />
+
+    <!-- This Menu Item Must have a parent -->
+    <menuitem id="contact_menu"
+              name="Contacts"
+              parent="configuration_menu"
+              action="contact_list_action"
+    />
+
+</odoo>

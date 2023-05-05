@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="learning_tree_view" model="ir.ui.view">
+        <field name="name">mis.learning.tree</field>
+        <field name="model">mis.learning</field>
+        <field name="arch" type="xml">
+            <tree string="Learnings">
+                <field name="title"/>
+                <field name="overview"/>
+                <field name="difficulty"/>
+                <field name="image"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="learning_form_view" model="ir.ui.view">
+        <field name="name">mis.learning.form</field>
+        <field name="model">mis.learning</field>
+        <field name="arch" type="xml">
+            <form string="MIS Learnings Form">
+                <sheet>
+                    <group string="MIS Learning">
+                        <field name="image" widget="image" class="oe_avatar" options="{'size': [500, 500]}"/>
+                    </group>
+                    <div class="oe_title">
+                        <h2>
+                            <field name="title"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="difficulty"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Overview">
+                            <field name="overview"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread" options='{"thread_level": 1}'/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!--    <record id="learning_kanban_view" model="ir.ui.view">-->
+    <!--        <field name="name">mis.learning.kanban</field>-->
+    <!--        <field name="model">mis.learning</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <kanban>-->
+    <!--                <templates>-->
+    <!--                    <t t-name="kanban-box">-->
+    <!--                        <div t-attf-class="oe_kanban_global_click">-->
+    <!--                            <div class="o_kanban_image"><img-->
+    <!--                                    t-att-src="kanban_image('mis.learning', 'image', record.id.raw_value)"-->
+    <!--                                    alt="Avatar" class="o_image_64_contain"/>-->
+    <!--                            </div>-->
+    <!--                            <div class="oe_kanban_details">-->
+    <!--                                <strong class="o_kanban_record_title">-->
+    <!--                                    <field name="title"/>-->
+    <!--                                </strong>-->
+    <!--                                &lt;!&ndash;                                <div t-if="record.mobile.value">&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                                    <t t-esc="record.mobile.value"/>&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                                </div>&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                                <div t-if="record.email.value">&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                                    <t t-esc="record.email.value"/>&ndash;&gt;-->
+    <!--                                &lt;!&ndash;                                </div>&ndash;&gt;-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                    </t>-->
+    <!--                </templates>-->
+    <!--            </kanban>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
+
+    <record id="action_learning" model="ir.actions.act_window">
+        <field name="name">MIS Learning</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mis.learning</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add New Learnings Here
+            </p>
+        </field>
+    </record>
+
+    <menuitem id='mis_root_menu'
+              name='MIS Learning'
+              web_icon='mis_learning_module,static/description/icon.png'
+              sequence='1'/>
+
+    <menuitem id='mis_learning_menu'
+              name='MIS Learning' action='action_learning'
+              parent='mis_root_menu'
+              sequence='10'/>
+
+</odoo>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="seq_purchase_order_local" model="ir.sequence">
+            <field name="name">Purchase Order</field>
+            <field name="code">purchase.order.local</field>
+            <field name="prefix">POL</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_purchase_order_indent" model="ir.sequence">
+            <field name="name">Purchase Order</field>
+            <field name="code">purchase.order.indent</field>
+            <field name="prefix">POI</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>
