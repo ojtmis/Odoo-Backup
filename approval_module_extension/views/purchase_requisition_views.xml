@@ -10,7 +10,7 @@
                 <xpath expr="//field[@name='origin']" position="after">
                     <!--                    <field name="department_id" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'open'),('state', '!=', 'approved'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft', 'in_progress', 'to_approve'))]}"/>-->
 
-<!--                    <field name="first_department_id" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft','in_progress'))]}"/>-->
+                    <field name="first_department_id" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'open'),('state', '!=', 'approved'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft', 'in_progress', 'to_approve'))]}"/>
                     <field name="first_approver_id" string="[1] Approver" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft','in_progress'))]}"/>
                     <field name="job_title_1" invisible="1"/>
 

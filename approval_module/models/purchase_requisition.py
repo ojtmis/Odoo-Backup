@@ -94,6 +94,7 @@ class PurchaseOrder(models.Model):
                 rec.approver_id = approver_dept[0]
                 domain.append(('id', '=', approver_dept))
 
+
             elif rec.department_id and rec.approval_stage == 3:
                 approver_dept = [x.third_approver.id for x in res.set_third_approvers]
                 rec.approver_id = approver_dept[0]

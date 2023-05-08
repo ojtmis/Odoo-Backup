@@ -35,6 +35,7 @@
         'reports/new_debit_credit_report_v2.xml',
         'reports/report_purchase_request.xml',
 
+
         #Views
 
         'views/account_payment_views.xml',
