@@ -20,7 +20,8 @@
                     <field name="third_approver_id" string="[3] Approver" attrs="{'invisible': [('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft', 'open', 'in_progress', 'to_approve'))]}"/>
                     <field name="job_title_3" invisible="1"/>
 
-                    <field name="department_id" attrs="{'invisible': [('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft', 'in_progress', 'to_approve'))]}"/>
+<!--                    <field name="department_id" attrs="{'invisible': [('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft', 'in_progress', 'to_approve'))]}"/>-->
+                    <field name="department_id" invisible="1"/>
                     <field name="approver_id" string="Initial Approver" attrs="{'invisible': [('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft', 'in_progress', 'to_approve'))]}"/>
                     <field name="job_title_4" invisible="1"/>
 

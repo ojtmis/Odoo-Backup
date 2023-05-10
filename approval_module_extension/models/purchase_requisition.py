@@ -52,26 +52,26 @@ class PurchaseRequisition(models.Model):
                 except IndexError:
                     raise UserError(_("No Approvers set for {}!").format(rec.department_id.name))
 
-            if rec.department_id and rec.approval_stage == 2:
+            elif rec.department_id and rec.approval_stage == 2:
                 try:
                     approver_dept = [x.second_approver.id for x in res.set_second_approvers]
                     rec.approver_id = approver_dept[0]
-                    print("2", rec.approver_id)
+                    print(rec.approver_id)
                     domain.append(('id', '=', approver_dept))
                 except IndexError:
-                    raise UserError(_("No Approvers set for {}!").format(rec.department_id.name))
+                    raise UserError(_("No Approvers set for  2 {}!").format(rec.department_id.name))
 
-            if rec.department_id and rec.approval_stage == 3:
+            elif rec.department_id and rec.approval_stage == 3:
                 approver_dept = [x.third_approver.id for x in res.set_third_approvers]
                 rec.approver_id = approver_dept[0]
                 domain.append(('id', '=', approver_dept))
 
-            if rec.department_id and rec.approval_stage == 4:
+            elif rec.department_id and rec.approval_stage == 4:
                 approver_dept = [x.fourth_approver.id for x in res.set_fourth_approvers]
                 rec.approver_id = approver_dept[0]
                 domain.append(('id', '=', approver_dept))
 
-            if rec.department_id and rec.approval_stage == 5:
+            elif rec.department_id and rec.approval_stage == 5:
                 approver_dept = [x.fifth_approver.id for x in res.set_fifth_approvers]
                 rec.approver_id = approver_dept[0]
                 domain.append(('id', '=', approver_dept))
