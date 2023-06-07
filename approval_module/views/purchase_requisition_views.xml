@@ -64,6 +64,7 @@
 
                 <xpath expr="//header" position="replace">
                     <header>
+<!--                        <button name="approval_dashboard_link" string="Test" class="btn btn-primary" type="object"/>-->
                         <button name="submit_for_approval" type="object"
                                 string="Submit Request"
                                 class="oe_highlight"
@@ -73,6 +74,8 @@
 <!--                                states='to_approve'-->
 <!--                                string="Change Approver"-->
 <!--                                class="oe_highlight"/>-->
+                        # TODO Email notification will be sent once Ok button is clicked
+
                         <button name="approve_request" type="object"
                                 string="Approve Request"
                                 class="oe_highlight"

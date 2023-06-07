@@ -1,10 +1,16 @@
+import datetime
+import hashlib
+import re
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
 class PurchaseOrder(models.Model):
     _inherit = "purchase.requisition"
-
     approver_id = fields.Many2one('hr.employee', string="Approver", domain=lambda self: self.get_approver_domain())
     approval_stage = fields.Integer(default=1)
     department_id = fields.Many2one('account.analytic.account', string="Department", store=True)
@@ -12,9 +18,11 @@ class PurchaseOrder(models.Model):
     to_approve_po = fields.Boolean()
     show_submit_request = fields.Boolean()
     state = fields.Selection(
-        selection_add=[('to_approve', 'To Approve'), ('open',), ('approved', 'Approved'), ('disapprove', 'Disapproved')])
+        selection_add=[('to_approve', 'To Approve'), ('open',), ('approved', 'Approved'),
+                       ('disapprove', 'Disapproved')])
     state_blanket_order = fields.Selection(
-        selection_add=[('to_approve', 'To Approve'), ('open',), ('approved', 'Approved'), ('disapprove', 'Disapproved')])
+        selection_add=[('to_approve', 'To Approve'), ('open',), ('approved', 'Approved'),
+                       ('disapprove', 'Disapproved')])
     approval_status = fields.Selection(selection=[
         ('pr_approval', 'For Approval'),
         ('approved', 'Approved'),
@@ -27,6 +35,52 @@ class PurchaseOrder(models.Model):
     approval_type_id = fields.Many2one('purchase.approval.types')
     approval_id = fields.Many2one('purchase.approval')
     is_approver = fields.Boolean(compute="_compute_approver")
+    approval_link = fields.Char('Approval link')
+
+    def approval_dashboard_link(self):
+        action = self.env['ir.actions.act_window'].search([('res_model', '=', 'purchase.requisition')], limit=1)
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+
+        result_1 = re.sub(r'\((.*?)\)', '', str(action)).replace(',', '')
+        res = f"{result_1},{action.id}"
+        result = re.sub(r'\s*,\s*', ',', res)
+
+        menu = self.env['ir.ui.menu'].search([('action', '=', result)], limit=1)
+        params = {
+            "action": 1197,
+            "model": "purchase.requisition",
+            "view_type": "list",
+            "cids": "",
+            "menu_id": menu.id
+        }
+
+        query_string = '&'.join([f'{key}={value}' for key, value in params.items()])
+        list_view_url = f"{base_url}/web?debug=1#{query_string}"
+
+        print(list_view_url)
+        return list_view_url
+
+    def generate_odoo_link(self):
+        action = self.env['ir.actions.act_window'].search([('res_model', '=', 'purchase.requisition')], limit=1)
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+
+        result = re.sub(r'\((.*?)\)', '', str(action)).replace(',', '')
+        res = f"{result},{action.id}"
+        result = re.sub(r'\s*,\s*', ',', res)
+
+        menu = self.env['ir.ui.menu'].search([('action', '=', result)], limit=1)
+        params = {
+            "id": self.id,
+            "action": action.id,
+            "model": "purchase.requisition",
+            "view_type": "form",
+            "cids": 1,
+            "menu_id": menu.id
+        }
+        query_params = "&".join(f"{key}={value}" for key, value in params.items())
+        pr_form_link = f"{base_url}/web#{query_params}"
+        return pr_form_link
+
 
     def action_in_progress(self):
         self.ensure_one()
@@ -65,13 +119,203 @@ class PurchaseOrder(models.Model):
                     'is_approver': False,
                 })
 
+    def generate_token(self):
+        now = datetime.datetime.now()
+        token = "{}-{}-{}-{}".format(self.id, self.name, self.env.user.id, now)
+        return hashlib.sha256(token.encode()).hexdigest()
+
     def submit_for_approval(self):
+        # action = self.env['ir.actions.act_window'].search([('res_model', '=', 'purchase.requisition')], limit=1)
+        # base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        #
+        # result = re.sub(r'\((.*?)\)', '', str(action)).replace(',', '')
+        # res = f"{result},{action.id}"
+        # result = re.sub(r'\s*,\s*', ',', res)
+        #
+        # menu = self.env['ir.ui.menu'].search([('action', '=', result)], limit=1)
+        # params = {
+        #     "id": self.id,
+        #     "action": action.id,
+        #     "model": "purchase.requisition",
+        #     "view_type": "form",
+        #     "cids": 1,
+        #     "menu_id": menu.id
+        # }
+        # query_params = "&".join(f"{key}={value}" for key, value in params.items())
+        # pr_form_link = f"{base_url}/web#{query_params}"
+
+        # Approval Dashboard Link Section
+        approval_action = self.env['ir.actions.act_window'].search([('res_model', '=', 'purchase.requisition')],
+                                                                   limit=1)
+        approval_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+
+        approval_result_1 = re.sub(r'\((.*?)\)', '', str(approval_action)).replace(',', '')
+        approval_res = f"{approval_result_1},{approval_action.id}"
+        approval_result = re.sub(r'\s*,\s*', ',', approval_res)
+
+        approval_menu = self.env['ir.ui.menu'].search([('action', '=', approval_result)], limit=1)
+        approval_params = {
+            "action": 1197,
+            "model": "purchase.requisition",
+            "view_type": "list",
+            "cids": "",
+            "menu_id": approval_menu.id
+        }
+
+        approval_query_string = '&'.join([f'{key}={value}' for key, value in approval_params.items()])
+        approval_list_view_url = f"{approval_base_url}/web?debug=1#{approval_query_string}"
+
+        # Generate Odoo Link Section
+        odoo_action = self.env['ir.actions.act_window'].search([('res_model', '=', 'purchase.requisition')], limit=1)
+        odoo_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+
+        odoo_result = re.sub(r'\((.*?)\)', '', str(odoo_action)).replace(',', '')
+        odoo_res = f"{odoo_result},{odoo_action.id}"
+        odoo_result = re.sub(r'\s*,\s*', ',', odoo_res)
+
+        odoo_menu = self.env['ir.ui.menu'].search([('action', '=', odoo_result)], limit=1)
+        odoo_params = {
+            "id": self.id,
+            "action": odoo_action.id,
+            "model": "purchase.requisition",
+            "view_type": "form",
+            "cids": 1,
+            "menu_id": odoo_menu.id
+        }
+        odoo_query_params = "&".join(f"{key}={value}" for key, value in odoo_params.items())
+        pr_form_link = f"{odoo_base_url}/web#{odoo_query_params}"
+
+        #return approval_list_view_url, pr_form_link
+
+        self.generate_odoo_link()
+        self.approval_dashboard_link()
+
+        fetch_getEmailReceiver = 'alex.mercado@teamglac.com'  # self.approver_id.work_email DEFAULT RECEIVER CHANGE IT TO IF YOU WANT ----> IF YOU WANT TO SET AS DEFAULT OR ONLY ONE ##
+        self.sendingEmail(fetch_getEmailReceiver, pr_form_link, approval_list_view_url)
         for rec in self:
             self.write({
                 'approval_status': 'pr_approval',
                 'to_approve': True,
                 'show_submit_request': False
             })
+
+    def sendingEmail(self, fetch_getEmailReceiver, pr_form_link, approval_list_view_url):
+        sender = 'noreply@teamglac.com'
+        host = "192.168.1.114"
+        port = 25
+        username = "noreply@teamglac.com"
+        password = "noreply"
+
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        token = self.generate_token()
+
+        approval_url = "{}/request/approve/{}".format(base_url, token)
+        disapproval_url = "{}/request/disapprove/{}".format(base_url, token)
+
+        self.write({'approval_link': token})
+
+        msg = MIMEMultipart()
+        msg['From'] = sender
+        msg['To'] = fetch_getEmailReceiver
+        msg['Subject'] = 'Odoo Purchasing Mailer - Purchase Request For Approval ' + self.name
+
+        html_content = """
+            <html>
+            <head>
+                <style>
+                    table {
+                        border-collapse: collapse;
+                        width: 100%;
+                    }
+
+                    th, td {
+                        border: 1px solid black;
+                        padding: 8px;
+                        text-align: left;
+                    }
+
+                    th {
+                        background-color: #dddddd;
+                    }
+                    
+                </style>
+            </head>
+            <body>"""
+        html_content += f"""
+         <dt><b>{self.name}</b></dt>
+            <br></br>
+                <dd>Requested by: &nbsp;&nbsp;{self.user_id.name if self.user_id.name != False else ""}</dd>
+                <dd>Date Requested: &nbsp;&nbsp;{self.ordering_date if self.ordering_date != False else ""}</dd>
+                <dd>Vendor: &nbsp;&nbsp;{self.vendor_id.name if self.vendor_id.name != False else ""}</dd>
+                <dd>Currency: &nbsp;&nbsp;{self.currency_id.name if self.currency_id.name != False else ""}</dd>
+                <dd>Source Document: &nbsp;&nbsp;{self.origin if self.origin != False else ""}</dd>
+            <br></br>
+                <span><b>ITEMS REQUESTED</b></span>
+            <br></br>
+        """
+        html_content += """
+        <br></br>
+        <table>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Ordered Quantities</th>
+                        <th>UoM</th>
+                        <th>Scheduled Date</th>
+                        <th>Unit Price</th>
+                        <th>Subtotal</th>
+                    </tr>
+                    """
+        for line in self.line_ids:
+            html_content += f"""
+                    <tr>
+                        <td>{line.product_id.name}</td>
+                        <td>{line.product_qty}</td>
+                        <td>{line.qty_ordered}</td>
+                        <td>{line.product_uom_id.name}</td>
+                        <td>{line.schedule_date if line.schedule_date != False else ""}</td>
+                        <td>{line.price_unit}</td>
+                        <td>{line.subtotal}</td>
+                    </tr>
+        """
+
+        html_content += f"""
+               </table>
+            <br></br>
+                <span><b>JUSTIFICATION</b></span>
+                <dd>{self.justification if self.justification != False else ""}</dd>
+            </body>
+            <br></br>
+            <br></br>
+            <br></br>
+            <span style="font-style: italic;";><a href="{approval_url}"  style="color: green;">APPROVE</a> / <a href="{disapproval_url}"  style="color: red;">DISAPPROVE</a> / <a href="{pr_form_link}"  style="color: blue;">ODOO PR FORM
+            </a> / <a href="{approval_list_view_url}">ODOO APPROVAL DASHBOARD</a></span>
+            
+            </html>
+        """
+
+        msg.attach(MIMEText(html_content, 'html'))
+
+        try:
+            smtpObj = smtplib.SMTP(host, port)
+            smtpObj.login(username, password)
+            smtpObj.sendmail(sender, fetch_getEmailReceiver, msg.as_string())
+
+            msg = "Successfully sent email"
+            print(msg)
+            return {
+                'success': {
+                    'title': 'Successfully email sent!',
+                    'message': f'{msg}'}
+            }
+        except Exception as e:
+            msg = f"Error: Unable to send email: {str(e)}"
+            print(msg)
+            return {
+                'warning': {
+                    'title': 'Error: Unable to send email!',
+                    'message': f'{msg}'}
+            }
 
     @api.onchange('department_id', 'approval_stage')
     def get_approver_domain(self):

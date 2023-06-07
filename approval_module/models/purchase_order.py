@@ -48,6 +48,8 @@ class PurchaseOrder(models.Model):
             'show_submit_request': False
         })
 
+
+
     def _compute_date(self):
         for rec in self:
             rec.date_request = rec.requisition_id.ordering_date

@@ -8,9 +8,6 @@ class GetDataHere(models.Model):
     # _inherit = 'profit.and.loss'
     # _order = 'root asc'
 
-    # pnl_id = fields.Many2one('profit.and.loss', string='PNL ID')
-    # pnl_id = fields.Char(string='PNL ID')
-
     root = fields.Char(string='Name')
     sub_category = fields.Many2one('sub.categ', string='Sub Category')
     # category = fields.Many2one('sub.categ', string='Sub Category')
@@ -24,16 +21,17 @@ class GetDataHere(models.Model):
     grouped_analytic_account = fields.Char(string='Analytic Account (Grouped)')
     # debit = fields.Monetary(string='Debit')
     analytic_account_id = fields.Many2one('account.analytic.account', string='Analytic Account')
+    profit_and_loss_root = fields.Char(string='Code')
 
     def init(self):
-
         tools.drop_view_if_exists(self._cr, 'get_data_here')  ## <-- This code is for query view
         self._cr.execute("""
                             CREATE or REPLACE view get_data_here as 
                             (
-                            SELECT  row_number() over() as id, 
-                                AML.pnl_id as profit_and_loss_id,
-                                AML.root as root,
+                    SELECT  row_number() over() as id, 
+                                CONCAT(AML.pnl_id,' ',AML.root) as profit_and_loss_root,
+                                AML.pnl_id AS profit_and_loss_id,
+                                AML.root AS root,
                                 AML.main_category as main_category,
                                 AML.sub_category as sub_category,
                                 AML.account_id as account_id,
@@ -96,6 +94,7 @@ class GetDataHere(models.Model):
                             AML.analytic_account_id = AAA.id
                             WHERE AML.is_pnl_or_bs = 'pnl' 
                             GROUP BY
+								profit_and_loss_root,
 								AML.pnl_id,
                                 AML.root,
                                 AML.main_category,
@@ -108,12 +107,7 @@ class GetDataHere(models.Model):
                                 AML.monthly,
                                 AML.yearly,
                                 grouped_analytic_account
-								
-								  ORDER BY
-                                AML.pnl_id
-								
-                            ASC
-                                                                                 
+	                               
                             )
                                             """)
 
