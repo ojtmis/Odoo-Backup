@@ -9,15 +9,15 @@ class PurchaseRequisition(models.Model):
 
     # department_id = fields.Many2one('account.analytic.account', string="Department", store=True)
     first_approver_id = fields.Many2one('hr.employee', string="[1] Approver",
-                                        domain=lambda self: self.get_approver_domain_1())
+                                        domain=lambda self: self.get_approver_domain1())
     job_title_1 = fields.Char('hr.employee', related="first_approver_id.job_title")
 
     second_approver_id = fields.Many2one('hr.employee', string="[2] Approver",
-                                         domain=lambda self: self.get_approver_domain())
+                                         domain=lambda self: self.get_approver_domain2())
     job_title_2 = fields.Char('hr.employee', related="second_approver_id.job_title")
 
     third_approver_id = fields.Many2one('hr.employee', string="[3] Approver",
-                                        domain=lambda self: self.get_approver_domain())
+                                        domain=lambda self: self.get_approver_domain3())
     job_title_3 = fields.Char('hr.employee', related="third_approver_id.job_title")
 
     approver_id = fields.Many2one('hr.employee', string="Initial Approver",
@@ -127,7 +127,7 @@ class PurchaseRequisition(models.Model):
         print(self.approver_count)
 
     @api.onchange('department_id', 'approval_stage')
-    def get_approver_domain_1(self):
+    def get_approver_domain1(self):
         for rec in self:
             domain = []
             res = self.env["department.approvers"].search(
@@ -136,12 +136,47 @@ class PurchaseRequisition(models.Model):
             if rec.department_id and rec.approval_stage == 1:
                 try:
                     approver_dept = [x.first_approver.id for x in res.set_first_approvers]
-                    rec.first_approver_id = approver_dept[0]
                     domain.append(('id', '=', approver_dept))
-
                 except IndexError:
                     raise UserError(_("No Approvers set for {}! 2").format(rec.department_id.name))
             else:
                 domain = []
 
             return {'domain': {'first_approver_id': domain}}
+
+    @api.onchange('department_id', 'approval_stage')
+    def get_approver_domain2(self):
+        for rec in self:
+            domain = []
+            res = self.env["department.approvers"].search(
+                [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Requests')])
+
+            if rec.department_id and rec.approval_stage == 1:
+                try:
+                    approver_dept = [x.second_approver.id for x in res.set_second_approvers]
+                    domain.append(('id', '=', approver_dept))
+                except IndexError:
+                    raise UserError(_("No Approvers set for {}! 2").format(rec.department_id.name))
+            else:
+                domain = []
+
+            return {'domain': {'second_approver_id': domain}}
+
+
+    @api.onchange('department_id', 'approval_stage')
+    def get_approver_domain3(self):
+        for rec in self:
+            domain = []
+            res = self.env["department.approvers"].search(
+                [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Requests')])
+
+            if rec.department_id and rec.approval_stage == 1:
+                try:
+                    approver_dept = [x.third_approver.id for x in res.set_third_approvers]
+                    domain.append(('id', '=', approver_dept))
+                except IndexError:
+                    raise UserError(_("No Approvers set for {}! 2").format(rec.department_id.name))
+            else:
+                domain = []
+
+            return {'domain': {'third_approver_id': domain}}
