@@ -6,28 +6,35 @@
             <field name="model">purchase.requisition</field>
             <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
             <field name="arch" type="xml">
-
+                <xpath expr="//header" position="after">
+                    <header>
+                        <button name="test" string="Test" class="btn btn-primary" type="object"/>
+                    </header>
+                </xpath>
                 <xpath expr="//field[@name='origin']" position="after">
-                    <!--                    <field name="department_id" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'open'),('state', '!=', 'approved'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft', 'in_progress', 'to_approve'))]}"/>-->
+                    <field name="approver_count" invisible="1"/>
+                    <field name="department_id"
+                           attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'open'),('state', '!=', 'approved'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft', 'in_progress', 'to_approve'))]}"/>
 
-                    <field name="first_department_id" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'open'),('state', '!=', 'approved'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft', 'in_progress', 'to_approve'))]}"/>
-                    <field name="first_approver_id" string="[1] Approver" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft','in_progress'))]}"/>
-                    <field name="job_title_1" invisible="1"/>
+                    <field name="approver_id" string="Initial Approver"
+                           attrs="{'invisible': [('approver_count', '&lt;', 1)]}"/>
+                    <field name="job_title_4" invisible="1" attrs="{'invisible': [('approver_count', '&lt;', 4)]}"/>
 
-                    <field name="second_approver_id" string="[2] Approver" attrs="{'invisible': [('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft', 'open', 'in_progress', 'to_approve'))]}"/>
-                    <field name="job_title_2" invisible="1"/>
+                    <field name="first_approver_id" string="[1] Approver"
+                           attrs="{'invisible': [('approver_count', '&lt;', 2)]}"/>
+                    <field name="job_title_1" invisible="1" attrs="{'invisible': [('approver_count', '!=', 2)]}"/>
 
-                    <field name="third_approver_id" string="[3] Approver" attrs="{'invisible': [('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft', 'open', 'in_progress', 'to_approve'))]}"/>
-                    <field name="job_title_3" invisible="1"/>
+                    <field name="second_approver_id" string="[2] Approver"
+                           attrs="{'invisible': [('approver_count', '&lt;', 3)]}"/>
+                    <field name="job_title_2" invisible="1" attrs="{'invisible': [('approver_count', '!=', 3)]}"/>
 
-<!--                    <field name="department_id" attrs="{'invisible': [('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft', 'in_progress', 'to_approve'))]}"/>-->
-                    <field name="department_id" invisible="1"/>
-                    <field name="approver_id" string="Initial Approver" attrs="{'invisible': [('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft', 'in_progress', 'to_approve'))]}"/>
-                    <field name="job_title_4" invisible="1"/>
+                    <field name="third_approver_id" string="[3] Approver"
+                           attrs="{'invisible': [('approver_count', '&lt;', 4)]}"/>
+                    <field name="job_title_3" invisible="1" attrs="{'invisible': [('approver_count', '!=', 4)]}"/>
+
 
                 </xpath>
             </field>
         </record>
-
     </data>
 </odoo>
