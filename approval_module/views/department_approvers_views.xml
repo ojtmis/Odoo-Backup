@@ -25,7 +25,7 @@
                             </h1>
                         </div>
                         <field name="approval_type"/>
-                        <field name="no_of_approvers" invisible="1"/>
+                        <field name="no_of_approvers"/>
                         <notebook>
                             <page  string="First Approver">
                                 <field name="set_first_approvers">

@@ -15,7 +15,6 @@ class DepartmentApprovers(models.Model):
     set_fifth_approvers = fields.One2many('department.approvers.line', 'fifth_approvers_id')
 
 
-
 class DepartmentApproversLine(models.Model):
     _name = "department.approvers.line"
 
