@@ -56,7 +56,6 @@ class PurchaseRequisition(models.Model):
                 try:
                     approver_dept = [x.second_approver.id for x in res.set_second_approvers]
                     rec.approver_id = approver_dept[0]
-                    print(rec.approver_id)
                     domain.append(('id', '=', approver_dept))
                 except IndexError:
                     raise UserError(_("No Approvers set for  2 {}!").format(rec.department_id.name))
@@ -115,22 +114,46 @@ class PurchaseRequisition(models.Model):
                         'approval_status': 'approved'
                     })
 
+    # @api.onchange('first_department_id', 'approval_stage')
+    # def get_approver_domain_1(self):
+    #         for rec in self:
+    #             domain = []
+    #             res = self.env["department.approvers"].search(
+    #                 [("dept_name", "=", rec.first_department_id.id), ("approval_type.name", '=', 'Purchase Requests')])
+    #
+    #             if rec.first_department_id and rec.approval_stage == 1:
+    #                 try:
+    #                     approver_dept = [x.first_approver.id for x in res.set_first_approvers]
+    #                     rec.first_approver_id = approver_dept[0]
+    #                     domain.append(('id', '=', approver_dept))
+    #
+    #                 except IndexError:
+    #                     raise UserError(_("No Approvers set for {}!").format(rec.first_department_id.name))
+    #             else:
+    #                 domain = []
+    #
+    #             return {'domain': {'first_approver_id': domain}}
+
+
+# TESTING
     @api.onchange('first_department_id', 'approval_stage')
     def get_approver_domain_1(self):
-            for rec in self:
+        for rec in self:
+            domain = []
+            res = self.env["department.approvers"].search(
+                [("dept_name", "=", rec.first_department_id.id), ("approval_type.name", '=', 'Purchase Requests')])
+
+            if rec.first_department_id and rec.approval_stage == 1:
+                try:
+                    approver_dept = [x.first_approver.id for x in res.set_first_approvers]
+                    print(approver_dept)
+                    rec.first_approver_id = approver_dept[0]
+                    print(rec.first_approver_id)
+                    domain.append(('id', '=', approver_dept))
+
+                except IndexError:
+                    raise UserError(_("No Approvers set for {}! 2").format(rec.first_department_id.name))
+            else:
                 domain = []
-                res = self.env["department.approvers"].search(
-                    [("dept_name", "=", rec.first_department_id.id), ("approval_type.name", '=', 'Purchase Requests')])
 
-                if rec.first_department_id and rec.approval_stage == 1:
-                    try:
-                        approver_dept = [x.first_approver.id for x in res.set_first_approvers]
-                        rec.first_approver_id = approver_dept[0]
-                        domain.append(('id', '=', approver_dept))
-
-                    except IndexError:
-                        raise UserError(_("No Approvers set for {}!").format(rec.first_department_id.name))
-                else:
-                    domain = []
-
-                return {'domain': {'first_approver_id': domain}}
+            return {'domain': {'first_approver_id': domain}}
