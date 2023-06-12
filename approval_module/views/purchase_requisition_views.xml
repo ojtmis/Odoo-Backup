@@ -64,7 +64,7 @@
 
                 <xpath expr="//header" position="replace">
                     <header>
-<!--                        <button name="test" string="Test" class="btn btn-primary" type="object"/>-->
+<!--                        <button name="submit_for_approval" string="Test" class="btn btn-primary" type="object"/>-->
                         <button name="submit_for_approval" type="object"
                                 string="Submit Request"
                                 class="oe_highlight"
@@ -79,6 +79,12 @@
                                 string="Approve Request"
                                 class="oe_highlight"
                                 attrs="{'invisible': ['|', ('approval_status', '!=', 'pr_approval'), ('is_approver', '=', False)]}"/>
+
+<!--                        <button name="approve_request" type="object"-->
+<!--                                string="Approve Request"-->
+<!--                                class="oe_highlight"-->
+<!--                                />-->
+
                         <button name="%(action_disapprove_pr_reason_view)d" type="action"
                                 string="Disapprove Request"
                                 class="oe_highlight"

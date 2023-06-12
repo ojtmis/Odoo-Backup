@@ -5,7 +5,8 @@ from odoo.exceptions import UserError
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
-    approver_id = fields.Many2one('hr.employee', string="Approver", domain=lambda self: self.get_approver_domain())
+    # approver_id = fields.Many2one('hr.employee', string="Approver", domain=lambda self: self.get_approver_domain())
+    approver_id = fields.Many2one('hr.employee', string="Approver")
     approval_stage = fields.Integer(default=1)
     department_id = fields.Many2one('account.analytic.account', string="Department", store=True)
     to_approve = fields.Boolean()

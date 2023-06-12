@@ -9,21 +9,39 @@
 
                 <xpath expr="//field[@name='origin']" position="after">
 
+<!--                    <field name="department_id" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'open'),('state', '!=', 'approved'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft', 'in_progress', 'to_approve'))]}"/>-->
+<!--                                        <field name="approver_id" string="First Approver" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft','in_progress'))]}"/>-->
+<!--                    <field name="job_title_4" invisible="1"/>-->
+
+<!--                    <field name="second_approver_id" string="Second Approver" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft','in_progress'))]}"/>-->
+<!--                    <field name="job_title_2" invisible="1"/>-->
+
+<!--                    <field name="third_approver_id" string="Third Approver" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft','in_progress'))]}"/>-->
+<!--                    <field name="job_title_3" invisible="1"/>-->
+
+
+<!--                    <field name="fourth_approver_id" string="Fourth Approver" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft','in_progress'))]}"/>-->
+<!--                    <field name="job_title_1" invisible="1"/>-->
+
+<!--                    <field name="fifth_approver_id" string="Fifth Approver" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft','in_progress'))]}"/>-->
+<!--                    <field name="job_title_5" invisible="1"/>-->
+
+                    <field name="approver_count" invisible="1"/>
                     <field name="department_id" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'open'),('state', '!=', 'approved'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft', 'in_progress', 'to_approve'))]}"/>
-                                        <field name="approver_id" string="First Approver" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft','in_progress'))]}"/>
+                    <field name="approver_id" string="[1] Approver"  attrs="{'invisible': [('approver_count', '&lt;', 1)]}"/>
                     <field name="job_title_4" invisible="1"/>
 
-                    <field name="second_approver_id" string="Second Approver" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft','in_progress'))]}"/>
+                    <field name="second_approver_id" string="[2] Approver"  attrs="{'invisible': [('approver_count', '&lt;', 2)]}"/>
                     <field name="job_title_2" invisible="1"/>
 
-                    <field name="third_approver_id" string="Third Approver" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft','in_progress'))]}"/>
+                    <field name="third_approver_id" string="[3] Approver"  attrs="{'invisible': [('approver_count', '&lt;', 3)]}"/>
                     <field name="job_title_3" invisible="1"/>
 
 
-                    <field name="fourth_approver_id" string="Fourth Approver" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft','in_progress'))]}"/>
+                    <field name="fourth_approver_id" string="[4] Approver"  attrs="{'invisible': [('approver_count', '&lt;', 4)]}"/>
                     <field name="job_title_1" invisible="1"/>
 
-                    <field name="fifth_approver_id" string="Fifth Approver" attrs="{'invisible': [('state', '!=', 'draft'), ('state', '!=', 'to_approve'),('state', '!=', 'approved'), ('state', '!=', 'open'), ('state', '!=', 'done')], 'readonly': [('state', 'not in', ('draft','in_progress'))]}"/>
+                    <field name="fifth_approver_id" string="[5] Approver"  attrs="{'invisible': [('approver_count', '&lt;', 5)]}"/>
                     <field name="job_title_5" invisible="1"/>
 
                 </xpath>
