@@ -38,6 +38,7 @@
                     <field name="show_submit_request" invisible="1"/>
                     <field name="approval_status" invisible="1"/>
                     <field name="is_approver" invisible="1"/>
+                    <field name="approver_stage" invisible="1"/>
                 </xpath>
 
                 <xpath expr="//field[@name='name']" position="after">
@@ -52,28 +53,30 @@
                     </div>
                 </xpath>
 
-<!--                <xpath expr="//field[@name='state']" position="replace">-->
-<!--                    <field name="state" widget="statusbar" statusbar_visible="draft,draft,in_progress,to_approve"-->
-<!--                           attrs="{'invisible': [('is_quantity_copy', '=', 'none')]}"/>-->
-<!--                </xpath>-->
+                <!--                <xpath expr="//field[@name='state']" position="replace">-->
+                <!--                    <field name="state" widget="statusbar" statusbar_visible="draft,draft,in_progress,to_approve"-->
+                <!--                           attrs="{'invisible': [('is_quantity_copy', '=', 'none')]}"/>-->
+                <!--                </xpath>-->
 
-<!--                <xpath expr="//field[@name='state_blanket_order']" position="replace">-->
-<!--                    <field name="state_blanket_order" widget="statusbar" statusbar_visible="ongoing,to_approve"-->
-<!--                           attrs="{'invisible': [('is_quantity_copy', '!=', 'none')]}"/>-->
-<!--                </xpath>-->
+                <!--                <xpath expr="//field[@name='state_blanket_order']" position="replace">-->
+                <!--                    <field name="state_blanket_order" widget="statusbar" statusbar_visible="ongoing,to_approve"-->
+                <!--                           attrs="{'invisible': [('is_quantity_copy', '!=', 'none')]}"/>-->
+                <!--                </xpath>-->
 
                 <xpath expr="//header" position="replace">
                     <header>
-<!--                        <button name="submit_for_approval" string="Test" class="btn btn-primary" type="object"/>-->
+                        <!--                        <button name="approve_request" string="Test" class="btn btn-primary" type="object"/>-->
+
                         <button name="submit_for_approval" type="object"
                                 string="Submit Request"
                                 class="oe_highlight"
                                 confirm="Submit Purchase Request to Initial Approver?"
                                 attrs="{'invisible': [('show_submit_request', '=', False)]}"/>
-<!--                        <button name="%(action_change_approvers_pr_view)d" type="action"-->
-<!--                                states='to_approve'-->
-<!--                                string="Change Approver"-->
-<!--                                class="oe_highlight"/>-->
+
+                        <!--                        <button name="%(action_change_approvers_pr_view)d" type="action"-->
+                        <!--                                states='to_approve'-->
+                        <!--                                string="Change Approver"-->
+                        <!--                                class="oe_highlight"/>-->
 
                         <button name="approve_request" type="object"
                                 string="Approve Request"
@@ -83,7 +86,13 @@
 <!--                        <button name="approve_request" type="object"-->
 <!--                                string="Approve Request"-->
 <!--                                class="oe_highlight"-->
-<!--                                />-->
+<!--                                attrs="{'invisible': ['|', ('approver_stage', '!=', 'pending_approval_1'), ('approver_stage', '!=', 'pending_approval_2')]}"/>-->
+
+
+                        <!--                        <button name="approve_request" type="object"-->
+                        <!--                                string="Approve Request"-->
+                        <!--                                class="oe_highlight"-->
+                        <!--                                />-->
 
                         <button name="%(action_disapprove_pr_reason_view)d" type="action"
                                 string="Disapprove Request"
@@ -103,19 +112,20 @@
                         <button name="action_done" states="open,ongoing,to_approve" string="Close" type="object"
                                 class="btn-primary"/>
                         <button name="action_draft" states="cancel" string="Reset to Draft" type="object"/>
-                        <button name="action_cancel" states="draft,in_progress,ongoing,'to_approve" string="Cancel" type="object"/>
+                        <button name="action_cancel" states="draft,in_progress,ongoing,'to_approve" string="Cancel"
+                                type="object"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,draft,in_progress,to_approve"
-                           attrs="{'invisible': [('is_quantity_copy', '=', 'none')]}"/>
+                               attrs="{'invisible': [('is_quantity_copy', '=', 'none')]}"/>
                         <field name="state_blanket_order" widget="statusbar" statusbar_visible="ongoing,to_approve"
-                           attrs="{'invisible': [('is_quantity_copy', '!=', 'none')]}"/>
+                               attrs="{'invisible': [('is_quantity_copy', '!=', 'none')]}"/>
                     </header>
                 </xpath>
 
 
-<!--                <xpath expr="//field[@name='origin']" position="after">-->
-<!--                    <field name="department_id"/>-->
-<!--                    <field name="approver_id"/>-->
-<!--                </xpath>-->
+                <!--                <xpath expr="//field[@name='origin']" position="after">-->
+                <!--                    <field name="department_id"/>-->
+                <!--                    <field name="approver_id"/>-->
+                <!--                </xpath>-->
 
             </field>
         </record>

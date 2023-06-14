@@ -44,62 +44,119 @@ class PurchaseRequisition(models.Model):
     @api.onchange('department_id')
     def no_ofapprovers(self):
         department_approvers = self.env['department.approvers'].search([('dept_name', '=', self.department_id.id)])
-        count = 0
+        count = 0.
         for approver in department_approvers:
             count += approver.no_of_approvers
         self.approver_count = count
-        print('approver count ', self.approver_count)
+        print('approver count: ', self.approver_count)
 
-    @api.depends('approval_stage')
-    def approve_request(self):
-        for rec in self:
-            res = self.env["department.approvers"].search(
-                [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Requests')])
-            print('approve request function')
-            if rec.approver_id and rec.approval_stage < res.no_of_approvers:
-                print('Approver name: ', rec.approver_id.name, '| stage: ', rec.approval_stage, '| total approvers: ',  res.no_of_approvers)
-                if rec.approval_stage == 1:
-                    approver_dept = [x.first_approver.id for x in res.set_first_approvers]
-                    print('stage 1 :', approver_dept)
+    # @api.depends('approval_stage', 'approver_stage')
+    # def approve_request(self):
+    #     for rec in self:
+    #         res = self.env["department.approvers"].search(
+    #             [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Requests')])
+    #
+    #         print('approve request function')
+    #
+    #         if rec.approver_id and rec.approval_stage < res.no_of_approvers:
+    #             print('Approver name: ', rec.approver_id.name, '| stage: ', rec.approval_stage, '| total approvers: ',  res.no_of_approvers)
+    #             if rec.approver_stage == 'pending_approval_1':
+    #                 # approver_dept = [x.first_approver.id for x in res.set_first_approvers]
+    #                 print(self.approver_stage)
+    #                 self.write({
+    #                     # 'approver_id': approver_dept[0],
+    #                     'approver_stage': 'pending_approval_2',
+    #                     'state': 'to_approve',
+    #                     'approval_status': 'pr_approval'
+    #                 })
+    #
+    #         # if rec.second_approver_id and rec.approval_stage < res.no_of_approvers:
+    #
+    #             if rec.approval_stage == 2:
+    #                 print('Second Approver')
+    #                 print('is_approver', self.is_approver)
+    #                 approver_dept = [x.second_approver.id for x in res.set_second_approvers]
+    #                 print('stage 2 :', approver_dept)
+    #                 print(self.approver_stage)
+    #                 self.write({
+    #                     # 'second_approver_id': approver_dept[0],
+    #                     'approver_stage': 'pending_approval_3',
+    #                     'state': 'to_approve',
+    #                     'approval_status': 'pr_approval'
+    #                 })
+    #
+    #             if rec.approval_stage == 3:
+    #                 approver_dept = [x.third_approver.id for x in res.set_third_approvers]
+    #                 print('stage 3 :', approver_dept)
+    #                 self.write({
+    #                     'third_approver_id': approver_dept[0]
+    #                 })
+    #             if rec.approval_stage == 4:
+    #                 approver_dept = [x.fourth_approver.id for x in res.set_fourth_approvers]
+    #                 print('stage 4 :', approver_dept)
+    #
+    #                 self.write({
+    #                     'fourth_approver_id': approver_dept[0]
+    #                 })
+    #             if rec.approval_stage == 5:
+    #                 approver_dept = [x.fifth_approver.id for x in res.set_fifth_approvers]
+    #                 print('stage 5 :', approver_dept)
+    #                 self.write({
+    #                     'fifth_approver_id': approver_dept[0]
+    #                 })
+    #             rec.approval_stage += 1
+    #             print('last stage= ', rec.approval_stage)
+    #         else:
+    #             print("state: to_approve, "
+    #                   "approval_status: pr_approval")
+    #
+    #             # self.write({
+    #             #     'state': 'approved',
+    #             #     'approval_status': 'approved'
+    #             # })
 
-                    self.write({
-                        'approver_id': approver_dept[0]
-                    })
+    # @api.depends('approval_stage')
+    # def approve_request(self):
+    #     for rec in self:
+    #         res = self.env["department.approvers"].search(
+    #             [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Requests')])
+    #         if rec.approver_id and rec.approval_stage < res.no_of_approvers:
+    #             if rec.approval_stage == 1:
+    #                 approver_dept = [x.second_approver.id for x in res.set_second_approvers]
+    #                 self.write({
+    #                     'approver_id': approver_dept[0]
+    #                 })
+    #
+    #             if rec.approval_stage == 2:
+    #                 approver_dept = [x.third_approver.id for x in res.set_third_approvers]
+    #                 self.write({
+    #                     'approver_id': approver_dept[0]
+    #                 })
+    #             if rec.approval_stage == 3:
+    #                 approver_dept = [x.fourth_approver.id for x in res.set_fourth_approvers]
+    #                 self.write({
+    #                     'approver_id': approver_dept[0]
+    #                 })
+    #             if rec.approval_stage == 4:
+    #                 approver_dept = [x.fifth_approver.id for x in res.set_fifth_approvers]
+    #                 self.write({
+    #                     'approver_id': approver_dept[0]
+    #                 })
+    #             rec.approval_stage += 1
+    #         else:
+    #             self.write({
+    #                 'state': 'approved',
+    #                 'approval_status': 'approved'
+    #             })
 
-                # if rec.approval_stage == 1:
-                #     approver_dept = [x.second_approver.id for x in res.set_second_approvers]
-                #     print('stage 1 :', approver_dept)
-                #
-                #     self.write({
-                #         'approver_id': approver_dept[0]
-                #     })
+    # def test(self):
+    #     for rec in self:
+    #         if rec.department_id and rec.approval_stage == 1:
+    #             res = self.env["department.approvers"].search([
+    #                 ("dept_name", "=", rec.department_id.id),
+    #                 ("approval_type.name", "=", 'Purchase Requests')
+    #             ])
 
-                if rec.approval_stage == 2:
-                    approver_dept = [x.third_approver.id for x in res.set_third_approvers]
-                    print('stage 2 :', approver_dept)
-                    self.write({
-                        'approver_id': approver_dept[0]
-                    })
-                if rec.approval_stage == 3:
-                    approver_dept = [x.fourth_approver.id for x in res.set_fourth_approvers]
-                    print('stage 3 :', approver_dept)
-
-                    self.write({
-                        'approver_id': approver_dept[0]
-                    })
-                if rec.approval_stage == 4:
-                    approver_dept = [x.fifth_approver.id for x in res.set_fifth_approvers]
-                    print('stage 4 :', approver_dept)
-                    self.write({
-                        'approver_id': approver_dept[0]
-                    })
-                rec.approval_stage += 1
-                print('last stage= ', rec.approval_stage)
-            else:
-                self.write({
-                    'state': 'approved',
-                    'approval_status': 'approved'
-                })
 
     @api.onchange('department_id', 'approval_stage')
     def get_approver_domains(self):
@@ -125,6 +182,7 @@ class PurchaseRequisition(models.Model):
                         approver_dept = [x.third_approver.id for x in res.set_third_approvers]
                         rec.third_approver_id = approver_dept[0]
                         domain.append(('id', '=', approver_dept))
+                        print('triggered 3')
 
                     if len(res.set_fourth_approvers) > 0:
                         approver_dept = [x.fourth_approver.id for x in res.set_fourth_approvers]
