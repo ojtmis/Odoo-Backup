@@ -76,8 +76,9 @@
                                 states='to_approve,purchase'
                                 string="Change Approver"
                                 class="oe_highlight"/>
+
                         # PO APPROVE REQUEST BUTTON
-                     <button name="compute_approver" type="object"
+                     <button name="approve_request" type="object"
                                                     string="Test"
                                                     class="oe_highlight"/>
 

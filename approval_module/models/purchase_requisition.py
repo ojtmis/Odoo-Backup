@@ -62,8 +62,6 @@ class PurchaseOrder(models.Model):
                 print('state: Approved')
                 self.submit_to_final_approver()
 
-
-
     def update_check_status(self):
         self.check_status = False
         self.check_status = True
