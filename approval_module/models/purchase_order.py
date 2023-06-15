@@ -38,11 +38,51 @@ class PurchaseOrder(models.Model):
     approval_link = fields.Char('Approval link')
 
     initial_approver_name = fields.Char()
+    second_approver_name = fields.Char()
+    third_approver_name = fields.Char()
+    fourth_approver_name = fields.Char()
+    final_approver_name = fields.Char()
 
     user_id = fields.Many2one('res.users', 'User', domain=lambda self: [('res_id', 'in', self.env.user.id)])
     check_status = fields.Char(compute='compute_check_status', store=True)
     current_date = fields.Date(default=fields.Datetime.now())
 
+    # approver_count = fields.Integer(string='Count')
+
+    approver_count = fields.Integer(compute='_compute_approver_count', store=True)
+    # @api.onchange('department_id')
+    # def no_ofapprovers(self):
+    #
+    #     department_approvers = self.env['department.approvers'].search([('dept_name', '=', self.department_id.id), ("approval_type.name", '=', 'Purchase Orders')])
+    #     count = 0
+    #     for approver in department_approvers:
+    #         count += approver.no_of_approvers
+    #         print(count)
+    #         self.approver_count = count
+    #         print('approver count: ', self.approver_count)
+    # @api.onchange('department_id')
+    # def compute_approver_count(self):
+    #     department_approvers = self.env['department.approvers'].search([('dept_name', '=', self.department_id.id), ("approval_type.name", '=', 'Purchase Orders')])
+    #     count = 0
+    #     for approver in department_approvers:
+    #         count += approver.no_of_approvers
+    #         self.write({
+    #             'approver_count': int(count)
+    #         })
+    #     print('approver count: ', self.approver_count)
+
+
+    @api.onchange('department_id')
+    @api.depends('department_id')
+    def _compute_approver_count(self):
+        for record in self:
+            department_approvers = self.env['department.approvers'].search(
+                [('dept_name', '=', record.department_id.id), ("approval_type.name", '=', 'Purchase Orders')])
+            count = 0
+            for approver in department_approvers:
+                count += approver.no_of_approvers
+            record.approver_count = count
+            print(record.approver_count)
     @api.depends('approval_status', 'state')
     def compute_check_status(self):
         for rec in self:
@@ -107,8 +147,10 @@ class PurchaseOrder(models.Model):
         return hashlib.sha256(token.encode()).hexdigest()
 
     # Initial Approver Sending of Email
+
     def submit_for_approval(self):
         # Approval Dashboard Link Section
+        print(self.approver_count)
         approval_action = self.env['ir.actions.act_window'].search([('res_model', '=', 'purchase.order')],
                                                                    limit=1)
         approval_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
@@ -163,6 +205,7 @@ class PurchaseOrder(models.Model):
         })
 
     def sendingEmail(self, fetch_getEmailReceiver, pr_form_link, approval_list_view_url):
+
         sender = 'noreply@teamglac.com'
         host = "192.168.1.114"
         port = 25
@@ -207,6 +250,7 @@ class PurchaseOrder(models.Model):
 
         html_content += f"""
             <br></br>
+                <dd>Approver Count: {self.approver_count}</dd>
                 <dd>Requested by: &nbsp;&nbsp;{self.user_id.name if self.user_id.name != False else ""}</dd>
                 <dd>Date Requested: &nbsp;&nbsp;{self.date_approve if self.date_approve != False else ""}</dd>
                 <dd>Vendor: &nbsp;&nbsp;{self.partner_id.name if self.partner_id.name != False else ""}</dd>
@@ -216,6 +260,7 @@ class PurchaseOrder(models.Model):
                 <span><b>ITEMS REQUESTED</b></span>
             <br></br>
         """
+
         #
         # html_content += f"""
         # <dt><b>{self.name}</b></dt>
@@ -547,7 +592,7 @@ class PurchaseOrder(models.Model):
             <br></br>
                 <dd>Purchase Representative: &nbsp;&nbsp;{self.user_id.name if self.user_id.name != False else ""}</dd>
                 <dd>Confirmation Date: &nbsp;&nbsp;{self.date_approve if self.date_approve != False else ""}</dd>
-                <dd>Disapproved by: &nbsp;&nbsp;{self.user_id.name if self.user_id.name != False else ""}</dd>
+                <dd>Disapproved by: &nbsp;&nbsp;{self.env.user.name if self.env.user.name != False else ""}</dd>
                 <dd>Disapproval date: &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
                 <dd>Reason for Disapproval: &nbsp;&nbsp;{self.disapproval_reason if self.disapproval_reason != False else ""}</dd>
             <br></br>
@@ -627,6 +672,12 @@ class PurchaseOrder(models.Model):
                     'message': f'{msg}'}
             }
 
+    def getCount(self):
+        count = 0
+        for rec in self:
+            count = rec.approver_count
+        return count
+
     # PO is approved by final approver
     def submit_to_final_approver(self):
         fetch_getEmailReceiver = 'alex.mercado@teamglac.com'  # self.approver_id.work_email DEFAULT RECEIVER CHANGE IT TO IF YOU WANT ----> IF YOU WANT TO SET AS DEFAULT OR ONLY ONE ##
@@ -672,40 +723,40 @@ class PurchaseOrder(models.Model):
 
         html_content += f"""
                 <dt><b>{self.name}</b></dt>
+                <dd></dd>
+                
                 <br></br>
                 <dd>Purchase Representative: &nbsp;&nbsp;{self.user_id.name if self.user_id.name != False else ""}</dd>
                 <dd>Confirmation Date: &nbsp;&nbsp;{self.date_approve if self.date_approve != False else ""}</dd>
                 """
 
-        html_content += f"""
-                    <dd>{self.initial_approver_name}</dd>
-                    <dd>Final Approval by: &nbsp;&nbsp;{self.approver_id.name if self.approver_id.name != False else ""}</dd>
-                    <dd>Final Approval date: &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
-                    """
-        #
-        # if self.approver_count >= 2:
-        #     html_content += f"""
-        #             <dd>Second Approval: &nbsp;&nbsp;{self.second_approver_id.name if self.second_approver_id.name != False else ""}</dd>
-        #             <dd>Second Approval date: &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
-        #             """
-        #
-        # if self.approver_count >= 3:
-        #     html_content += f"""
-        #            <dd>Third Approval: &nbsp;&nbsp;{self.third_approver_id.name if self.third_approver_id.name != False else ""}</dd>
-        #            <dd>Third Approval date: &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
-        #            """
-        #
-        # if self.approver_count >= 4:
-        #     html_content += f"""
-        #             <dd>Fourth Approval: &nbsp;&nbsp;{self.fourth_approver_id.name if self.fourth_approver_id.name != False else ""}</dd>
-        #             <dd>Fourth Approval date: &nbsp;+&nbsp;{self.current_date if self.current_date != False else ""}</dd>
-        #             """
-        #
-        # if self.approver_count >= 5:
-        #     html_content += f"""
-        #             <dd>Fifth Approval: &nbsp;&nbsp;{self.fifth_approver_id.name if self.fifth_approver_id.name != False else ""}</dd>
-        #             <dd>Fifth Approval date: &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
-        #             """
+        if self.approver_count >= 1:
+            html_content += f"""
+                <dd>Initial Approval By: {self.second_approver_name}</dd>
+                <dd>Initial Approval Date:</dd>
+        """
+        if self.approver_count >= 2:
+            html_content += f"""
+                <dd>Second Approval By: {self.second_approver_name}</dd>
+                <dd>Second Approval Date:</dd>
+        """
+        if self.approver_count >= 3:
+            html_content += f"""
+                <dd>Third Approval By: {self.second_approver_name}</dd>
+                <dd>Third Approval Date:</dd>
+                
+        """
+        if self.approver_count >= 4:
+            html_content += f"""
+                <dd>Fourth Approval By: {self.second_approver_name}</dd>
+                <dd>Third Approval Date:</dd>
+                
+        """
+        if self.approver_count >= 5:
+            html_content += f"""
+       <dd>Final Approval by: &nbsp;&nbsp;{self.approver_id.name if self.approver_id.name != False else ""}</dd>
+       <dd>Final Approval date: &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
+        """
 
         html_content += f"""
                 <br></br>
@@ -829,9 +880,6 @@ class PurchaseOrder(models.Model):
             return {'domain': {'approver_id': domain}}
 
     def compute_approver(self):
-        # self.approve_request()
-        test1 = self.initial_approver_name
-        print(test1)
         for rec in self:
             if self.env.user.name == rec.approver_id.name:
                 # print('True')
@@ -855,23 +903,24 @@ class PurchaseOrder(models.Model):
                     approver_dept = [x.second_approver.id for x in res.set_second_approvers]
                     self.submit_to_next_approver()
 
-                    if self.initial_approver_name is None:
+                    if self.second_approver_name is None:
                         raise UserError('must set first')
                     else:
-                        self.initial_approver_name = rec.approver_id.name
-
+                        self.second_approver_name = rec.approver_id.name
+                    print(self.second_approver_name)
                     print('received by 2nd approver and email sent to next approver')
                     self.write({
                         'approver_id': approver_dept[0]
                     })
-                    # rec.initial_approver_name = first_approver_name
-
-                    # return rec.approver_dept
 
                 if rec.approval_stage == 2:
                     approver_dept = [x.third_approver.id for x in res.set_third_approvers]
                     self.submit_to_next_approver()
-                    print(rec.approver_id, rec.approval_stage, res.no_of_approvers)
+                    if self.third_approver_name is None:
+                        raise UserError('must set first')
+                    else:
+                        self.third_approver_name = rec.approver_id.name
+                    print(self.second_approver_name)
 
                     print('received by 3rd approver and email sent to next approver')
 

@@ -548,7 +548,7 @@ class PurchaseOrder(models.Model):
         html_content += f"""
                 <dt><b>{self.name}</b></dt>
                 <br></br>
-                <dd style="display: none;">{self.approver_count}</dd>
+                <dd>{self.approver_count}</dd>
 
                 <dd>Requested by: &nbsp;&nbsp;{self.user_id.name if self.user_id.name != False else ""}</dd>
                 <dd>Date Requested: &nbsp;&nbsp;{self.ordering_date if self.ordering_date != False else ""}</dd>

@@ -44,7 +44,7 @@ class PurchaseRequisition(models.Model):
     @api.onchange('department_id')
     def no_ofapprovers(self):
         department_approvers = self.env['department.approvers'].search([('dept_name', '=', self.department_id.id)])
-        count = 0.
+        count = 0
         for approver in department_approvers:
             count += approver.no_of_approvers
         self.approver_count = count
