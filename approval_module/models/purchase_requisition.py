@@ -31,7 +31,6 @@ class PurchaseOrder(models.Model):
         ('cancel', 'Cancelled')
     ], string='Status')
 
-
     disapproval_reason = fields.Char(string="Reason for Disapproval")
     show_request = fields.Char()
     approval_type_id = fields.Many2one('purchase.approval.types')
@@ -210,7 +209,6 @@ class PurchaseOrder(models.Model):
         fetch_getEmailReceiver = 'alex.mercado@teamglac.com'  # self.approver_id.work_email DEFAULT RECEIVER CHANGE IT TO IF YOU WANT ----> IF YOU WANT TO SET AS DEFAULT OR ONLY ONE ##
         self.sendingEmail(fetch_getEmailReceiver, pr_form_link, approval_list_view_url)
 
-
     def sendingEmail(self, fetch_getEmailReceiver, pr_form_link, approval_list_view_url):
         sender = 'noreply@teamglac.com'
         host = "192.168.1.114"
@@ -254,17 +252,17 @@ class PurchaseOrder(models.Model):
             </head>
             <body>"""
 
-        # html_content += f"""
-        #     <br></br>
-        #         <dd>Requested by: &nbsp;&nbsp;{self.user_id.name if self.user_id.name != False else ""}</dd>
-        #         <dd>Date Requested: &nbsp;&nbsp;{self.ordering_date if self.ordering_date != False else ""}</dd>
-        #         <dd>Vendor: &nbsp;&nbsp;{self.vendor_id.name if self.vendor_id.name != False else ""}</dd>
-        #         <dd>Currency: &nbsp;&nbsp;{self.currency_id.name if self.currency_id.name != False else ""}</dd>
-        #         <dd>Source Document: &nbsp;&nbsp;{self.origin if self.origin != False else ""}</dd>
-        #     <br></br>
-        #         <span><b>ITEMS REQUESTED</b></span>
-        #     <br></br>
-        # """
+        html_content += f"""
+            <br></br>
+                <dd>Requested by: &nbsp;&nbsp;{self.user_id.name if self.user_id.name != False else ""}</dd>
+                <dd>Date Requested: &nbsp;&nbsp;{self.ordering_date if self.ordering_date != False else ""}</dd>
+                <dd>Vendor: &nbsp;&nbsp;{self.vendor_id.name if self.vendor_id.name != False else ""}</dd>
+                <dd>Currency: &nbsp;&nbsp;{self.currency_id.name if self.currency_id.name != False else ""}</dd>
+                <dd>Source Document: &nbsp;&nbsp;{self.origin if self.origin != False else ""}</dd>
+            <br></br>
+                <span><b>ITEMS REQUESTED</b></span>
+            <br></br>
+        """
 
         html_content += f"""
         <dt><b>{self.name}</b></dt>
@@ -274,36 +272,6 @@ class PurchaseOrder(models.Model):
         <dd>Requested by: &nbsp;&nbsp;{self.user_id.name if self.user_id.name != False else ""}</dd>
         <dd>Date Requested: &nbsp;&nbsp;{self.ordering_date if self.ordering_date != False else ""}</dd>
         """
-
-        if self.approver_count >= 1:
-            html_content += f"""
-            <dd>Initial Approval: &nbsp;&nbsp;{self.approver_id.name if self.approver_id.name != False else ""}</dd>
-            <dd>Initial Approval date: &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
-            """
-
-        if self.approver_count >= 2:
-            html_content += f"""
-            <dd>Second Approval: &nbsp;&nbsp;{self.second_approver_id.name if self.second_approver_id.name != False else ""}</dd>
-            <dd>Second Approval date: &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
-            """
-
-        if self.approver_count >= 3:
-            html_content += f"""
-                   <dd>Third Approval: &nbsp;&nbsp;{self.third_approver_id.name if self.third_approver_id.name != False else ""}</dd>
-                   <dd>Third Approval date: &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
-                   """
-
-        if self.approver_count >= 4:
-            html_content += f"""
-            <dd>Fourth Approval: &nbsp;&nbsp;{self.fourth_approver_id.name if self.fourth_approver_id.name != False else ""}</dd>
-            <dd>Fourth Approval date: &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
-            """
-
-        if self.approver_count >= 5:
-            html_content += f"""
-            <dd>Fifth Approval: &nbsp;&nbsp;{self.fifth_approver_id.name if self.fifth_approver_id.name != False else ""}</dd>
-            <dd>Fifth Approval date: &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
-            """
 
         html_content += f"""
         <br></br>
@@ -315,7 +283,6 @@ class PurchaseOrder(models.Model):
         <span><b>ITEMS REQUESTED</b></span>
         <br></br>
         """
-
 
         html_content += """
         <br></br>
@@ -472,37 +439,6 @@ class PurchaseOrder(models.Model):
                 <dd>Requested by: &nbsp;&nbsp;{self.user_id.name if self.user_id.name != False else ""}</dd>
                 <dd>Date Requested: &nbsp;&nbsp;{self.ordering_date if self.ordering_date != False else ""}</dd>
                 """
-
-        if self.approver_count >= 1:
-            html_content += f"""
-                    <dd>Initial Approval: &nbsp;&nbsp;{self.approver_id.name if self.approver_id.name != False else ""}</dd>
-                    <dd>Initial Approval date: &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
-                    """
-
-        if self.approver_count >= 2:
-            html_content += f"""
-                    <dd>Second Approval: &nbsp;&nbsp;{self.second_approver_id.name if self.second_approver_id.name != False else ""}</dd>
-                    <dd>Second Approval date: &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
-                    """
-
-        if self.approver_count >= 3:
-            html_content += f"""
-                           <dd>Third Approval: &nbsp;&nbsp;{self.third_approver_id.name if self.third_approver_id.name != False else ""}</dd>
-                           <dd>Third Approval date: &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
-                           """
-
-        if self.approver_count >= 4:
-            html_content += f"""
-                    <dd>Fourth Approval: &nbsp;&nbsp;{self.fourth_approver_id.name if self.fourth_approver_id.name != False else ""}</dd>
-                    <dd>Fourth Approval date: &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
-                    """
-
-        if self.approver_count >= 5:
-            html_content += f"""
-                    <dd>Fifth Approval: &nbsp;&nbsp;{self.fifth_approver_id.name if self.fifth_approver_id.name != False else ""}</dd>
-                    <dd>Fifth Approval date: &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
-                    """
-
 
         html_content += """
         <br></br>
