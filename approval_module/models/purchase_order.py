@@ -2,8 +2,13 @@ import datetime
 import hashlib
 import re
 import smtplib
+import time
+
+from datetime import timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.policy import default
+from odoo.tools import date_utils
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
@@ -13,7 +18,6 @@ class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
     approver_id = fields.Many2one('hr.employee', string="Approver", domain=lambda self: self.get_approver_domain())
-    # approver_id = fields.Many2one('hr.employee', string="Approver")
     approval_stage = fields.Integer(default=1)
     department_id = fields.Many2one('account.analytic.account', string="Department", store=True)
     to_approve = fields.Boolean()
@@ -43,13 +47,33 @@ class PurchaseOrder(models.Model):
     fourth_approver_name = fields.Char()
     final_approver_name = fields.Char()
 
-    user_id = fields.Many2one('res.users', 'User', domain=lambda self: [('res_id', 'in', self.env.user.id)])
+    # user_id = fields.Many2one('res.users', 'User', domain=lambda self: [('res_id', 'in', self.env.user.id)])
     check_status = fields.Char(compute='compute_check_status', store=True)
-    current_date = fields.Date(default=fields.Datetime.now())
 
     approver_count = fields.Integer(compute='_compute_approver_count', store=True)
 
-    @api.onchange('department_id')
+    date_today = fields.Char()
+
+    # This function get the datetime today and convert it to 12-hour format
+    # def getCurrentDate(self):
+    #     date_todaytime = datetime.datetime.now() + timedelta(hours=8)
+    #
+    #     formatted_date = date_todaytime.strftime("%Y-%m-%d")
+    #     formatted_time = date_todaytime.strftime("%I:%M:%S")
+    #     am_pm = date_todaytime.strftime("%p").upper()
+    #
+    #     formatted_datetime = f"{formatted_date} {formatted_time} {am_pm}"
+    #     self.date_today = formatted_datetime
+    #     print(self.date_today)
+
+    # this retrieves the current date, formats it as day-month-year, and assigns the formatted date
+    def getCurrentDate(self):
+        date_now = datetime.datetime.now()
+        formatted_date = date_now.strftime("%d-%b-%Y")
+
+        self.date_today = formatted_date
+
+    # this computes the number of approvers based on department and approval type
     @api.depends('department_id')
     def _compute_approver_count(self):
         for record in self:
@@ -61,6 +85,7 @@ class PurchaseOrder(models.Model):
             record.approver_count = count
             print(record.approver_count)
 
+    # this check the status based on approval status and state.
     @api.depends('approval_status', 'state')
     def compute_check_status(self):
         for rec in self:
@@ -125,10 +150,8 @@ class PurchaseOrder(models.Model):
         return hashlib.sha256(token.encode()).hexdigest()
 
     # Initial Approver Sending of Email
-
     def submit_for_approval(self):
         # Approval Dashboard Link Section
-        print(self.approver_count)
         approval_action = self.env['ir.actions.act_window'].search([('res_model', '=', 'purchase.order')],
                                                                    limit=1)
         approval_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
@@ -139,7 +162,7 @@ class PurchaseOrder(models.Model):
 
         approval_menu = self.env['ir.ui.menu'].search([('action', '=', approval_result)], limit=1)
         approval_params = {
-            "action": 1199,
+            "action": 1199,  # change this base on the actual action id
             "model": "purchase.order",
             "view_type": "list",
             "cids": "",
@@ -172,7 +195,7 @@ class PurchaseOrder(models.Model):
         self.generate_odoo_link()
         self.approval_dashboard_link()
 
-        fetch_getEmailReceiver = 'alex.mercado@teamglac.com'  # self.approver_id.work_email DEFAULT RECEIVER CHANGE IT TO IF YOU WANT ----> IF YOU WANT TO SET AS DEFAULT OR ONLY ONE ##
+        fetch_getEmailReceiver = self.approver_id.work_email
         self.sendingEmail(fetch_getEmailReceiver, pr_form_link, approval_list_view_url)
 
         self.write({
@@ -183,7 +206,6 @@ class PurchaseOrder(models.Model):
         })
 
     def sendingEmail(self, fetch_getEmailReceiver, pr_form_link, approval_list_view_url):
-
         sender = 'noreply@teamglac.com'
         host = "192.168.1.114"
         port = 25
@@ -355,7 +377,8 @@ class PurchaseOrder(models.Model):
         self.generate_odoo_link()
         self.approval_dashboard_link()
 
-        fetch_getEmailReceiver = 'alex.mercado@teamglac.com'  # self.approver_id.work_email DEFAULT RECEIVER CHANGE IT TO IF YOU WANT ----> IF YOU WANT TO SET AS DEFAULT OR ONLY ONE ##
+        fetch_getEmailReceiver = self.approver_id.work_email  # self.approver_id.work_email DEFAULT RECEIVER CHANGE IT TO IF YOU WANT ----> IF YOU WANT TO SET AS DEFAULT OR ONLY ONE ##
+        print(self.approver_id.work_email)
         self.sending_email_to_next_approver(fetch_getEmailReceiver, pr_form_link, approval_list_view_url)
 
         self.write({
@@ -515,7 +538,8 @@ class PurchaseOrder(models.Model):
 
         self.generate_odoo_link()
 
-        fetch_getEmailReceiver = 'alex.mercado@teamglac.com'  # self.approver_id.work_email DEFAULT RECEIVER CHANGE IT TO IF YOU WANT ----> IF YOU WANT TO SET AS DEFAULT OR ONLY ONE ##
+        fetch_getEmailReceiver = self.approver_id.work_email  # self.approver_id.work_email DEFAULT RECEIVER CHANGE IT TO IF YOU WANT ----> IF YOU WANT TO SET AS DEFAULT OR ONLY ONE ##
+        print(self.approver_id.work_email)
         self.send_disapproval_email(fetch_getEmailReceiver, PO_form_link)
 
     def send_disapproval_email(self, fetch_getEmailReceiver, PO_form_link):
@@ -555,14 +579,14 @@ class PurchaseOrder(models.Model):
                 </style>
             </head>
             <body>"""
-
+        # TO FIX Disapproval date not getting any value!
         html_content += f"""
         <dt><b>{self.name}</b></dt>
             <br></br>
                 <dd>Purchase Representative: &nbsp;&nbsp;{self.user_id.name if self.user_id.name != False else ""}</dd>
                 <dd>Confirmation Date: &nbsp;&nbsp;{self.date_approve if self.date_approve != False else ""}</dd>
                 <dd>Disapproved by: &nbsp;&nbsp;{self.env.user.name if self.env.user.name != False else ""}</dd>
-                <dd>Disapproval date: &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
+                <dd>Disapproval date: &nbsp;&nbsp;{self.date_today if self.date_today != False else ""}</dd>
                 <dd>Reason for Disapproval: &nbsp;&nbsp;{self.disapproval_reason if self.disapproval_reason != False else ""}</dd>
             <br></br>
             <br></br>
@@ -641,15 +665,9 @@ class PurchaseOrder(models.Model):
                     'message': f'{msg}'}
             }
 
-    def getCount(self):
-        count = 0
-        for rec in self:
-            count = rec.approver_count
-        return count
-
     # PO is approved by final approver
     def submit_to_final_approver(self):
-        fetch_getEmailReceiver = 'alex.mercado@teamglac.com'  # self.approver_id.work_email DEFAULT RECEIVER CHANGE IT TO IF YOU WANT ----> IF YOU WANT TO SET AS DEFAULT OR ONLY ONE ##
+        fetch_getEmailReceiver = self.approver_id.work_email  # self.approver_id.work_email DEFAULT RECEIVER CHANGE IT TO IF YOU WANT ----> IF YOU WANT TO SET AS DEFAULT OR ONLY ONE ##
         self.send_to_final_approver_email(fetch_getEmailReceiver)
 
     def send_to_final_approver_email(self, fetch_getEmailReceiver):
@@ -702,18 +720,18 @@ class PurchaseOrder(models.Model):
         if self.approver_count >= 1:
             html_content += f"""
                 <dd>Initial Approval By: {self.initial_approver_name}</dd>
-                <dd>Initial Approval Date:  &nbsp;&nbsp;{self.current_date if self.current_date != False else ""}</dd>
+                <dd>Initial Approval Date:  &nbsp;&nbsp;{self.date_today if self.date_today != False else ""}</dd>
         """
         if self.approver_count >= 2:
             if self.approver_count == 2:
                 html_content += f"""
                     <dd>{'Final ' if self.approver_count == 2 else 'Second'} Approval By: {self.final_approver_name}</dd>
-                    <dd>{'Final ' if self.approver_count == 2 else 'Second'} Approval Date: {self.current_date if self.current_date != False else ""}</dd>
+                    <dd>{'Final ' if self.approver_count == 2 else 'Second'} Approval Date: {self.date_today if self.date_today != False else ""}</dd>
                     """
             elif self.approver_count > 2:
                 html_content += f"""
                     <dd>Second Approval By: {self.second_approver_name}</dd>
-                    <dd>Second Approval Date: {self.current_date if self.current_date != False else ""}</dd>
+                    <dd>Second Approval Date: {self.date_today if self.date_today != False else ""}</dd>
                 """
             else:
                 return False
@@ -722,12 +740,12 @@ class PurchaseOrder(models.Model):
             if self.approver_count == 3:
                 html_content += f"""
                    <dd>{'Final ' if self.approver_count == 3 else 'Third'} Approval By: {self.final_approver_name}</dd>
-                   <dd>{'Final ' if self.approver_count == 3 else 'Third'} Approval Date: {self.current_date if self.current_date != False else ""}</dd>
+                   <dd>{'Final ' if self.approver_count == 3 else 'Third'} Approval Date: {self.date_today if self.date_today != False else ""}</dd>
                    """
             elif self.approver_count > 3:
                 html_content += f"""
                    <dd>Third Approval By: {self.third_approver_name}</dd>
-                   <dd>Third Approval Date: {self.current_date if self.current_date != False else ""}</dd>
+                   <dd>Third Approval Date: {self.date_today if self.date_today != False else ""}</dd>
                """
             else:
                 return False
@@ -736,12 +754,12 @@ class PurchaseOrder(models.Model):
             if self.approver_count == 4:
                 html_content += f"""
                      <dd>{'Final ' if self.approver_count == 4 else 'Fourth'} Approval By: {self.final_approver_name}</dd>
-                     <dd>{'Final ' if self.approver_count == 4 else 'Fourth'} Approval Date: {self.current_date if self.current_date != False else ""}</dd>
+                     <dd>{'Final ' if self.approver_count == 4 else 'Fourth'} Approval Date: {self.date_today if self.date_today != False else ""}</dd>
                      """
             elif self.approver_count > 4:
                 html_content += f"""
                      <dd>Fourth Approval By: {self.fourth_approver_name}</dd>
-                     <dd>Fourth Approval Date: {self.current_date if self.current_date != False else ""}</dd>
+                     <dd>Fourth Approval Date: {self.date_today if self.date_today != False else ""}</dd>
                  """
             else:
                 return False
@@ -749,7 +767,7 @@ class PurchaseOrder(models.Model):
         if self.approver_count >= 5:
             html_content += f"""
                  <dd>Final Approval By: {self.final_approver_name}</dd>
-                 <dd>Final Approval Date: {self.current_date if self.current_date != False else ""}</dd>
+                 <dd>Final Approval Date: {self.date_today if self.date_today != False else ""}</dd>
              """
 
         html_content += f"""
@@ -899,6 +917,7 @@ class PurchaseOrder(models.Model):
                     approver_dept = [x.second_approver.id for x in res.set_second_approvers]
 
                     self.submit_to_next_approver()
+                    self.getCurrentDate()
 
                     if self.initial_approver_name is None:
                         raise UserError('must set first')
@@ -914,6 +933,8 @@ class PurchaseOrder(models.Model):
                 if rec.approval_stage == 2:
                     approver_dept = [x.third_approver.id for x in res.set_third_approvers]
                     self.submit_to_next_approver()
+                    self.getCurrentDate()
+
                     if self.second_approver_name is None:
                         raise UserError('must set first')
                     else:
@@ -929,6 +950,7 @@ class PurchaseOrder(models.Model):
                 if rec.approval_stage == 3:
                     approver_dept = [x.fourth_approver.id for x in res.set_fourth_approvers]
                     self.submit_to_next_approver()
+                    self.getCurrentDate()
 
                     if self.third_approver_name is None:
                         raise UserError('must set first')
@@ -944,6 +966,8 @@ class PurchaseOrder(models.Model):
 
                 if rec.approval_stage == 4:
                     self.submit_to_next_approver()
+                    self.getCurrentDate()
+
                     approver_dept = [x.fifth_approver.id for x in res.set_fifth_approvers]
 
                     if self.fourth_approver_name is None:
@@ -962,9 +986,9 @@ class PurchaseOrder(models.Model):
                 self.write({
                     'state': 'approved',
                     'approval_status': 'approved',
-                    'final_approver_name': rec.approver_id.name
-
+                    'final_approver_name': rec.approver_id.name,
                 })
+                self.getCurrentDate()
                 print('end of method approved request')
 
     def button_cancel(self):

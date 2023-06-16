@@ -78,7 +78,7 @@
                                 class="oe_highlight"/>
 
                         # PO APPROVE REQUEST BUTTON
-                     <button name="submit_for_approval" type="object"
+                     <button name="getCurrentDate" type="object"
                                                     string="Test"
                                                     class="oe_highlight"/>
 
