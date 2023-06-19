@@ -35,7 +35,7 @@ class PurchaseOrder(models.Model):
     ], string='Status')
 
     disapproval_reason = fields.Char(string="Reason for Disapproval")
-    show_request = fields.Char()
+    # show_request = fields.Char()
     approval_type_id = fields.Many2one('purchase.approval.types')
     approval_id = fields.Many2one('purchase.approval')
     is_approver = fields.Boolean(compute="compute_approver")
@@ -92,7 +92,6 @@ class PurchaseOrder(models.Model):
             if rec.approval_status == 'disapprove' or rec.state == 'disapprove':
                 print('state: Disapprove')
                 self.submit_for_disapproval()
-
             elif rec.approval_status == 'approved' or rec.state == 'approved':
                 print('state: Approved')
                 self.submit_to_final_approver()
@@ -141,8 +140,8 @@ class PurchaseOrder(models.Model):
             "menu_id": menu.id
         }
         query_params = "&".join(f"{key}={value}" for key, value in params.items())
-        pr_form_link = f"{base_url}/web#{query_params}"
-        return pr_form_link
+        PO_form_link = f"{base_url}/web#{query_params}"
+        return PO_form_link
 
     def generate_token(self):
         now = datetime.datetime.now()
@@ -190,13 +189,13 @@ class PurchaseOrder(models.Model):
             "menu_id": odoo_menu.id
         }
         odoo_query_params = "&".join(f"{key}={value}" for key, value in odoo_params.items())
-        pr_form_link = f"{odoo_base_url}/web#{odoo_query_params}"
+        PO_form_link = f"{odoo_base_url}/web#{odoo_query_params}"
 
         self.generate_odoo_link()
         self.approval_dashboard_link()
 
         fetch_getEmailReceiver = self.approver_id.work_email
-        self.sendingEmail(fetch_getEmailReceiver, pr_form_link, approval_list_view_url)
+        self.sendingEmail(fetch_getEmailReceiver, PO_form_link, approval_list_view_url)
 
         self.write({
             'approval_status': 'po_approval',
@@ -205,7 +204,7 @@ class PurchaseOrder(models.Model):
             'show_submit_request': False
         })
 
-    def sendingEmail(self, fetch_getEmailReceiver, pr_form_link, approval_list_view_url):
+    def sendingEmail(self, fetch_getEmailReceiver, PO_form_link, approval_list_view_url):
         sender = 'noreply@teamglac.com'
         host = "192.168.1.114"
         port = 25
@@ -301,7 +300,7 @@ class PurchaseOrder(models.Model):
             <br></br>
             <br></br>
             <br></br>
-            <span style="font-style: italic;";><a href="{approval_url}"  style="color: green;">APPROVE</a> / <a href="{disapproval_url}"  style="color: red;">DISAPPROVE</a> / <a href="{pr_form_link}"  style="color: blue;">ODOO PO FORM
+            <span style="font-style: italic;";><a href="{approval_url}"  style="color: green;">APPROVE</a> / <a href="{disapproval_url}"  style="color: red;">DISAPPROVE</a> / <a href="{PO_form_link}"  style="color: blue;">ODOO PO FORM
             </a> / <a href="{approval_list_view_url}">ODOO APPROVAL DASHBOARD</a></span>
 
             </html>
@@ -331,7 +330,6 @@ class PurchaseOrder(models.Model):
             }
 
         # Next Approver Sending of Email
-
     def submit_to_next_approver(self):
         # Approval Dashboard Link Section
         approval_action = self.env['ir.actions.act_window'].search([('res_model', '=', 'purchase.order')],
@@ -372,14 +370,14 @@ class PurchaseOrder(models.Model):
             "menu_id": odoo_menu.id
         }
         odoo_query_params = "&".join(f"{key}={value}" for key, value in odoo_params.items())
-        pr_form_link = f"{odoo_base_url}/web#{odoo_query_params}"
+        PO_form_link = f"{odoo_base_url}/web#{odoo_query_params}"
 
         self.generate_odoo_link()
         self.approval_dashboard_link()
 
         fetch_getEmailReceiver = self.approver_id.work_email  # self.approver_id.work_email DEFAULT RECEIVER CHANGE IT TO IF YOU WANT ----> IF YOU WANT TO SET AS DEFAULT OR ONLY ONE ##
-        print(self.approver_id.work_email)
-        self.sending_email_to_next_approver(fetch_getEmailReceiver, pr_form_link, approval_list_view_url)
+        print(fetch_getEmailReceiver)
+        self.sending_email_to_next_approver(fetch_getEmailReceiver, PO_form_link, approval_list_view_url)
 
         self.write({
             'approval_status': 'po_approval',
@@ -388,7 +386,7 @@ class PurchaseOrder(models.Model):
             'show_submit_request': False
         })
 
-    def sending_email_to_next_approver(self, fetch_getEmailReceiver, pr_form_link, approval_list_view_url):
+    def sending_email_to_next_approver(self, fetch_getEmailReceiver, PO_form_link, approval_list_view_url):
         sender = 'noreply@teamglac.com'
         host = "192.168.1.114"
         port = 25
@@ -485,7 +483,7 @@ class PurchaseOrder(models.Model):
             <br></br>
             <br></br>
             <br></br>
-            <span style="font-style: italic;";><a href="{approval_url}"  style="color: green;">APPROVE</a> / <a href="{disapproval_url}"  style="color: red;">DISAPPROVE</a> / <a href="{pr_form_link}"  style="color: blue;">ODOO PO FORM
+            <span style="font-style: italic;";><a href="{approval_url}"  style="color: green;">APPROVE</a> / <a href="{disapproval_url}"  style="color: red;">DISAPPROVE</a> / <a href="{PO_form_link}"  style="color: blue;">ODOO PO FORM
             </a> / <a href="{approval_list_view_url}">ODOO APPROVAL DASHBOARD</a></span>
 
             </html>
@@ -583,6 +581,7 @@ class PurchaseOrder(models.Model):
         html_content += f"""
         <dt><b>{self.name}</b></dt>
             <br></br>
+                <dd style='display: none;'>{self.getCurrentDate()}</d>
                 <dd>Purchase Representative: &nbsp;&nbsp;{self.user_id.name if self.user_id.name != False else ""}</dd>
                 <dd>Confirmation Date: &nbsp;&nbsp;{self.date_approve if self.date_approve != False else ""}</dd>
                 <dd>Disapproved by: &nbsp;&nbsp;{self.env.user.name if self.env.user.name != False else ""}</dd>
@@ -637,7 +636,7 @@ class PurchaseOrder(models.Model):
             <br></br>
             <br></br>
             <br></br>
-            <span> <a href="{PO_form_link}" style="color: blue;">ODOO PR FORM</span>
+            <span> <a href="{PO_form_link}" style="color: blue;">ODOO PO FORM</span>
 
             </html>
         """
@@ -909,78 +908,82 @@ class PurchaseOrder(models.Model):
         for rec in self:
             res = self.env["department.approvers"].search(
                 [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Orders')])
+            print('Initial ', self.initial_approver_name)
 
             if rec.approver_id and rec.approval_stage < res.no_of_approvers:
-
-                print(self.initial_approver_name)
                 if rec.approval_stage == 1:
-                    approver_dept = [x.second_approver.id for x in res.set_second_approvers]
-
-                    self.submit_to_next_approver()
-                    self.getCurrentDate()
 
                     if self.initial_approver_name is None:
-                        raise UserError('must set first')
+                        raise UserError('No approver set')
                     else:
                         self.initial_approver_name = rec.approver_id.name
+                        print('Initial ', self.initial_approver_name)
 
-                    print(self.initial_approver_name)
-                    print('received by 2nd approver and email sent to next approver')
+                    approver_dept = [x.second_approver.id for x in res.set_second_approvers]
+
                     self.write({
                         'approver_id': approver_dept[0]
                     })
 
-                if rec.approval_stage == 2:
-                    approver_dept = [x.third_approver.id for x in res.set_third_approvers]
                     self.submit_to_next_approver()
                     self.getCurrentDate()
 
+                print('received by 2nd approver and email sent to next approver')
+
+                if rec.approval_stage == 2:
                     if self.second_approver_name is None:
                         raise UserError('must set first')
                     else:
                         self.second_approver_name = rec.approver_id.name
-
-                    print(self.second_approver_name)
-                    print('received by 3rd approver and email sent to next approver')
+                    approver_dept = [x.third_approver.id for x in res.set_third_approvers]
 
                     self.write({
                         'approver_id': approver_dept[0]
                     })
 
-                if rec.approval_stage == 3:
-                    approver_dept = [x.fourth_approver.id for x in res.set_fourth_approvers]
                     self.submit_to_next_approver()
                     self.getCurrentDate()
 
+
+                    print(self.second_approver_name)
+                    print('received by 3rd approver and email sent to next approver')
+
+                if rec.approval_stage == 3:
                     if self.third_approver_name is None:
                         raise UserError('must set first')
                     else:
                         self.third_approver_name = rec.approver_id.name
 
-                    print(self.third_approver_name)
-                    print('received by 4th approver and email sent to next approver')
+                    approver_dept = [x.fourth_approver.id for x in res.set_fourth_approvers]
 
                     self.write({
                         'approver_id': approver_dept[0]
                     })
 
-                if rec.approval_stage == 4:
                     self.submit_to_next_approver()
                     self.getCurrentDate()
 
-                    approver_dept = [x.fifth_approver.id for x in res.set_fifth_approvers]
+                    print(self.third_approver_name)
+                    print('received by 4th approver and email sent to next approver')
 
+                if rec.approval_stage == 4:
                     if self.fourth_approver_name is None:
                         raise UserError('must set first')
                     else:
                         self.fourth_approver_name = rec.approver_id.name
 
-                    print(self.fourth_approver_name)
-                    print('received by 4th approver and email sent to next approver')
+                    approver_dept = [x.fifth_appover.id for x in res.set_fifth_approvers]
 
                     self.write({
                         'approver_id': approver_dept[0]
                     })
+
+                    self.submit_to_next_approver()
+                    self.getCurrentDate()
+
+                    print(self.fourth_approver_name)
+                    print('received by 4th approver and email sent to next approver')
+
                 rec.approval_stage += 1
             else:
                 self.write({

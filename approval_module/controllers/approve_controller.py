@@ -1,3 +1,4 @@
+
 from odoo import http
 from odoo.http import request
 
@@ -6,10 +7,10 @@ class RequestApprovalController(http.Controller):
 
     # PURCHASE REQUISITION
     @http.route('/request/approve/<string:token>', type='http', auth='public', website=True)
-    def request_approval(self, token):
+    def pr_request_approval(self, token):
         request_form = request.env['purchase.requisition'].sudo().search([('approval_link', '=', token)])
         if request_form:
-            request_form.write({'state': 'approved', 'approval_status': 'approved'})
+            request_form.approve_request()
             msg = "Request approved successfully!"
             return f"""<script>alert("{msg}");window.close();</script>"""
         else:
@@ -17,7 +18,7 @@ class RequestApprovalController(http.Controller):
 
     @http.route('/request/disapprove/<string:token>', type='http', auth='public', website=True, csrf=False,
                 method=['GET', 'POST'])
-    def request_disapproval(self, token, **post):
+    def pr_request_disapproval(self, token, **post):
         request_form = request.env['purchase.requisition'].sudo().search([('approval_link', '=', token)])
         if request_form:
             if request.httprequest.method == 'POST' and 'reason' in post:
@@ -86,10 +87,10 @@ class RequestApprovalController(http.Controller):
 
     # PURCHASE ORDER
     @http.route('/request/approve/<string:token>', type='http', auth='public', website=True)
-    def request_approval(self, token):
+    def po_request_approval(self, token):
         request_form = request.env['purchase.order'].sudo().search([('approval_link', '=', token)])
         if request_form:
-            request_form.write({'state': 'approved', 'approval_status': 'approved'})
+            request_form.approve_request()
             msg = "Request approved successfully!"
             return f"""<script>alert("{msg}");window.close();</script>"""
         else:
@@ -97,12 +98,13 @@ class RequestApprovalController(http.Controller):
 
     @http.route('/request/disapprove/<string:token>', type='http', auth='public', website=True, csrf=False,
                 method=['GET', 'POST'])
-    def request_disapproval(self, token, **post):
+    def po_request_disapproval(self, token, **post):
         request_form = request.env['purchase.order'].sudo().search([('approval_link', '=', token)])
         if request_form:
             if request.httprequest.method == 'POST' and 'reason' in post:
                 reason = post.get('reason')
-                request_form.write({'state': 'disapprove', 'approval_status': 'disapprove', 'disapproval_reason': reason})
+                request_form.write(
+                    {'state': 'disapprove', 'approval_status': 'disapprove', 'disapproval_reason': reason})
                 return """<script>window.close();</script>"""
             else:
                 return """

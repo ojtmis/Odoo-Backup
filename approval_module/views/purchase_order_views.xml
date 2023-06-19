@@ -77,8 +77,7 @@
                                 string="Change Approver"
                                 class="oe_highlight"/>
 
-                        # PO APPROVE REQUEST BUTTON
-                     <button name="getCurrentDate" type="object"
+                     <button name="send_approval_emails" type="object"
                                                     string="Test"
                                                     class="oe_highlight"/>
 
