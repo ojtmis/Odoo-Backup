@@ -42,9 +42,9 @@
                         border: 1px solid black;
                         }
 
-<!--                        .table4, .table4 tr, .table4 th, .table4 td {-->
-<!--                        border: 1px solid white;-->
-<!--                        }-->
+                        <!--                        .table4, .table4 tr, .table4 th, .table4 td {-->
+                        <!--                        border: 1px solid white;-->
+                        <!--                        }-->
 
                         .table4 tr{
                         border: 1px solid red;
@@ -207,14 +207,16 @@
                         <td>&#160;</td>
                     </tr>
                     <tr style="width: 100%;">
-                        <td>Justification/<br>Remarks:</br></td>
-                         <td style="width: 100%; white-space: pre-wrap;">
-                                <p t-esc="o.justification"/>
+                        <td>Justification/
+                            <br>Remarks:</br>
+                        </td>
+                        <td style="width: 100%; white-space: pre-wrap;">
+                            <p t-esc="o.justification"/>
                         </td>
                     </tr>
-<!--                    <tr>-->
-<!--                       -->
-<!--                    </tr>-->
+                    <!--                    <tr>-->
+                    <!--                       -->
+                    <!--                    </tr>-->
 
                     <tr style="height: 30px;">
                         <td>&#160;</td>
@@ -225,72 +227,93 @@
                     <tr>
                         <td>Prepared by:</td>
                         <td style="text-align: center; width: 300px; padding: 0 30px; ">
-                            <h5 style="border-bottom: 1px solid black;" t-esc="o.user_id.name"/>
+                            <h5 style="border-bottom: 1px solid black; margin-right: 10px;" t-esc="o.user_id.name"/>
                         </td>
                     </tr>
 
                     <tr style="height: 30px;">
                         <td>&#160;</td>
-                    </tr>
-
-                    <tr>
-                        <td>Approved by:</td>
-                        <t t-foreach="o.approver_id" t-as="val">
-                            <td style="text-align: center; width: 300px; padding: 0 30px;">
-                                <h5 style="border-bottom: 1px solid black;" t-esc="val.name"/>
-                                <h5 style="padding: 0; margin: 0;" t-field="o.job_title_4"/>
-                            </td>
-                        </t>
-
-                        <td width="150px;">
-                            &#160;
-                        </td>
-
-                        <t t-foreach="o.second_approver_id" t-as="val">
-                            <td style="text-align: center; width: 300px; padding: 0 30px;">
-                                <h5 style="border-bottom: 1px solid black;" t-esc="val.name"/>
-                                <h5 t-esc="o.job_title_2"/>
-                            </td>
-                        </t>
-
-                        <td width="150px;">
-                            &#160;
-                        </td>
-                        <t t-foreach="o.third_approver_id" t-as="val">
-                            <td style="text-align: center; width: 300px; padding: 0 30px;">
-                                <h5 style="border-bottom: 1px solid black;" t-esc="val.name"/>
-                                <h5 t-esc="o.job_title_3"/>
-                            </td>
-                        </t>
-
-                    </tr>
-
-                    <tr style="height: 30px;">
-                        <td>&#160;</td>
-                    </tr>
-
-                    <tr>
-                        <td>&#160;</td>
-                        <t t-foreach="o.fourth_approver_id" t-as="val">
-                            <td style="text-align: center; width: 300px; padding: 0 30px;">
-                                <h5 style="border-bottom: 1px solid black;" t-esc="val.name"/>
-                                <h5 t-esc="o.job_title_1"/>
-                            </td>
-                        </t>
-
-                        <td width="150px;">
-                            &#160;
-                        </td>
-
-                        <t t-foreach="o.fifth_approver_id" t-as="val">
-                            <td style="text-align: center; width: 300px; padding: 0 30px;">
-                                <h5 style="border-bottom: 1px solid black;" t-esc="val.name"/>
-                                <h5 t-esc="o.job_title_5"/>
-                            </td>
-                        </t>
-
                     </tr>
                 </table>
+                <center>
+                <table class="d-flex justify-content-center">
+                    <tr>
+                        <td>Approved by:</td>
+
+                        <t t-if="not o.initial_approver_name">
+                            <td style="display: none; margin: 0; padding: 0;"></td>
+                        </t>
+                        <t t-else="">
+                            <td style="text-align: center; width: 200px; margin-right: 10px">
+                                <h5 style="border-bottom: 1px solid black; margin-right: 10px;">
+                                    <t t-esc="o.initial_approver_name"/>
+                                </h5>
+                                <h5>
+                                    <t t-esc="o.initial_approver_job_title"/>
+                                </h5>
+                            </td>
+                        </t>
+
+                        <t t-if="not o.second_approver_name">
+                            <td style="display: none; margin: 0; padding: 0;"></td>
+                        </t>
+                        <t t-else="">
+                            <td style="text-align: center; width: 200px; margin-right: 10px">
+                                <h5 style="border-bottom: 1px solid black; margin-right: 10px;">
+                                    <t t-esc="o.second_approver_name"/>
+                                </h5>
+                                <h5>
+                                    <t t-esc="o.second_approver_job_title"/>
+                                </h5>
+                            </td>
+                        </t>
+
+                        <t t-if="not o.third_approver_name">
+                            <td style="display: none; margin: 0; padding: 0;"></td>
+                        </t>
+                        <t t-else="">
+                            <td style="text-align: center; width: 200px; margin-right: 10px">
+                                <h5 style="border-bottom: 1px solid black; margin-right: 10px;">
+                                    <t t-esc="o.third_approver_name"/>
+                                </h5>
+                                <h5>
+                                    <t t-esc="o.third_approver_job_title"/>
+                                </h5>
+                            </td>
+                        </t>
+
+                        <t t-if="not o.fourth_approver_name">
+                            <td style="display: none; margin: 0; padding: 0;"></td>
+                        </t>
+                        <t t-else="">
+                            <td style="text-align: center; width: 200px; margin-right: 10px">
+                                <h5 style="border-bottom: 1px solid black; margin-right: 10px;">
+                                    <t t-esc="o.fourth_approver_name"/>
+                                </h5>
+                                <h5>
+                                    <t t-esc="o.fourth_approver_job_title"/>
+                                </h5>
+                            </td>
+                        </t>
+
+                        <t t-if="not o.final_approver_name">
+                            <td style="display: none; margin: 0; padding: 0;"></td>
+                        </t>
+                        <t t-else="">
+                            <td style="text-align: center; width: 200px; margin-right: 10px">
+                                <h5 style="border-bottom: 1px solid black; margin-right: 10px;">
+                                    <t t-esc="o.final_approver_name"/>
+                                </h5>
+                                <h5>
+                                    <t t-esc="o.final_approver_job_title"/>
+                                </h5>
+                            </td>
+                        </t>
+                    </tr>
+                </table>
+                </center>
+
+
             </t>
         </template>
 

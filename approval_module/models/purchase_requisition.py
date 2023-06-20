@@ -49,6 +49,37 @@ class PurchaseOrder(models.Model):
     approver_count = fields.Integer(compute='_compute_approver_count', store=True)
     date_today = fields.Char()
 
+    initial_approver_job_title = fields.Char(compute='get_approver_title', store=True)
+    second_approver_job_title = fields.Char(compute='get_approver_title', store=True)
+    third_approver_job_title  = fields.Char(compute='get_approver_title', store=True)
+    fourth_approver_job_title  = fields.Char(compute='get_approver_title', store=True)
+    final_approver_job_title  = fields.Char(compute='get_approver_title', store=True)
+
+    @api.depends('initial_approver_name', 'second_approver_name', 'third_approver_name', 'fourth_approver_name',
+                 'final_approver_name')
+    def get_approver_title(self):
+        for record in self:
+            if record.initial_approver_name:
+                approver = self.env['hr.employee'].search([('name', '=', record.initial_approver_name)], limit=1)
+                record.initial_approver_job_title = approver.job_title if approver else False
+
+            if record.second_approver_name:
+                approver = self.env['hr.employee'].search([('name', '=', record.second_approver_name)], limit=1)
+                record.second_approver_job_title = approver.job_title if approver else False
+
+            if record.third_approver_name:
+                approver = self.env['hr.employee'].search([('name', '=', record.third_approver_name)], limit=1)
+                record.third_approver_job_title = approver.job_title if approver else False
+
+            if record.fourth_approver_name:
+                approver = self.env['hr.employee'].search([('name', '=', record.fourth_approver_name)], limit=1)
+                record.fourth_approver_job_title = approver.job_title if approver else False
+
+            if record.final_approver_name:
+                approver = self.env['hr.employee'].search([('name', '=', record.final_approver_name)], limit=1)
+                record.final_approver_job_title = approver.job_title if approver else False
+
+
     # this retrieves the current date, formats it as day-month-year, and assigns the formatted date
     def getCurrentDate(self):
         date_now = datetime.datetime.now()
@@ -966,7 +997,7 @@ class PurchaseOrder(models.Model):
                     else:
                         self.fourth_approver_name = rec.approver_id.name
 
-                    approver_dept = [x.fifth_appover.id for x in res.set_fifth_approvers]
+                    approver_dept = [x.fifth_approver.id for x in res.set_fifth_approvers]
 
                     self.write({
                         'approver_id': approver_dept[0]
