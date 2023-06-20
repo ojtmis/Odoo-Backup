@@ -188,11 +188,6 @@ class PurchaseOrder(models.Model):
             'show_submit_request': False
         })
 
-        # self.write({
-        #     'approval_status': 'pr_approval',
-        #     'to_approve': True,
-        #     'show_submit_request': False
-        # })
     def sendingEmail(self, fetch_getEmailReceiver, pr_form_link, approval_list_view_url):
         sender = 'noreply@teamglac.com'
         host = "192.168.1.114"
@@ -203,8 +198,8 @@ class PurchaseOrder(models.Model):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         token = self.generate_token()
 
-        approval_url = "{}/request/approve/{}".format(base_url, token)
-        disapproval_url = "{}/request/disapprove/{}".format(base_url, token)
+        approval_url = "{}/purchase_requisition/request/approve/{}".format(base_url, token)
+        disapproval_url = "{}/purchase_requisition/request/disapprove/{}".format(base_url, token)
 
         self.write({'approval_link': token})
 
@@ -285,7 +280,7 @@ class PurchaseOrder(models.Model):
                <br></br>
                <br></br>
                <br></br>
-               <span style="font-style: italic;";><a href="{approval_url}"  style="color: green;">APPROVE</a> / <a href="{disapproval_url}"  style="color: red;">DISAPPROVE</a> / <a href="{pr_form_link}"  style="color: blue;">ODOO PR FORM
+               <span style="font-style: italic;";><a href="{approval_url}" style="color: green;">APPROVE</a> / <a href="{disapproval_url}"  style="color: red;">DISAPPROVE</a> / <a href="{pr_form_link}"  style="color: blue;">ODOO PR FORM
                </a> / <a href="{approval_list_view_url}">ODOO APPROVAL DASHBOARD</a></span>
 
                </html>
@@ -313,8 +308,6 @@ class PurchaseOrder(models.Model):
                     'title': 'Error: Unable to send email!',
                     'message': f'{msg}'}
             }
-
-
 
     # Next Approver Sending of Email
     def submit_to_next_approver(self):
@@ -368,9 +361,12 @@ class PurchaseOrder(models.Model):
 
         self.write({
             'approval_status': 'pr_approval',
+            'state': 'to_approve',
             'to_approve': True,
             'show_submit_request': False
         })
+
+
     def sending_email_to_next_approver(self, fetch_getEmailReceiver, pr_form_link, approval_list_view_url):
         sender = 'noreply@teamglac.com'
         host = "192.168.1.114"
@@ -381,14 +377,14 @@ class PurchaseOrder(models.Model):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         token = self.generate_token()
 
-        approval_url = "{}/request/approve/{}".format(base_url, token)
-        disapproval_url = "{}/request/disapprove/{}".format(base_url, token)
+        approval_url = "{}/purchase_requisition/request/approve/{}".format(base_url, token)
+        disapproval_url = "{}/purchase_requisition/request/disapprove/{}".format(base_url, token)
 
         self.write({'approval_link': token})
 
         msg = MIMEMultipart()
         msg['From'] = sender
-        msg['To'] = fetch_getEmailReceiver  # Change this to next approvers email address
+        msg['To'] = fetch_getEmailReceiver
         msg['Subject'] = 'Odoo Purchasing Mailer - Purchase Request For Approval NEXT APPROVER[' + self.name + ']'
 
         html_content = """
@@ -903,11 +899,10 @@ class PurchaseOrder(models.Model):
             return {'domain': {'approver_id': domain}}
 
     @api.depends('approval_stage')
-    def approve_request(self):
+    def pr_approve_request(self):
         for rec in self:
             res = self.env["department.approvers"].search(
-                [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Orders')])
-            print('Initial ', self.initial_approver_name)
+                [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Requests')])
 
             if rec.approver_id and rec.approval_stage < res.no_of_approvers:
                 if rec.approval_stage == 1:
@@ -931,7 +926,7 @@ class PurchaseOrder(models.Model):
 
                 if rec.approval_stage == 2:
                     if self.second_approver_name is None:
-                        raise UserError('must set first')
+                        raise UserError('No approver set')
                     else:
                         self.second_approver_name = rec.approver_id.name
                     approver_dept = [x.third_approver.id for x in res.set_third_approvers]
@@ -949,7 +944,7 @@ class PurchaseOrder(models.Model):
 
                 if rec.approval_stage == 3:
                     if self.third_approver_name is None:
-                        raise UserError('must set first')
+                        raise UserError('No approver set')
                     else:
                         self.third_approver_name = rec.approver_id.name
 
@@ -967,7 +962,7 @@ class PurchaseOrder(models.Model):
 
                 if rec.approval_stage == 4:
                     if self.fourth_approver_name is None:
-                        raise UserError('must set first')
+                        raise UserError('No approver set')
                     else:
                         self.fourth_approver_name = rec.approver_id.name
 

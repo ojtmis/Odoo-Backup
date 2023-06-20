@@ -73,7 +73,7 @@
                                 states='to_approve'
                                 string="Change Approver"
                                 class="oe_highlight"/>
-                        <button name="approve_request" type="object"
+                        <button name="pr_approve_request" type="object"
                                 string="Approve Request"
                                 class="oe_highlight"
                                 attrs="{'invisible': ['|', ('approval_status', '!=', 'pr_approval'), ('is_approver', '=', False)]}"/>

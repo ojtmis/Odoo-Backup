@@ -1,22 +1,21 @@
-
 from odoo import http
 from odoo.http import request
 
+INVALID_LINK = "Invalid approval link!"
 
 class RequestApprovalController(http.Controller):
-
     # PURCHASE REQUISITION
-    @http.route('/request/approve/<string:token>', type='http', auth='public', website=True)
+    @http.route('/purchase_requisition/request/approve/<string:token>', type='http', auth='public', website=True)
     def pr_request_approval(self, token):
         request_form = request.env['purchase.requisition'].sudo().search([('approval_link', '=', token)])
         if request_form:
-            request_form.approve_request()
+            request_form.pr_approve_request()
             msg = "Request approved successfully!"
             return f"""<script>alert("{msg}");window.close();</script>"""
         else:
-            return "Invalid approval link!"
+            return INVALID_LINK
 
-    @http.route('/request/disapprove/<string:token>', type='http', auth='public', website=True, csrf=False,
+    @http.route('/purchase_requisition/request/disapprove/<string:token>', type='http', auth='public', website=True, csrf=False,
                 method=['GET', 'POST'])
     def pr_request_disapproval(self, token, **post):
         request_form = request.env['purchase.requisition'].sudo().search([('approval_link', '=', token)])
@@ -83,10 +82,10 @@ class RequestApprovalController(http.Controller):
                     </html>
                     """
         else:
-            return "Invalid approval link!"
+            return INVALID_LINK
 
     # PURCHASE ORDER
-    @http.route('/request/approve/<string:token>', type='http', auth='public', website=True)
+    @http.route('/purchase_order/request/approve/<string:token>', type='http', auth='public', website=True)
     def po_request_approval(self, token):
         request_form = request.env['purchase.order'].sudo().search([('approval_link', '=', token)])
         if request_form:
@@ -94,9 +93,9 @@ class RequestApprovalController(http.Controller):
             msg = "Request approved successfully!"
             return f"""<script>alert("{msg}");window.close();</script>"""
         else:
-            return "Invalid approval link!"
+            return INVALID_LINK
 
-    @http.route('/request/disapprove/<string:token>', type='http', auth='public', website=True, csrf=False,
+    @http.route('/purchase_order/request/disapprove/<string:token>', type='http', auth='public', website=True, csrf=False,
                 method=['GET', 'POST'])
     def po_request_disapproval(self, token, **post):
         request_form = request.env['purchase.order'].sudo().search([('approval_link', '=', token)])
@@ -118,7 +117,7 @@ class RequestApprovalController(http.Controller):
                         </head>
                         <body>
                             <div class="container">
-                                <div class="justify-content-center"> 
+                                <div class="justify-content-center">
                                     <div class="modal" tabindex="-1" id="modal-show">
                                         <div class="modal-dialog">
                                           <div class="modal-content">
@@ -138,7 +137,7 @@ class RequestApprovalController(http.Controller):
                                       </div>
                                 </div>
                             </div>
-    
+
                         </body>
                         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
                         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js" integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc" crossorigin="anonymous"></script>
@@ -146,7 +145,7 @@ class RequestApprovalController(http.Controller):
                         <script>
                             $(document).ready(function(){
                                 $('#modal-show').show()
-    
+
                             $('#saved-btn').click(function(){
                                 var text_area = $('#text-area').val()
                                 if(text_area == ''){
@@ -158,10 +157,11 @@ class RequestApprovalController(http.Controller):
                                     console.log(text_area)
                                 }
                             })
-    
+
                             });
                         </script>
                         </html>
                         """
         else:
-            return "Invalid approval link!"
+            return INVALID_LINK
+

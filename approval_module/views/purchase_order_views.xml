@@ -77,9 +77,9 @@
                                 string="Change Approver"
                                 class="oe_highlight"/>
 
-                     <button name="send_approval_emails" type="object"
-                                                    string="Test"
-                                                    class="oe_highlight"/>
+<!--                     <button name="send_approval_emails" type="object"-->
+<!--                                                    string="Test"-->
+<!--                                                    class="oe_highlight"/>-->
 
                         <button name="approve_request" type="object"
                                 string="Approve Request"

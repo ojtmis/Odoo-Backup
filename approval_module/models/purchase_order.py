@@ -110,7 +110,7 @@ class PurchaseOrder(models.Model):
 
         menu = self.env['ir.ui.menu'].search([('action', '=', result)], limit=1)
         params = {
-            "action": 1197,
+            "action": 1199,
             "model": "purchase.order",
             "view_type": "list",
             "cids": "",
@@ -214,8 +214,8 @@ class PurchaseOrder(models.Model):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         token = self.generate_token()
 
-        approval_url = "{}/request/approve/{}".format(base_url, token)
-        disapproval_url = "{}/request/disapprove/{}".format(base_url, token)
+        approval_url = "{}/purchase_order/request/approve/{}".format(base_url, token)
+        disapproval_url = "{}/purchase_order/request/disapprove/{}".format(base_url, token)
 
         self.write({'approval_link': token})
 
@@ -396,14 +396,14 @@ class PurchaseOrder(models.Model):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         token = self.generate_token()
 
-        approval_url = "{}/request/approve/{}".format(base_url, token)
-        disapproval_url = "{}/request/disapprove/{}".format(base_url, token)
+        approval_url = "{}/purchase_order/request/approve/{}".format(base_url, token)
+        disapproval_url = "{}/purchase_order/request/disapprove/{}".format(base_url, token)
 
         self.write({'approval_link': token})
 
         msg = MIMEMultipart()
         msg['From'] = sender
-        msg['To'] = fetch_getEmailReceiver  # Change this to next approvers email address
+        msg['To'] = fetch_getEmailReceiver
         msg['Subject'] = 'Odoo Purchasing Mailer - Purchase Order For Approval NEXT APPROVER[' + self.name + ']'
 
         html_content = """
