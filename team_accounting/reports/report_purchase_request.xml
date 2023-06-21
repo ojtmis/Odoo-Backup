@@ -98,35 +98,35 @@
                     <tr style="text-align:left; ">
                         <td style="font-weight: normal;">Date created:</td>
                         <td style="font-weight: normal;">
-                            <u>
+
                                 <span t-field="o.ordering_date" t-options='{"widget": "date","format": "MM/dd/yyyy"}'/>
-                            </u>
+
                         </td>
                         <td></td>
                         <td style="font-weight: normal;">PR #:</td>
                         <td style="font-weight: normal; ">
-                            <u>
+
                                 <span t-esc="o.name"/>
-                            </u>
+
                         </td>
                     </tr>
 
                     <tr style="text-align:left;">
                         <td style="font-weight: normal;">Date needed:&#xD;Delivery date:</td>
                         <td style="font-weight: normal;">
-                            <u>
+
                                 <h5 style="margin: 0; padding: 0;" t-field="o.date_end"
                                     t-options='{"widget": "date","format": "MM/dd/yyyy"}'/>
                                 <h5 style="margin-top: 5px; padding: 0;" t-field="o.schedule_date"
                                     t-options='{"widget": "date","format": "MM/dd/yyyy"}'/>
-                            </u>
+
                         </td>
                         <td></td>
                         <td style="font-weight: normal; ">Vendor:</td>
                         <td style="font-weight: normal;">
-                            <u>
+
                                 <span t-esc="o.vendor_id.name"/>
-                            </u>
+
                         </td>
                     </tr>
 
@@ -223,11 +223,11 @@
                     </tr>
                 </table>
 
-                <table class="table5">
+                <table class="d-flex justify-content-center">
                     <tr>
-                        <td>Prepared by:</td>
-                        <td style="text-align: center; width: 300px; padding: 0 30px; ">
-                            <h5 style="border-bottom: 1px solid black; margin-right: 10px;" t-esc="o.user_id.name"/>
+                        <td style="width: 120px;">Prepared by:</td>
+                        <td style="text-align: center; width: 300px;">
+                            <h5 style="border-bottom: 1px solid black; margin:0 25px;" t-esc="o.user_id.name"/>
                         </td>
                     </tr>
 
@@ -235,83 +235,62 @@
                         <td>&#160;</td>
                     </tr>
                 </table>
-                <center>
+
                 <table class="d-flex justify-content-center">
                     <tr>
-                        <td>Approved by:</td>
+                        <td style="width: 120px;">Approved by:</td>
 
-                        <t t-if="not o.initial_approver_name">
-                            <td style="display: none; margin: 0; padding: 0;"></td>
-                        </t>
-                        <t t-else="">
-                            <td style="text-align: center; width: 200px; margin-right: 10px">
-                                <h5 style="border-bottom: 1px solid black; margin-right: 10px;">
-                                    <t t-esc="o.initial_approver_name"/>
-                                </h5>
-                                <h5>
-                                    <t t-esc="o.initial_approver_job_title"/>
-                                </h5>
-                            </td>
-                        </t>
+                        <td t-if="not o.initial_approver_name" style="display: none; margin: 0; padding: 0;"></td>
+                        <td t-else="" style="text-align: center; width: 300px; margin:0 25px">
+                            <h5 style="border-bottom: 1px solid black; margin:0 25px;">
+                                <t t-esc="o.initial_approver_name"/>
+                            </h5>
+                            <h5>
+                                <t t-esc="o.initial_approver_job_title"/>
+                            </h5>
+                        </td>
 
-                        <t t-if="not o.second_approver_name">
-                            <td style="display: none; margin: 0; padding: 0;"></td>
-                        </t>
-                        <t t-else="">
-                            <td style="text-align: center; width: 200px; margin-right: 10px">
-                                <h5 style="border-bottom: 1px solid black; margin-right: 10px;">
-                                    <t t-esc="o.second_approver_name"/>
-                                </h5>
-                                <h5>
-                                    <t t-esc="o.second_approver_job_title"/>
-                                </h5>
-                            </td>
-                        </t>
+                        <td t-if="not o.second_approver_name" style="display: none; margin: 0; padding: 0;"></td>
+                        <td t-else="" style="text-align: center; width: 300px; margin:0 25px">
+                            <h5 style="border-bottom: 1px solid black; margin:0 25px;">
+                                <t t-esc="o.second_approver_name"/>
+                            </h5>
+                            <h5>
+                                <t t-esc="o.second_approver_job_title"/>
+                            </h5>
+                        </td>
 
-                        <t t-if="not o.third_approver_name">
-                            <td style="display: none; margin: 0; padding: 0;"></td>
-                        </t>
-                        <t t-else="">
-                            <td style="text-align: center; width: 200px; margin-right: 10px">
-                                <h5 style="border-bottom: 1px solid black; margin-right: 10px;">
-                                    <t t-esc="o.third_approver_name"/>
-                                </h5>
-                                <h5>
-                                    <t t-esc="o.third_approver_job_title"/>
-                                </h5>
-                            </td>
-                        </t>
+                        <td t-if="not o.third_approver_name" style="display: none; margin: 0; padding: 0;"></td>
+                        <td t-else="" style="text-align: center; width: 300px; margin:0 25px">
+                            <h5 style="border-bottom: 1px solid black; margin:0 25px;">
+                                <t t-esc="o.third_approver_name"/>
+                            </h5>
+                            <h5>
+                                <t t-esc="o.third_approver_job_title"/>
+                            </h5>
+                        </td>
 
-                        <t t-if="not o.fourth_approver_name">
-                            <td style="display: none; margin: 0; padding: 0;"></td>
-                        </t>
-                        <t t-else="">
-                            <td style="text-align: center; width: 200px; margin-right: 10px">
-                                <h5 style="border-bottom: 1px solid black; margin-right: 10px;">
-                                    <t t-esc="o.fourth_approver_name"/>
-                                </h5>
-                                <h5>
-                                    <t t-esc="o.fourth_approver_job_title"/>
-                                </h5>
-                            </td>
-                        </t>
+                        <td t-if="not o.fourth_approver_name" style="display: none; margin: 0; padding: 0;"></td>
+                        <td t-else="" style="text-align: center; width: 300px; margin:0 25px">
+                            <h5 style="border-bottom: 1px solid black; margin:0 25px;">
+                                <t t-esc="o.fourth_approver_name"/>
+                            </h5>
+                            <h5>
+                                <t t-esc="o.fourth_approver_job_title"/>
+                            </h5>
+                        </td>
 
-                        <t t-if="not o.final_approver_name">
-                            <td style="display: none; margin: 0; padding: 0;"></td>
-                        </t>
-                        <t t-else="">
-                            <td style="text-align: center; width: 200px; margin-right: 10px">
-                                <h5 style="border-bottom: 1px solid black; margin-right: 10px;">
-                                    <t t-esc="o.final_approver_name"/>
-                                </h5>
-                                <h5>
-                                    <t t-esc="o.final_approver_job_title"/>
-                                </h5>
-                            </td>
-                        </t>
+                        <td t-if="not o.final_approver_name" style="display: none; margin: 0; padding: 0;"></td>
+                        <td t-else="" style="text-align: center; width: 300px; margin:0 25px">
+                            <h5 style="border-bottom: 1px solid black; margin:0 25px;">
+                                <t t-esc="o.final_approver_name"/>
+                            </h5>
+                            <h5>
+                                <t t-esc="o.final_approver_job_title"/>
+                            </h5>
+                        </td>
                     </tr>
                 </table>
-                </center>
 
 
             </t>
