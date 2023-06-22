@@ -7,6 +7,8 @@ import time
 from datetime import timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.utils import formataddr
+
 from email.policy import default
 from odoo.tools import date_utils
 
@@ -54,6 +56,12 @@ class PurchaseOrder(models.Model):
 
     date_today = fields.Char()
 
+    initial_approver_email = fields.Char(compute='get_approver_email', store=True)
+    second_approver_email = fields.Char(compute='get_approver_email', store=True)
+    third_approver_email = fields.Char(compute='get_approver_email', store=True)
+    fourth_approver_email = fields.Char(compute='get_approver_email', store=True)
+    final_approver_email = fields.Char(compute='get_approver_email', store=True)
+
     # This function get the datetime today and convert it to 12-hour format
     # def getCurrentDate(self):
     #     date_todaytime = datetime.datetime.now() + timedelta(hours=8)
@@ -66,10 +74,34 @@ class PurchaseOrder(models.Model):
     #     self.date_today = formatted_datetime
     #     print(self.date_today)
 
+    @api.depends('initial_approver_name', 'second_approver_name', 'third_approver_name', 'fourth_approver_name',
+                 'final_approver_name')
+    def get_approver_email(self):
+        for record in self:
+            if record.initial_approver_name:
+                approver = self.env['hr.employee'].search([('name', '=', record.initial_approver_name)], limit=1)
+                record.initial_approver_email = approver.work_email if approver else False
+
+            if record.second_approver_name:
+                approver = self.env['hr.employee'].search([('name', '=', record.second_approver_name)], limit=1)
+                record.second_approver_email = approver.work_email if approver else False
+
+            if record.third_approver_name:
+                approver = self.env['hr.employee'].search([('name', '=', record.third_approver_name)], limit=1)
+                record.third_approver_email = approver.work_email if approver else False
+
+            if record.fourth_approver_name:
+                approver = self.env['hr.employee'].search([('name', '=', record.fourth_approver_name)], limit=1)
+                record.fourth_approver_email = approver.work_email if approver else False
+
+            if record.final_approver_name:
+                approver = self.env['hr.employee'].search([('name', '=', record.final_approver_name)], limit=1)
+                record.final_approver_email = approver.work_email if approver else False
+
     # this retrieves the current date, formats it as day-month-year, and assigns the formatted date
     def getCurrentDate(self):
         date_now = datetime.datetime.now()
-        formatted_date = date_now.strftime("%d-%b-%Y")
+        formatted_date = date_now.strftime("%m/%d/%Y")
 
         self.date_today = formatted_date
 
@@ -83,17 +115,14 @@ class PurchaseOrder(models.Model):
             for approver in department_approvers:
                 count += approver.no_of_approvers
             record.approver_count = count
-            print(record.approver_count)
 
     # this check the status based on approval status and state.
     @api.depends('approval_status', 'state')
     def compute_check_status(self):
         for rec in self:
             if rec.approval_status == 'disapprove' or rec.state == 'disapprove':
-                print('state: Disapprove')
                 self.submit_for_disapproval()
-            elif rec.approval_status == 'approved' or rec.state == 'approved':
-                print('state: Approved')
+            if rec.approval_status == 'approved' or rec.state == 'approved':
                 self.submit_to_final_approver()
 
     def update_check_status(self):
@@ -140,8 +169,8 @@ class PurchaseOrder(models.Model):
             "menu_id": menu.id
         }
         query_params = "&".join(f"{key}={value}" for key, value in params.items())
-        PO_form_link = f"{base_url}/web#{query_params}"
-        return PO_form_link
+        po_form_link = f"{base_url}/web#{query_params}"
+        return po_form_link
 
     def generate_token(self):
         now = datetime.datetime.now()
@@ -189,13 +218,13 @@ class PurchaseOrder(models.Model):
             "menu_id": odoo_menu.id
         }
         odoo_query_params = "&".join(f"{key}={value}" for key, value in odoo_params.items())
-        PO_form_link = f"{odoo_base_url}/web#{odoo_query_params}"
+        po_form_link = f"{odoo_base_url}/web#{odoo_query_params}"
 
         self.generate_odoo_link()
         self.approval_dashboard_link()
 
         fetch_getEmailReceiver = self.approver_id.work_email
-        self.sendingEmail(fetch_getEmailReceiver, PO_form_link, approval_list_view_url)
+        self.sendingEmail(fetch_getEmailReceiver, po_form_link, approval_list_view_url)
 
         self.write({
             'approval_status': 'po_approval',
@@ -204,7 +233,7 @@ class PurchaseOrder(models.Model):
             'show_submit_request': False
         })
 
-    def sendingEmail(self, fetch_getEmailReceiver, PO_form_link, approval_list_view_url):
+    def sendingEmail(self, fetch_getEmailReceiver, po_form_link, approval_list_view_url):
         sender = 'noreply@teamglac.com'
         host = "192.168.1.114"
         port = 25
@@ -220,9 +249,9 @@ class PurchaseOrder(models.Model):
         self.write({'approval_link': token})
 
         msg = MIMEMultipart()
-        msg['From'] = sender
+        msg['From'] = formataddr(('Odoo Mailer', sender))
         msg['To'] = fetch_getEmailReceiver
-        msg['Subject'] = 'Odoo Purchasing Mailer - Purchase Order For Approval [' + self.name + ']'
+        msg['Subject'] = 'Purchase Order For Approval [' + self.name + ']'
 
         html_content = """
             <html>
@@ -300,7 +329,7 @@ class PurchaseOrder(models.Model):
             <br></br>
             <br></br>
             <br></br>
-            <span style="font-style: italic;";><a href="{approval_url}"  style="color: green;">APPROVE</a> / <a href="{disapproval_url}"  style="color: red;">DISAPPROVE</a> / <a href="{PO_form_link}"  style="color: blue;">ODOO PO FORM
+            <span style="font-style: italic;";><a href="{approval_url}"  style="color: green;">APPROVE</a> / <a href="{disapproval_url}"  style="color: red;">DISAPPROVE</a> / <a href="{po_form_link}"  style="color: blue;">ODOO PO FORM
             </a> / <a href="{approval_list_view_url}">ODOO APPROVAL DASHBOARD</a></span>
 
             </html>
@@ -314,7 +343,6 @@ class PurchaseOrder(models.Model):
             smtpObj.sendmail(sender, fetch_getEmailReceiver, msg.as_string())
 
             msg = "Successfully sent email"
-            print(msg)
             return {
                 'success': {
                     'title': 'Successfully email sent!',
@@ -322,7 +350,6 @@ class PurchaseOrder(models.Model):
             }
         except Exception as e:
             msg = f"Error: Unable to send email: {str(e)}"
-            print(msg)
             return {
                 'warning': {
                     'title': 'Error: Unable to send email!',
@@ -370,14 +397,13 @@ class PurchaseOrder(models.Model):
             "menu_id": odoo_menu.id
         }
         odoo_query_params = "&".join(f"{key}={value}" for key, value in odoo_params.items())
-        PO_form_link = f"{odoo_base_url}/web#{odoo_query_params}"
+        po_form_link = f"{odoo_base_url}/web#{odoo_query_params}"
 
         self.generate_odoo_link()
         self.approval_dashboard_link()
 
         fetch_getEmailReceiver = self.approver_id.work_email  # self.approver_id.work_email DEFAULT RECEIVER CHANGE IT TO IF YOU WANT ----> IF YOU WANT TO SET AS DEFAULT OR ONLY ONE ##
-        print(fetch_getEmailReceiver)
-        self.sending_email_to_next_approver(fetch_getEmailReceiver, PO_form_link, approval_list_view_url)
+        self.sending_email_to_next_approver(fetch_getEmailReceiver, po_form_link, approval_list_view_url)
 
         self.write({
             'approval_status': 'po_approval',
@@ -386,7 +412,7 @@ class PurchaseOrder(models.Model):
             'show_submit_request': False
         })
 
-    def sending_email_to_next_approver(self, fetch_getEmailReceiver, PO_form_link, approval_list_view_url):
+    def sending_email_to_next_approver(self, fetch_getEmailReceiver, po_form_link, approval_list_view_url):
         sender = 'noreply@teamglac.com'
         host = "192.168.1.114"
         port = 25
@@ -402,9 +428,9 @@ class PurchaseOrder(models.Model):
         self.write({'approval_link': token})
 
         msg = MIMEMultipart()
-        msg['From'] = sender
+        msg['From'] = formataddr(('Odoo Mailer', sender))
         msg['To'] = fetch_getEmailReceiver
-        msg['Subject'] = 'Odoo Purchasing Mailer - Purchase Order For Approval NEXT APPROVER[' + self.name + ']'
+        msg['Subject'] = 'Purchase Order For Approval [' + self.name + ']'
 
         html_content = """
             <html>
@@ -483,7 +509,7 @@ class PurchaseOrder(models.Model):
             <br></br>
             <br></br>
             <br></br>
-            <span style="font-style: italic;";><a href="{approval_url}"  style="color: green;">APPROVE</a> / <a href="{disapproval_url}"  style="color: red;">DISAPPROVE</a> / <a href="{PO_form_link}"  style="color: blue;">ODOO PO FORM
+            <span style="font-style: italic;";><a href="{approval_url}"  style="color: green;">APPROVE</a> / <a href="{disapproval_url}"  style="color: red;">DISAPPROVE</a> / <a href="{po_form_link}"  style="color: blue;">ODOO PO FORM
             </a> / <a href="{approval_list_view_url}">ODOO APPROVAL DASHBOARD</a></span>
 
             </html>
@@ -497,7 +523,6 @@ class PurchaseOrder(models.Model):
             smtpObj.sendmail(sender, fetch_getEmailReceiver, msg.as_string())
 
             msg = "Successfully sent email"
-            print(msg)
             return {
                 'success': {
                     'title': 'Successfully email sent!',
@@ -505,7 +530,6 @@ class PurchaseOrder(models.Model):
             }
         except Exception as e:
             msg = f"Error: Unable to send email: {str(e)}"
-            print(msg)
             return {
                 'warning': {
                     'title': 'Error: Unable to send email!',
@@ -532,15 +556,23 @@ class PurchaseOrder(models.Model):
             "menu_id": odoo_menu.id
         }
         odoo_query_params = "&".join(f"{key}={value}" for key, value in odoo_params.items())
-        PO_form_link = f"{odoo_base_url}/web#{odoo_query_params}"
+        po_form_link = f"{odoo_base_url}/web#{odoo_query_params}"
 
         self.generate_odoo_link()
 
-        fetch_getEmailReceiver = self.approver_id.work_email  # self.approver_id.work_email DEFAULT RECEIVER CHANGE IT TO IF YOU WANT ----> IF YOU WANT TO SET AS DEFAULT OR ONLY ONE ##
-        print(self.approver_id.work_email)
-        self.send_disapproval_email(fetch_getEmailReceiver, PO_form_link)
+        # fetch_getEmailReceiver = self.approver_id.work_email  # self.approver_id.work_email DEFAULT RECEIVER CHANGE IT TO IF YOU WANT ----> IF YOU WANT TO SET AS DEFAULT OR ONLY ONE ##
+        # print(self.approver_id.work_email)
+        # self.send_disapproval_email(fetch_getEmailReceiver, po_form_link)
 
-    def send_disapproval_email(self, fetch_getEmailReceiver, PO_form_link):
+        email1 = self.initial_approver_email if self.initial_approver_email else ""
+        email2 = self.second_approver_email if self.second_approver_email else ""
+        email3 = self.third_approver_email if self.third_approver_email else ""
+        email4 = self.fourth_approver_email if self.fourth_approver_email else ""
+        email5 = self.final_approver_email if self.final_approver_email else ""
+
+        self.send_disapproval_email([email1, email2, email3, email4, email5], po_form_link)
+
+    def send_disapproval_email(self, recipient_list, po_form_link):
         sender = 'noreply@teamglac.com'
         host = "192.168.1.114"
         port = 25
@@ -551,9 +583,9 @@ class PurchaseOrder(models.Model):
         self.write({'approval_link': token})
 
         msg = MIMEMultipart()
-        msg['From'] = sender
-        msg['To'] = fetch_getEmailReceiver
-        msg['Subject'] = 'Odoo Purchasing Mailer - Purchase Order Disapproved [' + self.name + ']'
+        msg['From'] = formataddr(('Odoo Mailer', sender))
+        msg['To'] = ', '.join(recipient_list)
+        msg['Subject'] = 'Purchase Order Disapproved [' + self.name + ']'
 
         html_content = """
             <html>
@@ -636,7 +668,7 @@ class PurchaseOrder(models.Model):
             <br></br>
             <br></br>
             <br></br>
-            <span> <a href="{PO_form_link}" style="color: blue;">ODOO PO FORM</span>
+            <span> <a href="{po_form_link}" style="color: blue;">ODOO PO FORM</span>
 
             </html>
         """
@@ -646,10 +678,9 @@ class PurchaseOrder(models.Model):
         try:
             smtpObj = smtplib.SMTP(host, port)
             smtpObj.login(username, password)
-            smtpObj.sendmail(sender, fetch_getEmailReceiver, msg.as_string())
+            smtpObj.sendmail(sender, recipient_list, msg.as_string())
 
             msg = "Successfully sent email"
-            print(msg)
             return {
                 'success': {
                     'title': 'Successfully email sent!',
@@ -657,7 +688,6 @@ class PurchaseOrder(models.Model):
             }
         except Exception as e:
             msg = f"Error: Unable to send email: {str(e)}"
-            print(msg)
             return {
                 'warning': {
                     'title': 'Error: Unable to send email!',
@@ -666,10 +696,17 @@ class PurchaseOrder(models.Model):
 
     # PO is approved by final approver
     def submit_to_final_approver(self):
-        fetch_getEmailReceiver = self.approver_id.work_email  # self.approver_id.work_email DEFAULT RECEIVER CHANGE IT TO IF YOU WANT ----> IF YOU WANT TO SET AS DEFAULT OR ONLY ONE ##
-        self.send_to_final_approver_email(fetch_getEmailReceiver)
+        # fetch_getEmailReceiver = self.approver_id.work_email  # self.approver_id.work_email DEFAULT RECEIVER CHANGE IT TO IF YOU WANT ----> IF YOU WANT TO SET AS DEFAULT OR ONLY ONE ##
+        # self.send_to_final_approver_email(fetch_getEmailReceiver)
 
-    def send_to_final_approver_email(self, fetch_getEmailReceiver):
+        email1 = self.initial_approver_email if self.initial_approver_email else ""
+        email2 = self.second_approver_email if self.second_approver_email else ""
+        email3 = self.third_approver_email if self.third_approver_email else ""
+        email4 = self.fourth_approver_email if self.fourth_approver_email else ""
+        email5 = self.final_approver_email if self.final_approver_email else ""
+
+        self.send_to_final_approver_email([email1, email2, email3, email4, email5])
+    def send_to_final_approver_email(self, recipient_list):
         sender = 'noreply@teamglac.com'
         host = "192.168.1.114"
         port = 25
@@ -680,9 +717,10 @@ class PurchaseOrder(models.Model):
         self.write({'approval_link': token})
 
         msg = MIMEMultipart()
-        msg['From'] = sender
-        msg['To'] = fetch_getEmailReceiver
-        msg['Subject'] = 'Odoo Purchasing Mailer - Purchase Order Approved [' + self.name + ']'
+        msg['From'] = formataddr(('Odoo Mailer', sender))
+
+        msg['To'] = ', '.join(recipient_list)
+        msg['Subject'] = 'Purchase Order Approved [' + self.name + ']'
 
         html_content = """
             <html>
@@ -825,10 +863,9 @@ class PurchaseOrder(models.Model):
         try:
             smtpObj = smtplib.SMTP(host, port)
             smtpObj.login(username, password)
-            smtpObj.sendmail(sender, fetch_getEmailReceiver, msg.as_string())
+            smtpObj.sendmail(sender, recipient_list, msg.as_string())
 
             msg = "Successfully sent email"
-            print(msg)
             return {
                 'success': {
                     'title': 'Successfully email sent!',
@@ -836,7 +873,6 @@ class PurchaseOrder(models.Model):
             }
         except Exception as e:
             msg = f"Error: Unable to send email: {str(e)}"
-            print(msg)
             return {
                 'warning': {
                     'title': 'Error: Unable to send email!',
@@ -893,8 +929,6 @@ class PurchaseOrder(models.Model):
     def compute_approver(self):
         for rec in self:
             if self.env.user.name == rec.approver_id.name:
-                # print('True')
-                # print(self.env.user.name, ' | ', rec.approver_id.name)
                 self.update({
                     'is_approver': True,
                 })
@@ -908,7 +942,6 @@ class PurchaseOrder(models.Model):
         for rec in self:
             res = self.env["department.approvers"].search(
                 [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Orders')])
-            print('Initial ', self.initial_approver_name)
 
             if rec.approver_id and rec.approval_stage < res.no_of_approvers:
                 if rec.approval_stage == 1:
@@ -917,7 +950,6 @@ class PurchaseOrder(models.Model):
                         raise UserError('No approver set')
                     else:
                         self.initial_approver_name = rec.approver_id.name
-                        print('Initial ', self.initial_approver_name)
 
                     approver_dept = [x.second_approver.id for x in res.set_second_approvers]
 
@@ -928,7 +960,6 @@ class PurchaseOrder(models.Model):
                     self.submit_to_next_approver()
                     self.getCurrentDate()
 
-                print('received by 2nd approver and email sent to next approver')
 
                 if rec.approval_stage == 2:
                     if self.second_approver_name is None:
@@ -943,10 +974,6 @@ class PurchaseOrder(models.Model):
 
                     self.submit_to_next_approver()
                     self.getCurrentDate()
-
-
-                    print(self.second_approver_name)
-                    print('received by 3rd approver and email sent to next approver')
 
                 if rec.approval_stage == 3:
                     if self.third_approver_name is None:
@@ -963,8 +990,6 @@ class PurchaseOrder(models.Model):
                     self.submit_to_next_approver()
                     self.getCurrentDate()
 
-                    print(self.third_approver_name)
-                    print('received by 4th approver and email sent to next approver')
 
                 if rec.approval_stage == 4:
                     if self.fourth_approver_name is None:
@@ -981,9 +1006,6 @@ class PurchaseOrder(models.Model):
                     self.submit_to_next_approver()
                     self.getCurrentDate()
 
-                    print(self.fourth_approver_name)
-                    print('received by 4th approver and email sent to next approver')
-
                 rec.approval_stage += 1
             else:
                 self.write({
@@ -992,7 +1014,6 @@ class PurchaseOrder(models.Model):
                     'final_approver_name': rec.approver_id.name,
                 })
                 self.getCurrentDate()
-                print('end of method approved request')
 
     def button_cancel(self):
         for order in self:

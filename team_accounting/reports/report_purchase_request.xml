@@ -99,14 +99,14 @@
                         <td style="font-weight: normal;">Date created:</td>
                         <td style="font-weight: normal;">
 
-                                <span t-field="o.ordering_date" t-options='{"widget": "date","format": "MM/dd/yyyy"}'/>
+                            <span t-field="o.ordering_date" t-options='{"widget": "date","format": "MM/dd/yyyy"}'/>
 
                         </td>
                         <td></td>
                         <td style="font-weight: normal;">PR #:</td>
                         <td style="font-weight: normal; ">
 
-                                <span t-esc="o.name"/>
+                            <span t-esc="o.name"/>
 
                         </td>
                     </tr>
@@ -115,17 +115,17 @@
                         <td style="font-weight: normal;">Date needed:&#xD;Delivery date:</td>
                         <td style="font-weight: normal;">
 
-                                <h5 style="margin: 0; padding: 0;" t-field="o.date_end"
-                                    t-options='{"widget": "date","format": "MM/dd/yyyy"}'/>
-                                <h5 style="margin-top: 5px; padding: 0;" t-field="o.schedule_date"
-                                    t-options='{"widget": "date","format": "MM/dd/yyyy"}'/>
+                            <h5 style="margin: 0; padding: 0;" t-field="o.date_end"
+                                t-options='{"widget": "date","format": "MM/dd/yyyy"}'/>
+                            <h5 style="margin-top: 5px; padding: 0;" t-field="o.schedule_date"
+                                t-options='{"widget": "date","format": "MM/dd/yyyy"}'/>
 
                         </td>
                         <td></td>
                         <td style="font-weight: normal; ">Vendor:</td>
                         <td style="font-weight: normal;">
 
-                                <span t-esc="o.vendor_id.name"/>
+                            <span t-esc="o.vendor_id.name"/>
 
                         </td>
                     </tr>
@@ -260,6 +260,13 @@
                             </h5>
                         </td>
 
+
+                    </tr>
+                    <tr style="height: 30px;">
+                        <td>&#160;</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 120px;">&#160;</td>
                         <td t-if="not o.third_approver_name" style="display: none; margin: 0; padding: 0;"></td>
                         <td t-else="" style="text-align: center; width: 300px; margin:0 25px">
                             <h5 style="border-bottom: 1px solid black; margin:0 25px;">

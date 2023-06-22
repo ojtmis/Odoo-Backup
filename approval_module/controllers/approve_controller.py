@@ -3,6 +3,7 @@ from odoo.http import request
 
 INVALID_LINK = "Invalid approval link!"
 
+
 class RequestApprovalController(http.Controller):
     # PURCHASE REQUISITION
     @http.route('/purchase_requisition/request/approve/<string:token>', type='http', auth='public', website=True)
@@ -15,14 +16,16 @@ class RequestApprovalController(http.Controller):
         else:
             return INVALID_LINK
 
-    @http.route('/purchase_requisition/request/disapprove/<string:token>', type='http', auth='public', website=True, csrf=False,
+    @http.route('/purchase_requisition/request/disapprove/<string:token>', type='http', auth='public', website=True,
+                csrf=False,
                 method=['GET', 'POST'])
     def pr_request_disapproval(self, token, **post):
         request_form = request.env['purchase.requisition'].sudo().search([('approval_link', '=', token)])
         if request_form:
             if request.httprequest.method == 'POST' and 'reason' in post:
                 reason = post.get('reason')
-                request_form.write({'state': 'disapprove', 'approval_status': 'disapprove', 'disapproval_reason': reason})
+                request_form.write(
+                    {'state': 'disapprove', 'approval_status': 'disapprove', 'disapproval_reason': reason})
                 return """<script>window.close();</script>"""
             else:
                 return """
@@ -56,7 +59,7 @@ class RequestApprovalController(http.Controller):
                                   </div>
                             </div>
                         </div>
-                        
+
                     </body>
                     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
                     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js" integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc" crossorigin="anonymous"></script>
@@ -64,7 +67,7 @@ class RequestApprovalController(http.Controller):
                     <script>
                         $(document).ready(function(){
                             $('#modal-show').show()
-                    
+
                         $('#saved-btn').click(function(){
                             var text_area = $('#text-area').val()
                             if(text_area == ''){
@@ -76,7 +79,7 @@ class RequestApprovalController(http.Controller):
                                 console.log(text_area)
                             }
                         })
-                            
+
                         });
                     </script>
                     </html>
@@ -95,7 +98,8 @@ class RequestApprovalController(http.Controller):
         else:
             return INVALID_LINK
 
-    @http.route('/purchase_order/request/disapprove/<string:token>', type='http', auth='public', website=True, csrf=False,
+    @http.route('/purchase_order/request/disapprove/<string:token>', type='http', auth='public', website=True,
+                csrf=False,
                 method=['GET', 'POST'])
     def po_request_disapproval(self, token, **post):
         request_form = request.env['purchase.order'].sudo().search([('approval_link', '=', token)])
@@ -164,4 +168,3 @@ class RequestApprovalController(http.Controller):
                         """
         else:
             return INVALID_LINK
-
