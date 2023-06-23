@@ -2,16 +2,9 @@ import datetime
 import hashlib
 import re
 import smtplib
-import time
-
-from datetime import timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formataddr
-
-from email.policy import default
-from odoo.tools import date_utils
-
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
@@ -41,8 +34,8 @@ class PurchaseOrder(models.Model):
     approval_type_id = fields.Many2one('purchase.approval.types')
     approval_id = fields.Many2one('purchase.approval')
     is_approver = fields.Boolean(compute="compute_approver")
-    approval_link = fields.Char('Approval link')
 
+    # New fields
     initial_approver_name = fields.Char()
     second_approver_name = fields.Char()
     third_approver_name = fields.Char()
@@ -50,53 +43,87 @@ class PurchaseOrder(models.Model):
     final_approver_name = fields.Char()
 
     # user_id = fields.Many2one('res.users', 'User', domain=lambda self: [('res_id', 'in', self.env.user.id)])
+    approval_link = fields.Char('Approval link')
     check_status = fields.Char(compute='compute_check_status', store=True)
-
     approver_count = fields.Integer(compute='_compute_approver_count', store=True)
-
     date_today = fields.Char()
 
-    initial_approver_email = fields.Char(compute='get_approver_email', store=True)
-    second_approver_email = fields.Char(compute='get_approver_email', store=True)
-    third_approver_email = fields.Char(compute='get_approver_email', store=True)
-    fourth_approver_email = fields.Char(compute='get_approver_email', store=True)
-    final_approver_email = fields.Char(compute='get_approver_email', store=True)
+    initial_approver_job_title = fields.Char(compute='get_approver_title', store=True)
+    second_approver_job_title = fields.Char(compute='get_approver_title', store=True)
+    third_approver_job_title = fields.Char(compute='get_approver_title', store=True)
+    fourth_approver_job_title = fields.Char(compute='get_approver_title', store=True)
+    final_approver_job_title = fields.Char(compute='get_approver_title', store=True)
 
-    # This function get the datetime today and convert it to 12-hour format
-    # def getCurrentDate(self):
-    #     date_todaytime = datetime.datetime.now() + timedelta(hours=8)
-    #
-    #     formatted_date = date_todaytime.strftime("%Y-%m-%d")
-    #     formatted_time = date_todaytime.strftime("%I:%M:%S")
-    #     am_pm = date_todaytime.strftime("%p").upper()
-    #
-    #     formatted_datetime = f"{formatted_date} {formatted_time} {am_pm}"
-    #     self.date_today = formatted_datetime
-    #     print(self.date_today)
+    initial_approver_email = fields.Char()
+    second_approver_email = fields.Char()
+    third_approver_email = fields.Char()
+    fourth_approver_email = fields.Char()
+    final_approver_email = fields.Char()
+
+    initial_approval_date = fields.Char()
+    second_approval_date = fields.Char()
+    third_approval_date = fields.Char()
+    fourth_approval_date = fields.Char()
+    final_approval_date = fields.Char()
+
+    @api.depends('approval_status', 'state')
+    def get_approvers_email(self):
+        """
+            Retrieves the email addresses of the relevant approvers based on approval status and state.
+
+            Side Effects:
+                Updates the email fields of the instance with the appropriate approver emails.
+        """
+        for rec in self:
+            if rec.approval_status == 'disapprove' or rec.state == 'disapprove' or rec.approval_status == 'approved' or rec.state == 'approved':
+                res = self.env["department.approvers"].search(
+                    [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Requests')])
+
+                if rec.department_id and res.set_first_approvers:
+                    rec.initial_approver_email = res.set_first_approvers[0].first_approver.work_email
+
+                if rec.department_id and res.set_second_approvers:
+                    rec.second_approver_email = res.set_second_approvers[0].second_approver.work_email
+
+                if rec.department_id and res.set_third_approvers:
+                    rec.third_approver_email = res.set_third_approvers[0].third_approver.work_email
+
+                if rec.department_id and res.set_fourth_approvers:
+                    rec.fourth_approver_email = res.set_fourth_approvers[0].fourth_approver.work_email
+
+                if rec.department_id and res.set_fifth_approvers:
+                    rec.final_approver_email = res.set_fifth_approvers[0].fifth_approver.work_email
 
     @api.depends('initial_approver_name', 'second_approver_name', 'third_approver_name', 'fourth_approver_name',
                  'final_approver_name')
-    def get_approver_email(self):
+    def get_approver_title(self):
+        """
+           Fetches the job title of the specified approvers.
+
+           This method iterates over each record and searches for the specified approvers by their names.
+           If an approver is found, the corresponding job title and work email are assigned to the record's fields.
+
+        """
         for record in self:
             if record.initial_approver_name:
                 approver = self.env['hr.employee'].search([('name', '=', record.initial_approver_name)], limit=1)
-                record.initial_approver_email = approver.work_email if approver else False
+                record.initial_approver_job_title = approver.job_title if approver else False
 
             if record.second_approver_name:
                 approver = self.env['hr.employee'].search([('name', '=', record.second_approver_name)], limit=1)
-                record.second_approver_email = approver.work_email if approver else False
+                record.second_approver_job_title = approver.job_title if approver else False
 
             if record.third_approver_name:
                 approver = self.env['hr.employee'].search([('name', '=', record.third_approver_name)], limit=1)
-                record.third_approver_email = approver.work_email if approver else False
+                record.third_approver_job_title = approver.job_title if approver else False
 
             if record.fourth_approver_name:
                 approver = self.env['hr.employee'].search([('name', '=', record.fourth_approver_name)], limit=1)
-                record.fourth_approver_email = approver.work_email if approver else False
+                record.fourth_approver_job_title = approver.job_title if approver else False
 
             if record.final_approver_name:
                 approver = self.env['hr.employee'].search([('name', '=', record.final_approver_name)], limit=1)
-                record.final_approver_email = approver.work_email if approver else False
+                record.final_approver_job_title = approver.job_title if approver else False
 
     # this retrieves the current date, formats it as day-month-year, and assigns the formatted date
     def getCurrentDate(self):
@@ -105,9 +132,37 @@ class PurchaseOrder(models.Model):
 
         self.date_today = formatted_date
 
+        if self.initial_approver_name:
+            self.initial_approval_date = formatted_date
+            print(self.initial_approval_date)
+
+        if self.second_approver_name:
+            self.second_approval_date = formatted_date
+            print(self.second_approval_date)
+
+        if self.third_approver_name:
+            self.third_approval_date = formatted_date
+            print(self.third_approval_date)
+
+        if self.fourth_approver_name:
+            self.fourth_approval_date = formatted_date
+            print(self.fourth_approval_date)
+
+        if self.final_approver_name:
+            self.final_approval_date = formatted_date
+            print(self.final_approval_date)
+
     # this computes the number of approvers based on department and approval type
     @api.depends('department_id')
     def _compute_approver_count(self):
+        """
+            Computes the total number of approvers for the department.
+
+            This method is triggered whenever the 'department_id' field is modified.
+            It searches for department approvers associated with the department and purchase requests.
+            The count of individual approvers is accumulated to determine the total number of approvers for the department.
+
+        """
         for record in self:
             department_approvers = self.env['department.approvers'].search(
                 [('dept_name', '=', record.department_id.id), ("approval_type.name", '=', 'Purchase Orders')])
@@ -121,8 +176,10 @@ class PurchaseOrder(models.Model):
     def compute_check_status(self):
         for rec in self:
             if rec.approval_status == 'disapprove' or rec.state == 'disapprove':
+                rec.get_approvers_email()
                 self.submit_for_disapproval()
             if rec.approval_status == 'approved' or rec.state == 'approved':
+                rec.get_approvers_email()
                 self.submit_to_final_approver()
 
     def update_check_status(self):
@@ -309,16 +366,16 @@ class PurchaseOrder(models.Model):
         for line in self.order_line:
             html_content += f"""
                     <tr>
-                        <td>{line.product_id.name}</td>
-                        <td>{line.name}</td>
-                        <td>{line.date_planned}</td>
-                        <td>{line.account_analytic_id.name}</td>
-                        <td>{line.product_qty}</td>
-                        <td>{line.qty_received}</td>
-                        <td>{line.product_uom.name}</td>
-                        <td>{line.price_unit}</td>
+                        <td>{line.product_id.name if line.product_id.name != False else ""}</td>
+                        <td>{line.name if line.name != False else ""}</td>
+                        <td>{line.date_planned if line.date_planned != False else ""}</td>
+                        <td>{line.account_analytic_id.name if line.account_analytic_id.name != False else ""}</td>
+                        <td>{line.product_qty if line.product_qty != False else ""}</td>
+                        <td>{line.qty_received if line.qty_received != False else ""}</td>
+                        <td>{line.product_uom.name if line.product_uom.name != False else ""}</td>
+                        <td>{'{:,.2f}'.format(line.price_unit) if line.price_unit != False else ""}</td>
                         <td>{line.taxes_id.name if line.taxes_id.name != False else ""}</td>
-                        <td>{line.price_subtotal}&nbsp;{self.currency_id.name if self.currency_id.name != False else ""}</td>
+                        <td>{'{:,.2f}'.format(line.price_subtotal)}&nbsp;{self.currency_id.name if self.currency_id.name != False else ""}</td>
                     </tr>
         """
 
@@ -357,6 +414,7 @@ class PurchaseOrder(models.Model):
             }
 
         # Next Approver Sending of Email
+
     def submit_to_next_approver(self):
         # Approval Dashboard Link Section
         approval_action = self.env['ir.actions.act_window'].search([('res_model', '=', 'purchase.order')],
@@ -489,16 +547,16 @@ class PurchaseOrder(models.Model):
         for line in self.order_line:
             html_content += f"""
                     <tr>
-                        <td>{line.product_id.name}</td>
-                        <td>{line.name}</td>
-                        <td>{line.date_planned}</td>
-                        <td>{line.account_analytic_id.name}</td>
-                        <td>{line.product_qty}</td>
-                        <td>{line.qty_received}</td>
-                        <td>{line.product_uom.name}</td>
-                        <td>{line.price_unit}</td>
+                        <td>{line.product_id.name if line.product_id.name != False else ""}</td>
+                        <td>{line.name if line.name != False else ""}</td>
+                        <td>{line.date_planned if line.date_planned != False else ""}</td>
+                        <td>{line.account_analytic_id.name if line.account_analytic_id.name != False else ""}</td>
+                        <td>{line.product_qty if line.product_qty != False else ""}</td>
+                        <td>{line.qty_received if line.qty_received != False else ""}</td>
+                        <td>{line.product_uom.name if line.product_uom.name != False else ""}</td>
+                        <td>{'{:,.2f}'.format(line.price_unit) if line.price_unit != False else ""}</td>
                         <td>{line.taxes_id.name if line.taxes_id.name != False else ""}</td>
-                        <td>{line.price_subtotal}&nbsp;{self.currency_id.name if self.currency_id.name != False else ""}</td>
+                        <td>{'{:,.2f}'.format(line.price_subtotal)}&nbsp;{self.currency_id.name if self.currency_id.name != False else ""}</td>
                     </tr>
         """
 
@@ -649,16 +707,16 @@ class PurchaseOrder(models.Model):
         for line in self.order_line:
             html_content += f"""
                     <tr>
-                        <td>{line.product_id.name}</td>
-                        <td>{line.name}</td>
-                        <td>{line.date_planned}</td>
-                        <td>{line.account_analytic_id.name}</td>
-                        <td>{line.product_qty}</td>
-                        <td>{line.qty_received}</td>
-                        <td>{line.product_uom.name}</td>
-                        <td>{line.price_unit}</td>
+                        <td>{line.product_id.name if line.product_id.name != False else ""}</td>
+                        <td>{line.name if line.name != False else ""}</td>
+                        <td>{line.date_planned if line.date_planned != False else ""}</td>
+                        <td>{line.account_analytic_id.name if line.account_analytic_id.name != False else ""}</td>
+                        <td>{line.product_qty if line.product_qty != False else ""}</td>
+                        <td>{line.qty_received if line.qty_received != False else ""}</td>
+                        <td>{line.product_uom.name if line.product_uom.name != False else ""}</td>
+                        <td>{'{:,.2f}'.format(line.price_unit) if line.price_unit != False else ""}</td>
                         <td>{line.taxes_id.name if line.taxes_id.name != False else ""}</td>
-                        <td>{line.price_subtotal}&nbsp;{self.currency_id.name if self.currency_id.name != False else ""}</td>
+                        <td>{'{:,.2f}'.format(line.price_subtotal)}&nbsp;{self.currency_id.name if self.currency_id.name != False else ""}</td>
                     </tr>
         """
 
@@ -706,6 +764,7 @@ class PurchaseOrder(models.Model):
         email5 = self.final_approver_email if self.final_approver_email else ""
 
         self.send_to_final_approver_email([email1, email2, email3, email4, email5])
+
     def send_to_final_approver_email(self, recipient_list):
         sender = 'noreply@teamglac.com'
         host = "192.168.1.114"
@@ -757,18 +816,18 @@ class PurchaseOrder(models.Model):
         if self.approver_count >= 1:
             html_content += f"""
                 <dd>Initial Approval By: {self.initial_approver_name}</dd>
-                <dd>Initial Approval Date:  &nbsp;&nbsp;{self.date_today if self.date_today != False else ""}</dd>
+                <dd>Initial Approval Date:  &nbsp;&nbsp;{self.initial_approval_date if self.initial_approval_date != False else ""}</dd>
         """
         if self.approver_count >= 2:
             if self.approver_count == 2:
                 html_content += f"""
                     <dd>{'Final ' if self.approver_count == 2 else 'Second'} Approval By: {self.final_approver_name}</dd>
-                    <dd>{'Final ' if self.approver_count == 2 else 'Second'} Approval Date: {self.date_today if self.date_today != False else ""}</dd>
+                    <dd>{'Final ' if self.approver_count == 2 else 'Second'} Approval Date: {self.final_approval_date if self.final_approval_date != False else ""}</dd>
                     """
             elif self.approver_count > 2:
                 html_content += f"""
                     <dd>Second Approval By: {self.second_approver_name}</dd>
-                    <dd>Second Approval Date: {self.date_today if self.date_today != False else ""}</dd>
+                    <dd>Second Approval Date: {self.second_approval_date if self.second_approval_date != False else ""}</dd>
                 """
             else:
                 return False
@@ -777,12 +836,12 @@ class PurchaseOrder(models.Model):
             if self.approver_count == 3:
                 html_content += f"""
                    <dd>{'Final ' if self.approver_count == 3 else 'Third'} Approval By: {self.final_approver_name}</dd>
-                   <dd>{'Final ' if self.approver_count == 3 else 'Third'} Approval Date: {self.date_today if self.date_today != False else ""}</dd>
+                   <dd>{'Final ' if self.approver_count == 3 else 'Third'} Approval Date: {self.final_approval_date if self.final_approval_date != False else ""}</dd>
                    """
             elif self.approver_count > 3:
                 html_content += f"""
                    <dd>Third Approval By: {self.third_approver_name}</dd>
-                   <dd>Third Approval Date: {self.date_today if self.date_today != False else ""}</dd>
+                   <dd>Third Approval Date: {self.third_approval_date if self.third_approval_date != False else ""}</dd>
                """
             else:
                 return False
@@ -791,12 +850,12 @@ class PurchaseOrder(models.Model):
             if self.approver_count == 4:
                 html_content += f"""
                      <dd>{'Final ' if self.approver_count == 4 else 'Fourth'} Approval By: {self.final_approver_name}</dd>
-                     <dd>{'Final ' if self.approver_count == 4 else 'Fourth'} Approval Date: {self.date_today if self.date_today != False else ""}</dd>
+                     <dd>{'Final ' if self.approver_count == 4 else 'Fourth'} Approval Date: {self.final_approval_date if self.final_approval_date != False else ""}</dd>
                      """
             elif self.approver_count > 4:
                 html_content += f"""
                      <dd>Fourth Approval By: {self.fourth_approver_name}</dd>
-                     <dd>Fourth Approval Date: {self.date_today if self.date_today != False else ""}</dd>
+                     <dd>Fourth Approval Date: {self.fourth_approval_date if self.fourth_approval_date != False else ""}</dd>
                  """
             else:
                 return False
@@ -804,7 +863,7 @@ class PurchaseOrder(models.Model):
         if self.approver_count >= 5:
             html_content += f"""
                  <dd>Final Approval By: {self.final_approver_name}</dd>
-                 <dd>Final Approval Date: {self.date_today if self.date_today != False else ""}</dd>
+                 <dd>Final Approval Date: {self.final_approval_date if self.final_approval_date != False else ""}</dd>
              """
 
         html_content += f"""
@@ -838,16 +897,16 @@ class PurchaseOrder(models.Model):
         for line in self.order_line:
             html_content += f"""
                     <tr>
-                        <td>{line.product_id.name}</td>
-                        <td>{line.name}</td>
-                        <td>{line.date_planned}</td>
-                        <td>{line.account_analytic_id.name}</td>
-                        <td>{line.product_qty}</td>
-                        <td>{line.qty_received}</td>
-                        <td>{line.product_uom.name}</td>
-                        <td>{line.price_unit}</td>
+                        <td>{line.product_id.name if line.product_id.name != False else ""}</td>
+                        <td>{line.name if line.name != False else ""}</td>
+                        <td>{line.date_planned if line.date_planned != False else ""}</td>
+                        <td>{line.account_analytic_id.name if line.account_analytic_id.name != False else ""}</td>
+                        <td>{line.product_qty if line.product_qty != False else ""}</td>
+                        <td>{line.qty_received if line.qty_received != False else ""}</td>
+                        <td>{line.product_uom.name if line.product_uom.name != False else ""}</td>
+                        <td>{'{:,.2f}'.format(line.price_unit) if line.price_unit != False else ""}</td>
                         <td>{line.taxes_id.name if line.taxes_id.name != False else ""}</td>
-                        <td>{line.price_subtotal}&nbsp;{self.currency_id.name if self.currency_id.name != False else ""}</td>
+                        <td>{'{:,.2f}'.format(line.price_subtotal)}&nbsp;{self.currency_id.name if self.currency_id.name != False else ""}</td>
                     </tr>
         """
 
@@ -960,10 +1019,9 @@ class PurchaseOrder(models.Model):
                     self.submit_to_next_approver()
                     self.getCurrentDate()
 
-
                 if rec.approval_stage == 2:
                     if self.second_approver_name is None:
-                        raise UserError('must set first')
+                        raise UserError('No approver set')
                     else:
                         self.second_approver_name = rec.approver_id.name
                     approver_dept = [x.third_approver.id for x in res.set_third_approvers]
@@ -977,7 +1035,7 @@ class PurchaseOrder(models.Model):
 
                 if rec.approval_stage == 3:
                     if self.third_approver_name is None:
-                        raise UserError('must set first')
+                        raise UserError('No approver set')
                     else:
                         self.third_approver_name = rec.approver_id.name
 
@@ -990,10 +1048,9 @@ class PurchaseOrder(models.Model):
                     self.submit_to_next_approver()
                     self.getCurrentDate()
 
-
                 if rec.approval_stage == 4:
                     if self.fourth_approver_name is None:
-                        raise UserError('must set first')
+                        raise UserError('No approver set')
                     else:
                         self.fourth_approver_name = rec.approver_id.name
 

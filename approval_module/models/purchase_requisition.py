@@ -5,6 +5,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formataddr
+
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
@@ -60,6 +61,12 @@ class PurchaseOrder(models.Model):
     third_approver_email = fields.Char()
     fourth_approver_email = fields.Char()
     final_approver_email = fields.Char()
+
+    initial_approval_date = fields.Char()
+    second_approval_date = fields.Char()
+    third_approval_date = fields.Char()
+    fourth_approval_date = fields.Char()
+    final_approval_date = fields.Char()
 
     @api.depends('approval_status', 'state')
     def get_approvers_email(self):
@@ -126,6 +133,26 @@ class PurchaseOrder(models.Model):
         formatted_date = date_now.strftime("%m/%d/%Y")
 
         self.date_today = formatted_date
+
+        if self.initial_approver_name:
+            self.initial_approval_date = formatted_date
+            print(self.initial_approval_date)
+
+        if self.second_approver_name:
+            self.second_approval_date = formatted_date
+            print(self.second_approval_date)
+
+        if self.third_approver_name:
+            self.third_approval_date = formatted_date
+            print(self.third_approval_date)
+
+        if self.fourth_approver_name:
+            self.fourth_approval_date = formatted_date
+            print(self.fourth_approval_date)
+
+        if self.final_approver_name:
+            self.final_approval_date = formatted_date
+            print(self.final_approval_date)
 
     @api.depends('department_id')
     def _compute_approver_count(self):
@@ -345,8 +372,8 @@ class PurchaseOrder(models.Model):
                            <td>{line.qty_ordered}</td>
                            <td>{line.product_uom_id.name}</td>
                            <td>{line.schedule_date if line.schedule_date != False else ""}</td>
-                           <td>{line.price_unit}</td>
-                           <td>{line.subtotal}</td>
+                           <td>{'{:,.2f}'.format(line.price_unit)}</td>
+                           <td>{'{:,.2f}'.format(line.subtotal)}</td>
                        </tr>
            """
 
@@ -385,7 +412,6 @@ class PurchaseOrder(models.Model):
                     'title': 'Error: Unable to send email!',
                     'message': f'{msg}'}
             }
-
 
     # Next Approver Sending of Email
     def submit_to_next_approver(self):
@@ -520,8 +546,8 @@ class PurchaseOrder(models.Model):
                            <td>{line.qty_ordered}</td>
                            <td>{line.product_uom_id.name}</td>
                            <td>{line.schedule_date if line.schedule_date != False else ""}</td>
-                           <td>{line.price_unit}</td>
-                           <td>{line.subtotal}</td>
+                           <td>{'{:,.2f}'.format(line.price_unit)}</td>
+                           <td>{'{:,.2f}'.format(line.subtotal)}</td>
                        </tr>
            """
 
@@ -675,8 +701,9 @@ class PurchaseOrder(models.Model):
                                 <td>{line.qty_ordered}</td>
                                 <td>{line.product_uom_id.name}</td>
                                 <td>{line.schedule_date if line.schedule_date != False else ""}</td>
-                                <td>{line.price_unit}</td>
-                                <td>{line.subtotal}</td>
+                                <td>{'{:,.2f}'.format(line.price_unit)}</td>
+                                <td>{'{:,.2f}'.format(line.subtotal)}</td>
+
                             </tr>
                 """
 
@@ -777,18 +804,18 @@ class PurchaseOrder(models.Model):
         if self.approver_count >= 1:
             html_content += f"""
                    <dd>Initial Approval By: {self.initial_approver_name}</dd>
-                   <dd>Initial Approval Date:  &nbsp;&nbsp;{self.date_today if self.date_today != False else ""}</dd>
+                   <dd>Initial Approval Date:  &nbsp;&nbsp;{self.initial_approval_date if self.initial_approval_date != False else ""}</dd>
            """
         if self.approver_count >= 2:
             if self.approver_count == 2:
                 html_content += f"""
                        <dd>{'Final ' if self.approver_count == 2 else 'Second'} Approval By: {self.final_approver_name}</dd>
-                       <dd>{'Final ' if self.approver_count == 2 else 'Second'} Approval Date: {self.date_today if self.date_today != False else ""}</dd>
+                       <dd>{'Final ' if self.approver_count == 2 else 'Second'} Approval Date: {self.final_approval_date if self.final_approval_date != False else ""}</dd>
                        """
             elif self.approver_count > 2:
                 html_content += f"""
                        <dd>Second Approval By: {self.second_approver_name}</dd>
-                       <dd>Second Approval Date: {self.date_today if self.date_today != False else ""}</dd>
+                       <dd>Second Approval Date: {self.second_approval_date if self.second_approval_date != False else ""}</dd>
                    """
             else:
                 return False
@@ -797,12 +824,12 @@ class PurchaseOrder(models.Model):
             if self.approver_count == 3:
                 html_content += f"""
                       <dd>{'Final ' if self.approver_count == 3 else 'Third'} Approval By: {self.final_approver_name}</dd>
-                      <dd>{'Final ' if self.approver_count == 3 else 'Third'} Approval Date: {self.date_today if self.date_today != False else ""}</dd>
+                      <dd>{'Final ' if self.approver_count == 3 else 'Third'} Approval Date: {self.final_approval_date if self.final_approval_date != False else ""}</dd>
                       """
             elif self.approver_count > 3:
                 html_content += f"""
                       <dd>Third Approval By: {self.third_approver_name}</dd>
-                      <dd>Third Approval Date: {self.date_today if self.date_today != False else ""}</dd>
+                      <dd>Third Approval Date: {self.third_approval_date if self.third_approval_date != False else ""}</dd>
                   """
             else:
                 return False
@@ -811,12 +838,12 @@ class PurchaseOrder(models.Model):
             if self.approver_count == 4:
                 html_content += f"""
                         <dd>{'Final ' if self.approver_count == 4 else 'Fourth'} Approval By: {self.final_approver_name}</dd>
-                        <dd>{'Final ' if self.approver_count == 4 else 'Fourth'} Approval Date: {self.date_today if self.date_today != False else ""}</dd>
+                        <dd>{'Final ' if self.approver_count == 4 else 'Fourth'} Approval Date: {self.final_approval_date if self.final_approval_date != False else ""}</dd>
                         """
             elif self.approver_count > 4:
                 html_content += f"""
                         <dd>Fourth Approval By: {self.fourth_approver_name}</dd>
-                        <dd>Fourth Approval Date: {self.date_today if self.date_today != False else ""}</dd>
+                        <dd>Fourth Approval Date: {self.fourth_approval_date if self.fourth_approval_date != False else ""}</dd>
                     """
             else:
                 return False
@@ -824,7 +851,7 @@ class PurchaseOrder(models.Model):
         if self.approver_count >= 5:
             html_content += f"""
                     <dd>Final Approval By: {self.final_approver_name}</dd>
-                    <dd>Final Approval Date: {self.date_today if self.date_today != False else ""}</dd>
+                    <dd>Final Approval Date: {self.final_approval_date if self.final_approval_date != False else ""}</dd>
                 """
 
         html_content += f"""
@@ -860,8 +887,8 @@ class PurchaseOrder(models.Model):
                                <td>{line.qty_ordered}</td>
                                <td>{line.product_uom_id.name}</td>
                                <td>{line.schedule_date if line.schedule_date != False else ""}</td>
-                               <td>{line.price_unit}</td>
-                               <td>{line.subtotal}</td>
+                               <td>{'{:,.2f}'.format(line.price_unit)}</td>
+                               <td>{'{:,.2f}'.format(line.subtotal)}</td>
                            </tr>
                """
 
