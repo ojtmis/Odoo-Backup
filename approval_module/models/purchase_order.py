@@ -133,11 +133,7 @@ class PurchaseOrder(models.Model):
                 rec.third_approver_email = third_approver_email
                 rec.fourth_approver_email = fourth_approver_email
                 rec.final_approver_email = final_approver_email
-            print(rec.initial_approver_email,
-                  rec.second_approver_email,
-                  rec.third_approver_email,
-                  rec.fourth_approver_email,
-                  rec.final_approver_email)
+
     @api.depends('initial_approver_name', 'second_approver_name', 'third_approver_name', 'fourth_approver_name',
                  'final_approver_name')
     def get_approver_title(self):
@@ -229,24 +225,23 @@ class PurchaseOrder(models.Model):
         self.check_status = True
 
     def approval_dashboard_link(self):
-        action = self.env['ir.actions.act_window'].search([('res_model', '=', 'purchase.order')], limit=1)
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-
-        result_1 = re.sub(r'\((.*?)\)', '', str(action)).replace(',', '')
-        res = f"{result_1},{action.id}"
-        result = re.sub(r'\s*,\s*', ',', res)
-
-        menu = self.env['ir.ui.menu'].search([('action', '=', result)], limit=1)
-        params = {
-            "action": 1199,
+        # Approval Dashboard Link Section
+        approval_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        approval_action = self.env['ir.ui.view'].search([('key', '=', 'purchase.portal_my_purchase_orders')],
+                                                        limit=1)
+        action_id = approval_action.id
+        action_res = 'ir.actions.act_window,' + str(action_id)
+        odoo_menu = self.env['ir.ui.menu'].search([('action', '=', action_res)], limit=1)
+        odoo_params = {
+            "action": action_id,
             "model": "purchase.order",
             "view_type": "list",
             "cids": "",
-            "menu_id": menu.id
+            "menu_id": odoo_menu.id
         }
 
-        query_string = '&'.join([f'{key}={value}' for key, value in params.items()])
-        list_view_url = f"{base_url}/web?debug=1#{query_string}"
+        query_string = '&'.join([f'{key}={value}' for key, value in odoo_params.items()])
+        list_view_url = f"{approval_base_url}/web?debug=0#{query_string}"
 
         return list_view_url
 
@@ -279,25 +274,22 @@ class PurchaseOrder(models.Model):
     # Initial Approver Sending of Email
     def submit_for_approval(self):
         # Approval Dashboard Link Section
-        approval_action = self.env['ir.actions.act_window'].search([('res_model', '=', 'purchase.order')],
-                                                                   limit=1)
         approval_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-
-        approval_result_1 = re.sub(r'\((.*?)\)', '', str(approval_action)).replace(',', '')
-        approval_res = f"{approval_result_1},{approval_action.id}"
-        approval_result = re.sub(r'\s*,\s*', ',', approval_res)
-
-        approval_menu = self.env['ir.ui.menu'].search([('action', '=', approval_result)], limit=1)
-        approval_params = {
-            "action": 1199,  # change this base on the actual action id
+        approval_action = self.env['ir.ui.view'].search([('key', '=', 'purchase.portal_my_purchase_orders')],
+                                                        limit=1)
+        action_id = approval_action.id
+        action_res = 'ir.actions.act_window,' + str(action_id)
+        odoo_menu = self.env['ir.ui.menu'].search([('action', '=', action_res)], limit=1)
+        odoo_params = {
+            "action": action_id,
             "model": "purchase.order",
             "view_type": "list",
             "cids": "",
-            "menu_id": approval_menu.id
+            "menu_id": odoo_menu.id
         }
 
-        approval_query_string = '&'.join([f'{key}={value}' for key, value in approval_params.items()])
-        approval_list_view_url = f"{approval_base_url}/web?debug=1#{approval_query_string}"
+        query_string = '&'.join([f'{key}={value}' for key, value in odoo_params.items()])
+        approval_list_view_url = f"{approval_base_url}/web?debug=0#{query_string}"
 
         # Generate Odoo Link Section
         odoo_action = self.env['ir.actions.act_window'].search([('res_model', '=', 'purchase.order')], limit=1)
@@ -459,25 +451,22 @@ class PurchaseOrder(models.Model):
 
     def submit_to_next_approver(self):
         # Approval Dashboard Link Section
-        approval_action = self.env['ir.actions.act_window'].search([('res_model', '=', 'purchase.order')],
-                                                                   limit=1)
         approval_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-
-        approval_result_1 = re.sub(r'\((.*?)\)', '', str(approval_action)).replace(',', '')
-        approval_res = f"{approval_result_1},{approval_action.id}"
-        approval_result = re.sub(r'\s*,\s*', ',', approval_res)
-
-        approval_menu = self.env['ir.ui.menu'].search([('action', '=', approval_result)], limit=1)
-        approval_params = {
-            "action": 1199,
+        approval_action = self.env['ir.ui.view'].search([('key', '=', 'purchase.portal_my_purchase_orders')],
+                                                        limit=1)
+        action_id = approval_action.id
+        action_res = 'ir.actions.act_window,' + str(action_id)
+        odoo_menu = self.env['ir.ui.menu'].search([('action', '=', action_res)], limit=1)
+        odoo_params = {
+            "action": action_id,
             "model": "purchase.order",
             "view_type": "list",
             "cids": "",
-            "menu_id": approval_menu.id
+            "menu_id": odoo_menu.id
         }
 
-        approval_query_string = '&'.join([f'{key}={value}' for key, value in approval_params.items()])
-        approval_list_view_url = f"{approval_base_url}/web?debug=1#{approval_query_string}"
+        query_string = '&'.join([f'{key}={value}' for key, value in odoo_params.items()])
+        approval_list_view_url = f"{approval_base_url}/web?debug=0#{query_string}"
 
         # Generate Odoo Link Section
         odoo_action = self.env['ir.actions.act_window'].search([('res_model', '=', 'purchase.order')], limit=1)
@@ -1038,7 +1027,7 @@ class PurchaseOrder(models.Model):
                 })
 
     @api.depends('approval_stage')
-    def approve_request(self):
+    def po_approve_request(self):
         for rec in self:
             res = self.env["department.approvers"].search(
                 [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Orders')])
