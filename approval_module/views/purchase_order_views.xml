@@ -81,7 +81,7 @@
 <!--                                                    string="Test"-->
 <!--                                                    class="oe_highlight"/>-->
 
-                        <button name="approve_request" type="object"
+                        <button name="po_approve_request" type="object"
                                 string="Approve Request"
                                 class="oe_highlight"
                                 attrs="{'invisible': ['|', ('approval_status', '!=', 'po_approval'), ('is_approver', '=', False)]}"/>

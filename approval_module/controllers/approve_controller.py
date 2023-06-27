@@ -20,6 +20,8 @@ class RequestApprovalController(http.Controller):
                 csrf=False,
                 method=['GET', 'POST'])
     def pr_request_disapproval(self, token, **post):
+        domain = request.httprequest.host_url  # Get the current domain URL
+        approval_link = f"{domain}/purchase_requisition/request/disapprove{token}"
         request_form = request.env['purchase.requisition'].sudo().search([('approval_link', '=', token)])
         if request_form:
             if request.httprequest.method == 'POST' and 'reason' in post:
@@ -92,7 +94,7 @@ class RequestApprovalController(http.Controller):
     def po_request_approval(self, token):
         request_form = request.env['purchase.order'].sudo().search([('approval_link', '=', token)])
         if request_form:
-            request_form.approve_request()
+            request_form.po_approve_request()
             msg = "Request approved successfully!"
             return f"""<script>alert("{msg}");window.close();</script>"""
         else:

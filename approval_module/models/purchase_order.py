@@ -5,6 +5,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formataddr
+
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
@@ -66,34 +67,77 @@ class PurchaseOrder(models.Model):
     fourth_approval_date = fields.Char()
     final_approval_date = fields.Char()
 
+    # @api.depends('approval_status', 'state')
+    # def get_approvers_email(self):
+    #     """
+    #         Retrieves the email addresses of the relevant approvers based on approval status and state.
+    #
+    #         Side Effects:
+    #             Updates the email fields of the instance with the appropriate approver emails.
+    #     """
+    #     for rec in self:
+    #         if rec.approval_status == 'disapprove' or rec.state == 'disapprove' or rec.approval_status == 'approved' or rec.state == 'approved':
+    #             res = self.env["department.approvers"].search(
+    #                 [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Orders')])
+    #
+    #             if rec.department_id and res.set_first_approvers:
+    #                 rec.initial_approver_email = res.set_first_approvers[0].first_approver.work_email
+    #
+    #             if rec.department_id and res.set_second_approvers:
+    #                 rec.second_approver_email = res.set_second_approvers[0].second_approver.work_email
+    #
+    #             if rec.department_id and res.set_third_approvers:
+    #                 rec.third_approver_email = res.set_third_approvers[0].third_approver.work_email
+    #
+    #             if rec.department_id and res.set_fourth_approvers:
+    #                 rec.fourth_approver_email = res.set_fourth_approvers[0].fourth_approver.work_email
+    #
+    #             if rec.department_id and res.set_fifth_approvers:
+    #                 rec.final_approver_email = res.set_fifth_approvers[0].fifth_approver.work_email
     @api.depends('approval_status', 'state')
     def get_approvers_email(self):
         """
-            Retrieves the email addresses of the relevant approvers based on approval status and state.
+        Retrieves the email addresses of the relevant approvers based on approval status and state.
 
-            Side Effects:
-                Updates the email fields of the instance with the appropriate approver emails.
+        Side Effects:
+            Updates the email fields of the instance with the appropriate approver emails.
         """
         for rec in self:
             if rec.approval_status == 'disapprove' or rec.state == 'disapprove' or rec.approval_status == 'approved' or rec.state == 'approved':
                 res = self.env["department.approvers"].search(
-                    [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Requests')])
+                    [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Orders')])
+
+                initial_approver_email = False
+                second_approver_email = False
+                third_approver_email = False
+                fourth_approver_email = False
+                final_approver_email = False
 
                 if rec.department_id and res.set_first_approvers:
-                    rec.initial_approver_email = res.set_first_approvers[0].first_approver.work_email
+                    initial_approver_email = res.set_first_approvers[0].first_approver.work_email
 
                 if rec.department_id and res.set_second_approvers:
-                    rec.second_approver_email = res.set_second_approvers[0].second_approver.work_email
+                    second_approver_email = res.set_second_approvers[0].second_approver.work_email
 
                 if rec.department_id and res.set_third_approvers:
-                    rec.third_approver_email = res.set_third_approvers[0].third_approver.work_email
+                    third_approver_email = res.set_third_approvers[0].third_approver.work_email
 
                 if rec.department_id and res.set_fourth_approvers:
-                    rec.fourth_approver_email = res.set_fourth_approvers[0].fourth_approver.work_email
+                    fourth_approver_email = res.set_fourth_approvers[0].fourth_approver.work_email
 
                 if rec.department_id and res.set_fifth_approvers:
-                    rec.final_approver_email = res.set_fifth_approvers[0].fifth_approver.work_email
+                    final_approver_email = res.set_fifth_approvers[0].fifth_approver.work_email
 
+                rec.initial_approver_email = initial_approver_email
+                rec.second_approver_email = second_approver_email
+                rec.third_approver_email = third_approver_email
+                rec.fourth_approver_email = fourth_approver_email
+                rec.final_approver_email = final_approver_email
+            print(rec.initial_approver_email,
+                  rec.second_approver_email,
+                  rec.third_approver_email,
+                  rec.fourth_approver_email,
+                  rec.final_approver_email)
     @api.depends('initial_approver_name', 'second_approver_name', 'third_approver_name', 'fourth_approver_name',
                  'final_approver_name')
     def get_approver_title(self):
@@ -134,23 +178,21 @@ class PurchaseOrder(models.Model):
 
         if self.initial_approver_name:
             self.initial_approval_date = formatted_date
-            print(self.initial_approval_date)
 
-        if self.second_approver_name:
+        if self.initial_approver_name:
+            self.initial_approval_date = formatted_date
+
+        if hasattr(self, 'second_approver_name') and self.second_approver_name:
             self.second_approval_date = formatted_date
-            print(self.second_approval_date)
 
-        if self.third_approver_name:
+        if hasattr(self, 'third_approver_name') and self.third_approver_name:
             self.third_approval_date = formatted_date
-            print(self.third_approval_date)
 
-        if self.fourth_approver_name:
+        if hasattr(self, 'fourth_approver_name') and self.fourth_approver_name:
             self.fourth_approval_date = formatted_date
-            print(self.fourth_approval_date)
 
-        if self.final_approver_name:
+        if hasattr(self, 'final_approver_name') and self.final_approver_name:
             self.final_approval_date = formatted_date
-            print(self.final_approval_date)
 
     # this computes the number of approvers based on department and approval type
     @api.depends('department_id')
@@ -159,7 +201,7 @@ class PurchaseOrder(models.Model):
             Computes the total number of approvers for the department.
 
             This method is triggered whenever the 'department_id' field is modified.
-            It searches for department approvers associated with the department and purchase requests.
+            It searches for department approvers associated with the department and purchase orders.
             The count of individual approvers is accumulated to determine the total number of approvers for the department.
 
         """
@@ -777,7 +819,6 @@ class PurchaseOrder(models.Model):
 
         msg = MIMEMultipart()
         msg['From'] = formataddr(('Odoo Mailer', sender))
-
         msg['To'] = ', '.join(recipient_list)
         msg['Subject'] = 'Purchase Order Approved [' + self.name + ']'
 
@@ -1054,7 +1095,7 @@ class PurchaseOrder(models.Model):
                     else:
                         self.fourth_approver_name = rec.approver_id.name
 
-                    approver_dept = [x.fifth_appover.id for x in res.set_fifth_approvers]
+                    approver_dept = [x.fifth_approver.id for x in res.set_fifth_approvers]
 
                     self.write({
                         'approver_id': approver_dept[0]

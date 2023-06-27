@@ -2,6 +2,7 @@
 {
 
     'name': "Approvals",
+    'sequence': 1,
 
     'summary': """
         Approvals
