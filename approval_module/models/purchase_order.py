@@ -227,17 +227,10 @@ class PurchaseOrder(models.Model):
     def approval_dashboard_link(self):
         # Approval Dashboard Link Section
         approval_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        approval_action = self.env['ir.ui.view'].search([('key', '=', 'purchase.portal_my_purchase_orders')],
-                                                        limit=1)
+        approval_action = self.env['ir.actions.act_window'].search([('name', '=', 'Purchase Order Approval Dashboard')], limit=1)
         action_id = approval_action.id
-        action_res = 'ir.actions.act_window,' + str(action_id)
-        odoo_menu = self.env['ir.ui.menu'].search([('action', '=', action_res)], limit=1)
         odoo_params = {
             "action": action_id,
-            "model": "purchase.order",
-            "view_type": "list",
-            "cids": "",
-            "menu_id": odoo_menu.id
         }
 
         query_string = '&'.join([f'{key}={value}' for key, value in odoo_params.items()])
@@ -275,17 +268,10 @@ class PurchaseOrder(models.Model):
     def submit_for_approval(self):
         # Approval Dashboard Link Section
         approval_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        approval_action = self.env['ir.ui.view'].search([('key', '=', 'purchase.portal_my_purchase_orders')],
-                                                        limit=1)
+        approval_action = self.env['ir.actions.act_window'].search([('name', '=', 'Purchase Order Approval Dashboard')], limit=1)
         action_id = approval_action.id
-        action_res = 'ir.actions.act_window,' + str(action_id)
-        odoo_menu = self.env['ir.ui.menu'].search([('action', '=', action_res)], limit=1)
         odoo_params = {
             "action": action_id,
-            "model": "purchase.order",
-            "view_type": "list",
-            "cids": "",
-            "menu_id": odoo_menu.id
         }
 
         query_string = '&'.join([f'{key}={value}' for key, value in odoo_params.items()])
@@ -452,17 +438,10 @@ class PurchaseOrder(models.Model):
     def submit_to_next_approver(self):
         # Approval Dashboard Link Section
         approval_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        approval_action = self.env['ir.ui.view'].search([('key', '=', 'purchase.portal_my_purchase_orders')],
-                                                        limit=1)
+        approval_action = self.env['ir.actions.act_window'].search([('name', '=', 'Purchase Order Approval Dashboard')], limit=1)
         action_id = approval_action.id
-        action_res = 'ir.actions.act_window,' + str(action_id)
-        odoo_menu = self.env['ir.ui.menu'].search([('action', '=', action_res)], limit=1)
         odoo_params = {
             "action": action_id,
-            "model": "purchase.order",
-            "view_type": "list",
-            "cids": "",
-            "menu_id": odoo_menu.id
         }
 
         query_string = '&'.join([f'{key}={value}' for key, value in odoo_params.items()])

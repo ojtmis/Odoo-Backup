@@ -223,24 +223,42 @@ class PurchaseOrder(models.Model):
         self.check_status = False
         self.check_status = True
 
+    # def approval_dashboard_link(self):
+    #     action = self.env['ir.actions.act_window'].search([('res_model', '=', 'purchase.requisition')], limit=1)
+    #     base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+    #
+    #     result_1 = re.sub(r'\((.*?)\)', '', str(action)).replace(',', '')
+    #     res = f"{result_1},{action.id}"
+    #     result = re.sub(r'\s*,\s*', ',', res)
+    #
+    #     menu = self.env['ir.ui.menu'].search([('action', '=', result)], limit=1)
+    #     print(menu)
+    #     params = {
+    #         "action": 1197,
+    #         "model": "purchase.requisition",
+    #         "view_type": "list",
+    #         "cids": "",
+    #         "menu_id": menu.id
+    #     }
+    #
+    #     query_string = '&'.join([f'{key}={value}' for key, value in params.items()])
+    #     list_view_url = f"{base_url}/web?debug=1#{query_string}"
+    #
+    #     return list_view_url
+
     def approval_dashboard_link(self):
         # Approval Dashboard Link Section
         approval_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        approval_action = self.env['ir.ui.view'].search([('key', '=', 'purchase.portal_my_home_menu_purchase')], limit=1)
+        approval_action = self.env['ir.actions.act_window'].search([('name', '=', 'Purchase Request Approval Dashboard')], limit=1)
         action_id = approval_action.id
-        action_res = 'ir.actions.act_window,' + str(action_id)
-        odoo_menu = self.env['ir.ui.menu'].search([('action', '=', action_res)], limit=1)
+
         odoo_params = {
             "action": action_id,
-            "model": "purchase.requisition",
-            "view_type": "list",
-            "cids": "",
-            "menu_id": odoo_menu.id
         }
 
         query_string = '&'.join([f'{key}={value}' for key, value in odoo_params.items()])
         list_view_url = f"{approval_base_url}/web?debug=0#{query_string}"
-
+        print(list_view_url)
         return list_view_url
     def generate_odoo_link(self):
         # Generate Odoo Link Section
@@ -273,16 +291,11 @@ class PurchaseOrder(models.Model):
     def submit_for_approval(self):
         # Approval Dashboard Link Section
         approval_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        approval_action = self.env['ir.ui.view'].search([('key', '=', 'purchase.portal_my_home_menu_purchase')], limit=1)
+        approval_action = self.env['ir.actions.act_window'].search([('name', '=', 'Purchase Request Approval Dashboard')], limit=1)
         action_id = approval_action.id
-        action_res = 'ir.actions.act_window,' + str(action_id)
-        odoo_menu = self.env['ir.ui.menu'].search([('action', '=', action_res)], limit=1)
+
         odoo_params = {
             "action": action_id,
-            "model": "purchase.requisition",
-            "view_type": "list",
-            "cids": "",
-            "menu_id": odoo_menu.id
         }
 
         query_string = '&'.join([f'{key}={value}' for key, value in odoo_params.items()])
@@ -444,16 +457,10 @@ class PurchaseOrder(models.Model):
     def submit_to_next_approver(self):
         # Approval Dashboard Link Section
         approval_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        approval_action = self.env['ir.ui.view'].search([('key', '=', 'purchase.portal_my_home_menu_purchase')], limit=1)
+        approval_action = self.env['ir.actions.act_window'].search([('name', '=', 'Purchase Request Approval Dashboard')], limit=1)
         action_id = approval_action.id
-        action_res = 'ir.actions.act_window,' + str(action_id)
-        odoo_menu = self.env['ir.ui.menu'].search([('action', '=', action_res)], limit=1)
         odoo_params = {
             "action": action_id,
-            "model": "purchase.requisition",
-            "view_type": "list",
-            "cids": "",
-            "menu_id": odoo_menu.id
         }
 
         query_string = '&'.join([f'{key}={value}' for key, value in odoo_params.items()])
