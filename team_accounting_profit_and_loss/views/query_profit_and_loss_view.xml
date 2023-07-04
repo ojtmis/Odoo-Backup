@@ -2,12 +2,13 @@
 <odoo>
     <data>
 
-<!-- Form View -->
+        <!-- Form View -->
         <record id="query_view_view_form" model="ir.ui.view">
             <field name="name">query_view_view_form</field>
             <field name="model">get.data.here</field>
             <field name="arch" type="xml">
                 <form string="Query View Form">
+
                     <sheet>
                         <group>
                             <field name="root"/>
@@ -25,7 +26,7 @@
             </field>
         </record>
 
-<!-- Tree/List View -->
+        <!-- Tree/List View -->
         <record id="qry_view_here" model="ir.ui.view">
             <field name="name">Query View Tree</field>
             <field name="model">get.data.here</field>
@@ -44,22 +45,22 @@
             </field>
         </record>
 
-<!-- Pivot View -->
+        <!--                         Pivot View-->
         <record id="view_pivot" model="ir.ui.view">
             <field name="name">Pivot Profit and loss</field>
             <field name="model">get.data.here</field>
             <field name="arch" type="xml">
                 <pivot string="Pivot View">
                     <field name="profit_and_loss_root" type="row"/>
+                                        <field name="main_category" type="row" />
                     <field name="account_id" type="row"/>
-<!--                    <field name="root" type="row"/>-->
-                    <field name="main_category" type="row" />
-                    <field name="sub_category" type="row"/>
+                    <!--                    <field name="root" type="row"/>-->
+                    <!--                    <field name="sub_category" type="row"/>-->
                     <field name="monthly" type="col" interval="day"/>
+                    <!--                    <field name="monthly" type="col" interval="month"/>-->
                 </pivot>
             </field>
         </record>
-
 
         <record id="view_filter" model="ir.ui.view">
             <field name="name">Filter Profit and Loss</field>
@@ -67,6 +68,8 @@
             <field name="arch" type="xml">
                 <search>
                     <filter string="Date" name="date" date="date"/>
+                    <!--                    <filter string="Quarterly" name="quarter" context="{'group_by': 'quarter'}"/>-->
+                    <!--                    <filter string="Analytic Account" name="grouped_analytic_account" context="{'group_by': 'grouped_analytic_account'}"/>-->
                 </search>
             </field>
         </record>
