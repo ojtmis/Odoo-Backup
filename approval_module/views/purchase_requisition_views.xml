@@ -108,10 +108,9 @@
                     </header>
                 </xpath>
 
-
                 <xpath expr="//field[@name='origin']" position="after">
-                    <field name="department_id"/>
-                    <field name="approver_id"/>
+                    <field name="department_id" attrs="{'readonly': [('state', 'in', ['approved', 'disapprove'])]}"/>
+                    <field name="approver_id" attrs="{'readonly': [('state', 'in', ['approved', 'disapprove'])]}"/>
                 </xpath>
 
             </field>

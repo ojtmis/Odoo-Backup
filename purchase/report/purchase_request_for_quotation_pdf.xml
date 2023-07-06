@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="purchase_request_for_quotation_pdf_container">
+             <t t-call="web.internal_layout">
+                <t t-set="o" t-value="o.with_context(lang=lang)" />
+                <xpath expr="//style" position="after">
+                    <style type="text/css">
+                        body{
+                            font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+                            font-size: 12px;
+                        }
+                        img{
+                            width: 80px;
+                            height: 80px;
+                            margin-right: 10px;
+                        }
+                        td,th,table,tr,span{
+                            border: 1px solid white;
+                            font-weight:normal;
+                            font-size: 12px;
+                        }
+                        .have_border{
+                            border: 1px solid black;
+                        }
+                        h6{
+                            font-size: 12px;
+                        }
+	                </style>
+                </xpath>
+                <table>
+                    <tr>
+                        <th/>
+                        <th/>
+                        <th/>
+                        <th/>
+                        <th/>
+                        <th/>
+                        <th/>
+                    </tr>
+                    <tr>
+                        <td rowspan="1">
+                            <img src="/purchase/static/src/img/sample_logo.jpg"/>
+                        </td>
+                        <td colspan="2">
+                            TEAM PACIFIC CORPORATION <br/>
+                            Electronics Ave., FTI - Special Economic Zone, <br/>
+                            Taguig City, 1630 Philippines <br/>
+                            TEL: 838-5005 to 11 / 838-4670 / 838-1651
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td style="vertical-align: text-top;">
+                            PURCHASE ORDER
+                            <h6 style="vertical-align:center;">No.</h6>
+                        </td>
+                        <td style="vertical-align: text-center; text-decoration-line: underline;">
+                            <br/> <br/>
+                            <t t-esc="o.partner_ref"/>
+                            <br/> <br/>
+                            <span style="float: right;">PAGE 1/2</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+
+                        </td>
+                        <td>
+                            &#160;
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td rowspan="2" style="vertical-align: text-center">
+                            VENDOR
+                        </td>
+                        <td>
+                            <div t-foreach="o.partner_id" t-as="val">
+                                <span t-esc="val.name"/>
+                            </div>
+                        </td>
+                        <td/>
+                        <td/>
+                        <td>Ship to</td>
+                        <td>Team Pacific Corporation</td>
+                        <td/>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div t-foreach="o.partner_id" t-as="val">
+                                <br/>
+                                <span t-esc="val.street"/>
+                            </div>
+                            <div t-foreach="o.partner_id.state_id" t-as="val">
+                                <br/>
+                                <span t-esc="val.name"/>
+                            </div>
+                            <div t-foreach="o.partner_id.country_id" t-as="val">
+                                <br/>
+                                <span t-esc="val.name"/>
+                            </div>
+                        </td>
+                        <td/>
+                        <td/>
+                        <td/>
+                        <td>Electronics Ave., FTI - Special Economic Zone,</td>
+                        <td/>
+                    </tr>
+                    <tr>
+                        <td/>
+                        <td/>
+                        <td/>
+                        <td/>
+                        <td/>
+                        <td>Taguig City, 1630 Philippines</td>
+                        <td/>
+                    </tr>
+                    <tr>
+                        <td rowspan="2" style="vertical-align: text-center">
+                            Attn to
+                        </td>
+                        <td>
+                             <div t-foreach="o.partner_id" t-as="val">
+                                <br/>
+                                <span t-esc="val.name"/>
+                            </div>
+                        </td>
+                        <td/>
+                        <td/>
+                        <td>Attn to</td>
+                        <td>Receiving Data</td>
+                        <td/>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div t-foreach="o.partner_id" t-as="val">
+                                <br/>
+                                <span t-esc="val.phone"/>
+                            </div>
+                        </td>
+                        <td/>
+                        <td/>
+                        <td>Tel no.</td>
+                        <td>(632) 838-5005 to 11</td>
+                        <td/>
+                    </tr>
+
+                    <tr style="border-bottom: 1px solid black;">
+                        <th style="border-bottom: 1px solid black;">&#160;</th>
+                        <th style="border-bottom: 1px solid black;"/>
+                        <th style="border-bottom: 1px solid black;"/>
+                        <th style="border-bottom: 1px solid black;"/>
+                        <th style="border-bottom: 1px solid black;"/>
+                        <th style="border-bottom: 1px solid black;"/>
+                        <th style="border-bottom: 1px solid black;"/>
+                    </tr>
+
+                    <tr class="have_border">
+                        <th class="have_border">Line</th>
+                        <th class="have_border">Qty/ Unit</th>
+                        <th class="have_border">Reference</th>
+                        <th class="have_border" colspan="2">Description</th>
+                        <th class="have_border">Unit Price</th>
+                        <th class="have_border">Total Amount</th>
+                    </tr>
+
+                    <tr class="have_border">
+                        <th class="have_border">1</th>
+                        <th class="have_border">
+                            <t t-foreach="o.order_line" t-as="val">
+                                <h6 t-esc="val.product_qty"/>
+                                <h6 t-esc="val.product_uom.name"/>
+                            </t>
+                        </th>
+                        <th class="have_border">
+                            <t t-esc="o.name"/>
+                        </th>
+                        <th class="have_border" colspan="2">
+                            <t t-foreach="o.order_line" t-as="val">
+                                <t t-if="val.name">
+                                    <h6 t-esc="val.name"/>
+                                </t>
+                            </t>
+                        </th>
+                        <th class="have_border">
+                            <t t-foreach="o.order_line" t-as="val">
+                                <t t-if="val.price_unit">
+                                    <h6 t-esc="val.price_unit" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                </t>
+                            </t>
+                        </th>
+                        <th class="have_border">
+                             <t t-foreach="o.order_line" t-as="val">
+                                <t t-if="val.price_unit">
+                                    <h6 t-esc="val.price_unit * val.product_qty" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                </t>
+                            </t>
+                        </th>
+                    </tr>
+
+                    <tr class="have_border">
+                        <th class="have_border"/>
+                        <th class="have_border"/>
+                        <th class="have_border"/>
+                        <th class="have_border" colspan="2">
+                            <t t-foreach="o.order_line" t-as="val">
+                                <t t-if="val.name">
+                                    <h6 t-esc="val.name"/>
+                                </t>
+                            </t>
+                        </th>
+                        <th class="have_border"/>
+                        <th class="have_border"/>
+                    </tr>
+
+                    <tr class="have_border">
+                        <th class="have_border">&#160;</th>
+                        <th class="have_border"/>
+                        <th class="have_border"/>
+                        <th class="have_border" colspan="2"/>
+                        <th class="have_border"/>
+                        <th class="have_border"/>
+                    </tr>
+                    <tr class="have_border">
+                        <th class="have_border"/>
+                        <th class="have_border"/>
+                        <th class="have_border"/>
+                        <th class="have_border"  colspan="2">Justification</th>
+                        <th class="have_border"/>
+                        <th class="have_border"/>
+                    </tr>
+
+                    <tr class="have_border">
+                        <th class="have_border">&#160;</th>
+                        <th class="have_border"/>
+                        <th class="have_border"/>
+                        <th class="have_border" colspan="2"/>
+                        <th class="have_border"/>
+                        <th class="have_border"/>
+                    </tr>
+
+                    <tr class="have_border">
+                        <th class="have_border">&#160;</th>
+                        <th class="have_border"/>
+                        <th class="have_border"/>
+                        <th class="have_border" colspan="2">Delivery Date</th>
+                        <th class="have_border"/>
+                        <th class="have_border"/>
+                    </tr>
+
+                    <tr class="have_border">
+                        <th class="have_border">&#160;</th>
+                        <th class="have_border"/>
+                        <th class="have_border"/>
+                        <th class="have_border" colspan="2"/>
+                        <th class="have_border"/>
+                        <th class="have_border"/>
+                    </tr >
+
+                    <tr class="have_border">
+                        <th class="have_border">&#160;</th>
+                        <th class="have_border"/>
+                        <th class="have_border"/>
+                        <th class="have_border" colspan="2">
+                            <h6 t-esc="o.added_notes"/>
+                        </th>
+                        <th class="have_border"/>
+                        <th class="have_border"/>
+                    </tr>
+
+                    <tr class="have_border">
+                        <td class="have_border">&#160;</td>
+                        <td class="have_border"/>
+                        <td class="have_border"/>
+                        <td class="have_border" colspan="2">^ default in PO (editable)</td>
+                        <td class="have_border"/>
+                        <th class="have_border"/>
+                    </tr>
+
+                    <tr class="have_border">
+                        <td class="have_border">&#160;</td>
+                        <td class="have_border"/>
+                        <td class="have_border"/>
+                        <td class="have_border" colspan="2"/>
+                        <td class="have_border"/>
+                        <td class="have_border"/>
+                    </tr>
+
+                    <tr class="have_border">
+                        <td class="have_border" colspan="5"><span style="float: left;">Amount in Words</span>
+                         <t t-esc="o.num2words_total"/>
+                        </td>
+                        <td class="have_border">TOTAL</td>
+                        <td class="have_border">
+                                <t t-if="o.total_all_here">
+                                    <span t-esc="o.total_all_here" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                </t>
+                        </td>
+                    </tr>
+
+                    <tr class="have_border">
+                        <td class="have_border"/>
+                        <td class="have_border"/>
+                        <td class="have_border"/>
+                        <td class="have_border" colspan="2"/>
+                        <td class="have_border"/>
+                        <td class="have_border"/>
+                    </tr>
+
+                    <tr>
+                        <td>&#160;</td>
+                        <td>Contact person:</td>
+                        <td/>
+                        <td colspan="2">1</td>
+                        <td>Mail invoices in triplicate</td>
+                        <td/>
+                    </tr>
+
+                    <tr>
+                        <td/>
+                        <td>Buyer</td>
+                        <td>
+                            <t t-foreach="o.requisition_id" t-as="val">
+                                <span t-esc="val.user_id.name"/>
+                            </t>
+                        </td>
+                        <td colspan="2">2</td>
+                        <td rowspan="3">This purchase order constitutes the buyer's <br/> offer to the seller subject to the terms and conditions stated herein, all of which become a binding <br/> contract upon sellers acceptance or by ACKNOWLEDGEMENT of this order by seller commencing <br/> performance of this order.</td>
+                        <td/>
+                    </tr>
+
+                    <tr>
+                        <td>&#160;</td>
+                        <td>Requisitioner</td>
+                        <td>
+                            <span t-esc="o.log_in_details"/>
+                        </td>
+                        <td colspan="2"/>
+                        <td/>
+                    </tr>
+
+                    <tr>
+                        <td/>
+                        <td>Department</td>
+                        <td>
+                            <span t-esc="o.get_user_log_in_department"/>
+                        </td>
+                        <td colspan="2"/>
+                        <td/>
+                    </tr>
+
+                    <tr>
+                        <td>&#160;</td>
+                        <td/>
+                        <td/>
+                        <td colspan="2"/>
+                        <td/>
+                        <td/>
+                    </tr>
+
+                    <tr>
+                        <td>&#160;</td>
+                        <td colspan="2">________________________</td>
+                        <td colspan="2"/>
+                        <td colspan="2">________________________</td>
+                    </tr>
+
+                    <tr>
+                        <td>&#160;</td>
+                        <td colspan="2">Authorized signature</td>
+                        <td colspan="2"/>
+                        <td colspan="2">Accepted by</td>
+                    </tr>
+                </table>
+             </t>
+        </template>
+
+
+         <template id="purchase_request_for_quotation_pdf_container_id">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="lang" t-value="o.partner_id.lang"/>
+                    <t t-call="purchase.purchase_request_for_quotation_pdf_container" t-lang="lang"/>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>
