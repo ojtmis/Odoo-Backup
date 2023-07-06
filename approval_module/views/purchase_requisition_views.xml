@@ -73,6 +73,7 @@
                                 class="oe_highlight"
                                 confirm="Submit Purchase Request to Initial Approver?"
                                 attrs="{'invisible': [('show_submit_request', '=', False)]}"/>
+
                         <button name="%(action_change_approvers_pr_view)d" type="action"
                                 states='to_approve'
                                 string="Change Approver"

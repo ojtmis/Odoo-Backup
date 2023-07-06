@@ -28,7 +28,7 @@
                         <br> </br>
                         <field name="no_of_approvers" style="width: 50%"/>
                         <notebook>
-                            <page  string="First Approver">
+                            <page string="First Approver">
                                 <field name="set_first_approvers">
                                     <tree editable="bottom">
                                         <field name="first_approver" string="Name"/>

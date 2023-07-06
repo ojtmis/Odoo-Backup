@@ -1049,6 +1049,16 @@ class PurchaseOrder(models.Model):
 
             return {'domain': {'approver_id': domain}}
 
+    # @api.onchange('approver_id')
+    # def onchange_approver_id(self):
+    #     print('approver changed')
+    #     print(self.approval_stage)
+    #     if self.approval_stage >= 2:
+    #         self.submit_to_next_approver()
+    #         self.getCurrentDate()
+    #         print(self.approval_stage)
+    #         print('approver changed but')
+
     @api.depends('approval_stage')
     def pr_approve_request(self):
         for rec in self:

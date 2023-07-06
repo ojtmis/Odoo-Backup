@@ -17,8 +17,12 @@ class ChangePRApprovers(models.TransientModel):
         purchase_id = self.env['purchase.requisition'].browse(active_id)
         for rec in purchase_id:
             domain = []
-            res = self.env["department.approvers"].search(
-                [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Orders')])
+            if rec.state in ('draft', 'sent', 'to_approve'):
+                res = self.env["department.approvers"].search(
+                    [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Requests')])
+            else:
+                res = self.env["department.approvers"].search(
+                    [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Orders')])
 
             if rec.department_id and rec.approval_stage == 1:
                 approver_dept = [x.first_approver.id for x in res.set_first_approvers]

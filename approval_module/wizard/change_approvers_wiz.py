@@ -23,6 +23,7 @@ class ChangeApproversWiz(models.TransientModel):
             else:
                 res = self.env["department.approvers"].search(
                     [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Orders')])
+
             if rec.department_id and rec.approval_stage == 1:
                 approver_dept = [x.first_approver.id for x in res.set_first_approvers]
                 rec.approver_id = approver_dept[0]

@@ -37,6 +37,7 @@ class DepartmentApproversLine(models.Model):
         ('fourth', 'Fourth Approver'),
         ('fifth', 'Fifth Approver')])
 
+
     @api.onchange('first_approver', 'second_approver', 'third_approver', 'fourth_approver', 'fifth_approver', )
     def get_approver_email(self):
         for rec in self:
