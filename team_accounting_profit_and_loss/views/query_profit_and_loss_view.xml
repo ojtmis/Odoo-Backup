@@ -52,7 +52,7 @@
             <field name="arch" type="xml">
                 <pivot string="Pivot View">
                     <field name="profit_and_loss_root" type="row"/>
-                                        <field name="main_category" type="row" />
+                    <field name="main_category" type="row"/>
                     <field name="account_id" type="row"/>
                     <!--                    <field name="root" type="row"/>-->
                     <!--                    <field name="sub_category" type="row"/>-->

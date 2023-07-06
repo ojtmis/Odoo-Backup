@@ -68,6 +68,9 @@ class PurchaseOrder(models.Model):
     fourth_approval_date = fields.Char()
     final_approval_date = fields.Char()
 
+    purchase_rep_email = fields.Char(related="user_id.login", store=True)
+
+
     # @api.depends('approval_status', 'state')
     # def get_approvers_email(self):
     #     """
@@ -95,6 +98,7 @@ class PurchaseOrder(models.Model):
     #
     #             if rec.department_id and res.set_fifth_approvers:
     #                 rec.final_approver_email = res.set_fifth_approvers[0].fifth_approver.work_email
+
 
     @api.depends('approval_status', 'state')
     def get_approvers_email(self):
@@ -135,6 +139,7 @@ class PurchaseOrder(models.Model):
                 rec.third_approver_email = third_approver_email
                 rec.fourth_approver_email = fourth_approver_email
                 rec.final_approver_email = final_approver_email
+                rec.purchase_rep_email = self.purchase_rep_email
 
 
     @api.depends('initial_approver_name', 'second_approver_name', 'third_approver_name', 'fourth_approver_name',
@@ -648,8 +653,9 @@ class PurchaseOrder(models.Model):
         email3 = self.third_approver_email if self.third_approver_email else ""
         email4 = self.fourth_approver_email if self.fourth_approver_email else ""
         email5 = self.final_approver_email if self.final_approver_email else ""
+        email6 = self.purchase_rep_email if self.purchase_rep_email else ""
 
-        self.send_disapproval_email([email1, email2, email3, email4, email5], pr_form_link)
+        self.send_disapproval_email([email1, email2, email3, email4, email5, email6], pr_form_link)
 
     def send_disapproval_email(self, recipient_list, pr_form_link):
         sender = 'noreply@teamglac.com'
@@ -781,8 +787,9 @@ class PurchaseOrder(models.Model):
         email3 = self.third_approver_email if self.third_approver_email else ""
         email4 = self.fourth_approver_email if self.fourth_approver_email else ""
         email5 = self.final_approver_email if self.final_approver_email else ""
+        email6 = self.purchase_rep_email if self.purchase_rep_email else ""
 
-        self.send_to_final_approver_email([email1, email2, email3, email4, email5])
+        self.send_to_final_approver_email([email1, email2, email3, email4, email5, email6])
 
     def send_to_final_approver_email(self, recipient_list):
         sender = 'noreply@teamglac.com'

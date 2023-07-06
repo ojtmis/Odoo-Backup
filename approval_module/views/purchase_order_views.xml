@@ -45,7 +45,9 @@
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='name']" position="after">
+
+
+                <xpath expr="//field[@name='name']" position="after" >
                     <field name="show_submit_request" invisible="1"/>
                     <field name="approval_status" invisible="1"/>
                 </xpath>
@@ -70,16 +72,16 @@
                         <button name="submit_for_approval" type="object"
                                 string="Submit Request"
                                 class="oe_highlight"
-                                confirm="Submit Purchase Request to Initial Approver?"
+                                confirm="Submit Purchase Order to Initial Approver?"
                                 attrs="{'invisible': [('show_submit_request', '=', False)]}"/>
                         <button name="%(action_change_approvers_view)d" type="action"
                                 states='to_approve,purchase'
                                 string="Change Approver"
                                 class="oe_highlight"/>
 
-<!--                     <button name="get_approvers_emails" type="object"-->
-<!--                                                    string="Test"-->
-<!--                                                    class="oe_highlight"/>-->
+<!--                        <button name="create_purchase_order" type="object"-->
+<!--                                string="Test"-->
+<!--                                class="oe_highlight"/>-->
 
                         <button name="po_approve_request" type="object"
                                 string="Approve Request"
@@ -127,12 +129,12 @@
 
 
                 <xpath expr="//field[@name='partner_id']" position="before">
-                    <field name="user_id" string="Purchase Representative"/>
+                    <field name="user_id" string="Purchase Representative" attrs="{'readonly': [('state', 'in', ['approved', 'disapprove'])]}" />
                 </xpath>
 
                 <xpath expr="//field[@name='company_id']" position="after">
-                    <field name="department_id"/>
-                    <field name="approver_id"/>
+                    <field name="department_id" attrs="{'readonly': [('state', 'in', ['approved', 'disapprove'])]}"/>
+                    <field name="approver_id" attrs="{'readonly': [('state', 'in', ['approved', 'disapprove'])]}"/>
                 </xpath>
 
             </field>
@@ -146,16 +148,16 @@
                 <field name="partner_id" position="replace">
                     <field name="is_quantity_copy" invisible="1"/>
                     <field name="partner_id" context="{'res_partner_search_mode': 'supplier'}"
-                           attrs="{'readonly': ['|', ('is_quantity_copy', '=', 'none'), ('state', 'in', ['purchase', 'done', 'cancel'])]}"
+                           attrs="{'readonly': ['|', ('is_quantity_copy', '=', 'none'), ('state', 'in', ['purchase', 'done', 'cancel', 'approved', 'dissapprove'])]}"
                            force_save="1"/>
                 </field>
                 <field name="partner_ref" position="after">
                     <field name="requisition_id"
-                           domain="[('state', 'in', ('in_progress', 'open', 'ongoing', 'approved')), ('vendor_id', 'in', (partner_id, False)), ('company_id', '=', company_id)]"/>
+                           domain="[('state', 'in', ('in_progress', 'open', 'ongoing', 'approved')), ('vendor_id', 'in', (partner_id, False)), ('company_id', '=', company_id)]"
+                           attrs="{'readonly': [('state', 'in', ['approved', 'dissapprove'])]}"/>
                 </field>
             </field>
         </record>
-
 
 
         <record id="view_purchase_order" model="ir.actions.act_window">

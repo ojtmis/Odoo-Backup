@@ -8,7 +8,7 @@ class ProfitAndLoss(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Name', required=True)
-    pnl_id = fields.Char(string='PNL ID', required=True)
+    pnl_id = fields.Char(string='ID', required=True)
     pnl_line_connection = fields.One2many('profit.and.loss.line', 'pnl_connection', store=True)
     connection_categ = fields.Many2one('category', string='Category')
     sub_category = fields.Many2one('sub.categ', string='Sub Category',
