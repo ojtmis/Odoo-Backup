@@ -70,7 +70,6 @@ class PurchaseOrder(models.Model):
 
     purchase_rep_email = fields.Char(related="user_id.login", store=True)
 
-
     # @api.depends('approval_status', 'state')
     # def get_approvers_email(self):
     #     """
@@ -99,7 +98,6 @@ class PurchaseOrder(models.Model):
     #             if rec.department_id and res.set_fifth_approvers:
     #                 rec.final_approver_email = res.set_fifth_approvers[0].fifth_approver.work_email
 
-
     @api.depends('approval_status', 'state')
     def get_approvers_email(self):
         """
@@ -109,7 +107,31 @@ class PurchaseOrder(models.Model):
             Updates the email fields of the instance with the appropriate approver emails.
         """
         for rec in self:
-            if rec.approval_status == 'disapprove' or rec.state == 'disapprove' or rec.approval_status == 'approved' or rec.state == 'approved':
+            if rec.approval_status == 'approved' or rec.state == 'approved':
+                if rec.initial_approver_name:
+                    approver = self.env['hr.employee'].search([('name', '=', rec.initial_approver_name)],
+                                                              limit=1)
+                    rec.initial_approver_email = approver.work_email if approver else False
+
+                if rec.second_approver_name:
+                    approver = self.env['hr.employee'].search([('name', '=', rec.second_approver_name)], limit=1)
+                    rec.second_approver_email = approver.work_email if approver else False
+
+                if rec.third_approver_name:
+                    approver = self.env['hr.employee'].search([('name', '=', rec.third_approver_name)], limit=1)
+                    rec.third_approver_email = approver.work_email if approver else False
+
+                if rec.fourth_approver_name:
+                    approver = self.env['hr.employee'].search([('name', '=', rec.fourth_approver_name)], limit=1)
+                    rec.fourth_approver_email = approver.work_email if approver else False
+
+                if rec.final_approver_name:
+                    approver = self.env['hr.employee'].search([('name', '=', rec.final_approver_name)], limit=1)
+                    rec.final_approver_email = approver.work_email if approver else False
+
+                rec.purchase_rep_email = self.purchase_rep_email
+
+            elif rec.approval_status == 'disapprove' or rec.state == 'disapprove':
                 res = self.env["department.approvers"].search(
                     [("dept_name", "=", rec.department_id.id), ("approval_type.name", '=', 'Purchase Requests')])
 
@@ -139,8 +161,8 @@ class PurchaseOrder(models.Model):
                 rec.third_approver_email = third_approver_email
                 rec.fourth_approver_email = fourth_approver_email
                 rec.final_approver_email = final_approver_email
-                rec.purchase_rep_email = self.purchase_rep_email
 
+                rec.purchase_rep_email = self.purchase_rep_email
 
     @api.depends('initial_approver_name', 'second_approver_name', 'third_approver_name', 'fourth_approver_name',
                  'final_approver_name')
@@ -254,7 +276,8 @@ class PurchaseOrder(models.Model):
     def approval_dashboard_link(self):
         # Approval Dashboard Link Section
         approval_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        approval_action = self.env['ir.actions.act_window'].search([('name', '=', 'Purchase Request Approval Dashboard')], limit=1)
+        approval_action = self.env['ir.actions.act_window'].search(
+            [('name', '=', 'Purchase Request Approval Dashboard')], limit=1)
         action_id = approval_action.id
 
         odoo_params = {
@@ -265,6 +288,7 @@ class PurchaseOrder(models.Model):
         list_view_url = f"{approval_base_url}/web?debug=0#{query_string}"
         print(list_view_url)
         return list_view_url
+
     def generate_odoo_link(self):
         # Generate Odoo Link Section
         action = self.env['ir.actions.act_window'].search([('res_model', '=', 'purchase.requisition')], limit=1)
@@ -296,7 +320,8 @@ class PurchaseOrder(models.Model):
     def submit_for_approval(self):
         # Approval Dashboard Link Section
         approval_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        approval_action = self.env['ir.actions.act_window'].search([('name', '=', 'Purchase Request Approval Dashboard')], limit=1)
+        approval_action = self.env['ir.actions.act_window'].search(
+            [('name', '=', 'Purchase Request Approval Dashboard')], limit=1)
         action_id = approval_action.id
 
         odoo_params = {
@@ -462,7 +487,8 @@ class PurchaseOrder(models.Model):
     def submit_to_next_approver(self):
         # Approval Dashboard Link Section
         approval_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        approval_action = self.env['ir.actions.act_window'].search([('name', '=', 'Purchase Request Approval Dashboard')], limit=1)
+        approval_action = self.env['ir.actions.act_window'].search(
+            [('name', '=', 'Purchase Request Approval Dashboard')], limit=1)
         action_id = approval_action.id
         odoo_params = {
             "action": action_id,
